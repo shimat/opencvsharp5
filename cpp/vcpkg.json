@@ -1,0 +1,17 @@
+{
+  "name": "opencvsharp-extern",
+  "version-semver": "0.1.0",
+  "builtin-baseline": "91dd61bd441a68b4017b61011d0350b2e6aeeccf",
+  "dependencies": [
+    {
+      "name": "opencv4",
+      "version>=": "4.6.0"
+    }
+  ],
+  "overrides": [
+    {
+      "name": "opencv4",
+      "version": "4.6.0"
+    }
+  ]
+}
