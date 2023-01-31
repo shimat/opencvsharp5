@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 
 namespace OpenCvSharp5
@@ -8,6 +9,7 @@ namespace OpenCvSharp5
         private const string LibraryName = "OpenCvSharpExtern";
 
         [LibraryImport(LibraryName)]
+        [UnmanagedCallConv(CallConvs = new [] { typeof(CallConvCdecl) })]
         public static partial long core_getTickCount();
     }
 }

@@ -11,16 +11,18 @@ message("### CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 message("### CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
 
 set(SOURCE_FILES
-    "dummy.cpp"
+    "main.cpp"
     "core.hpp")
 
 set(SOURCE_FILES_IMGPROC
-    "dummy.cpp"
+    "imgproc.cpp"
     "imgproc.hpp")
 
 set(SOURCE_FILES_ML
-    "dummy.cpp"
+    "main.cpp"
     "ml.hpp")
+
+add_compile_definitions(CVAPI_EXPORTS)
 
 #set(CMAKE_TOOLCHAIN_FILE 
 #    ${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
