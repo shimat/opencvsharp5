@@ -4,8 +4,8 @@ on:
   pull_request:
     types: [synchronize, opened]
   push:
-#    branches:
-#      - master
+    branches:
+      - master
 
 env:
   OPENCV_VERSION: 4.7.0
@@ -18,6 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
+        path: opencvsharp
         submodules: recursive
 
     - name: Install dependencies
@@ -62,7 +63,7 @@ jobs:
           
     - name: Build OpenCvSharpExtern
       run: |
-        cd cpp
+        cd opencvsharp/cpp
         cmake -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts \
