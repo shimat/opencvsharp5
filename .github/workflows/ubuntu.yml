@@ -1,10 +1,15 @@
 name: CMake
 
 on:
+  pull_request:
+    types: [synchronize, opened]
   push:
+#    branches:
+#      - master
 
 env:
-  BUILD_TYPE: Release
+  OPENCV_VERSION: 4.7.0
+  OPENCV_CACHE_VERSION: 1
 
 jobs:
   build:
@@ -24,22 +29,48 @@ jobs:
         sudo apt-get update -y 
         sudo apt-get install -y --no-install-recommends \
           apt-transport-https \
-          wget \
-          git \
-          wget \
-          unzip \
           g++ \
           make \
           cmake \
           libtbb-dev \
           libatlas-base-dev 
-          
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-    #- name: Build
-    #  # Build your program with the given configuration
-    #  run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    - name: Checkout OpenCV
+      uses: actions/checkout@v3
+      with:
+          repository: opencv/opencv
+          path: opencv
+          ref: ${{ env.OPENCV_VERSION }}
+          
+    - name: Build OpenCV
+      if: steps.opencv-cache.outputs.cache-hit != 'true'
+      run: |
+        opencv-${OPENCV_VERSION} && mkdir opencv/build && cd opencv/build
+        cmake \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D BUILD_SHARED_LIBS=OFF \
+          -D ENABLE_CXX11=ON \
+          -D BUILD_EXAMPLES=OFF \
+          -D BUILD_DOCS=OFF \
+          -D BUILD_PERF_TESTS=OFF \
+          -D BUILD_TESTS=OFF \
+          -D BUILD_JAVA=OFF \
+          -D BUILD_LIST=core,imgproc
+          -D WITH_GSTREAMER=OFF \
+          -D WITH_ADE=OFF \
+          -D OPENCV_ENABLE_NONFREE=ON \
+          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts ..
+          make -j2
+          make install
+          sudo ldconfig
+          
+    - name: Build OpenCvSharpExtern
+      run: |
+        cmake -S . -B build \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts \
+          ..
+        cmake --build build -- -j2
 
     #- name: Test
     #  working-directory: ${{github.workspace}}/build
