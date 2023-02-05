@@ -14,10 +14,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: cpp
 
     steps:
     - uses: actions/checkout@v3
@@ -45,7 +41,7 @@ jobs:
     - name: Build OpenCV
       if: steps.opencv-cache.outputs.cache-hit != 'true'
       run: |
-        opencv-${OPENCV_VERSION} && mkdir opencv/build && cd opencv/build
+        mkdir opencv/build && cd opencv/build
         cmake \
           -D CMAKE_BUILD_TYPE=Release \
           -D BUILD_SHARED_LIBS=OFF \
@@ -60,12 +56,13 @@ jobs:
           -D WITH_ADE=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
           -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts ..
-          make -j2
-          make install
-          sudo ldconfig
+        make -j2
+        make install
+        sudo ldconfig
           
     - name: Build OpenCvSharpExtern
       run: |
+        cd cpp
         cmake -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts \
