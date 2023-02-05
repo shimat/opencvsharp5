@@ -58,7 +58,7 @@ jobs:
           -D WITH_GSTREAMER=OFF \
           -D WITH_ADE=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
-          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts ..
+          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
         cd build
         make -j2
         make install
@@ -69,8 +69,7 @@ jobs:
         cd opencvsharp/cpp
         cmake -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts \
-          ..
+          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
         cmake --build build -- -j2
 
     #- name: Test
