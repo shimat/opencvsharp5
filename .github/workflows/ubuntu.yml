@@ -54,9 +54,11 @@ jobs:
           -D BUILD_PERF_TESTS=OFF \
           -D BUILD_TESTS=OFF \
           -D BUILD_JAVA=OFF \
-          -D BUILD_LIST=core,imgproc \
+          -D BUILD_LIST=core,imgproc,imgcodecs \
           -D WITH_GSTREAMER=OFF \
           -D WITH_ADE=OFF \
+          -D BUILD_WEBP=ON \
+          -D WITH_WEBP=ON \
           -D OPENCV_ENABLE_NONFREE=ON \
           -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
         cd build
