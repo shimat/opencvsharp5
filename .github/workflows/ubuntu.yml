@@ -1,4 +1,4 @@
-name: CMake
+name: Ubuntu
 
 on:
   pull_request:
@@ -59,6 +59,8 @@ jobs:
           -D WITH_ADE=OFF \
           -D BUILD_WEBP=ON \
           -D WITH_WEBP=ON \
+          -D BUILD_PROTOBUF=ON \
+          -D WITH_PROTOBUF=ON \
           -D OPENCV_ENABLE_NONFREE=ON \
           -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
         cd build
