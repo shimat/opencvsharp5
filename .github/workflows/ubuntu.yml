@@ -44,8 +44,8 @@ jobs:
       run: |
         cd opencv
         cmake \
-          -S .
-          -B build
+          -S . \
+          -B build \
           -D CMAKE_BUILD_TYPE=Release \
           -D BUILD_SHARED_LIBS=OFF \
           -D ENABLE_CXX11=ON \
@@ -54,7 +54,7 @@ jobs:
           -D BUILD_PERF_TESTS=OFF \
           -D BUILD_TESTS=OFF \
           -D BUILD_JAVA=OFF \
-          -D BUILD_LIST=core,imgproc
+          -D BUILD_LIST=core,imgproc \
           -D WITH_GSTREAMER=OFF \
           -D WITH_ADE=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
