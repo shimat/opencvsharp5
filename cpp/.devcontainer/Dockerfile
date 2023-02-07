@@ -29,8 +29,9 @@ RUN cd opencv \
         -D WITH_WEBP=ON \
         -D WITH_PROTOBUF=OFF \
         -D WITH_QUIRC=OFF \
-        -D OPENCV_ENABLE_NONFREE=ON \
-    && cd build \
+        -D WITH_CUDA=OFF \
+        -D OPENCV_ENABLE_NONFREE=ON 
+RUN cd opencv/build \
     && make -j2 \
     && make install \
     && ldconfig
