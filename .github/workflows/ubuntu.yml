@@ -60,6 +60,7 @@ jobs:
           -D BUILD_WEBP=ON \
           -D WITH_WEBP=ON \
           -D WITH_PROTOBUF=OFF \
+          -D WITH_QUIRC=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
           -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
         cd build
