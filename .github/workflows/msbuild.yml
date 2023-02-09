@@ -32,13 +32,16 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: CMake OpenCvSharpExtern
-      working-directory: ${{env.GITHUB_WORKSPACE}}\cpp
+      #working-directory: ${{env.GITHUB_WORKSPACE}}\cpp
       run: |
+        ls
+        cd cpp
         cmake -S . -B build -D CMAKE_BUILD_TYPE=Release 
 
     - name: Build OpenCvSharpExtern
-      working-directory: ${{env.GITHUB_WORKSPACE}}/cpp/build
+      #working-directory: ${{env.GITHUB_WORKSPACE}}/cpp/build
       run: | 
+        cd cpp
         cmake --build build
     
     #- name: Restore NuGet packages
