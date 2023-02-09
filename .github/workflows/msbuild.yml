@@ -35,7 +35,7 @@ jobs:
       run: |
         cd cpp/vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install zlib:x64-windows-static
+        #./vcpkg install zlib:x64-windows-static
 
     - name: CMake OpenCvSharpExtern
       #working-directory: ${{env.GITHUB_WORKSPACE}}\cpp
