@@ -16,7 +16,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout OpenCvSharp
+      uses: actions/checkout@v3
       with:
         path: opencvsharp
         submodules: recursive
