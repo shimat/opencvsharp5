@@ -31,10 +31,15 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Vcpkg
+      run: |
+        cd cpp/vcpkg
+        ./bootstrap-vcpkg.bat
+        ./vcpkg install zlib:x64-windows-static
+
     - name: CMake OpenCvSharpExtern
       #working-directory: ${{env.GITHUB_WORKSPACE}}\cpp
       run: |
-        ls
         cd cpp
         cmake -S . -B build -D CMAKE_BUILD_TYPE=Release 
 
