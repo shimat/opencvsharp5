@@ -41,7 +41,7 @@ jobs:
     - name: Build OpenCV
       if: steps.opencv-cache.outputs.cache-hit != 'true'
       run: |
-        cd opencv
+        cd ${{github.workspace}}/opencv
         cmake \
           -S . \
           -B build \
@@ -70,15 +70,12 @@ jobs:
           
     - name: Build OpenCvSharpExtern
       run: |
-        cd opencvsharp/cpp
+        cd ${{github.workspace}}/opencvsharp/cpp
         cmake -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
         cmake --build build -- -j2
 
-    #- name: Test
-    #  working-directory: ${{github.workspace}}/build
-    #  # Execute tests defined by the CMake configuration.
-    #  # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-    #  run: ctest -C ${{env.BUILD_TYPE}}
-
+    - name: Test OpenCvSharpExtern
+      working-directory: ${{github.workspace}}/opencvsharp/cpp/build
+      run: ctest
