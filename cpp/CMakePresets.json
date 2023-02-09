@@ -58,13 +58,13 @@
             }
         },
         {
-            "name": "linux-debug",
-            "displayName": "Linux Debug",
+            "name": "linux-release",
+            "displayName": "Linux Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Release"
             },
             "condition": {
                 "type": "equals",
