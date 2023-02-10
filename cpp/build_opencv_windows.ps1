@@ -45,7 +45,7 @@ function BuildForWindows($platform) {
         -D WITH_FFMPEG=OFF `
         -D OPENCV_ENABLE_NONFREE=ON `
     
-    cmake --build $buildPath --config Release --target INSTALL
+    cmake --build $buildPath --config Release --target INSTALL -- -maxcpucount 
 }
 
 # Entry point
