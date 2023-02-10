@@ -28,7 +28,7 @@ add_library(
     $<TARGET_OBJECTS:WRAPPER_SOURCES>)
 target_link_libraries(
     ${PROJECT_NAME}
-    ${OpenCV_LIBRARIES} -static
+    ${OpenCV_LIBRARIES}
 )
 
 include (GenerateExportHeader)
