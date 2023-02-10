@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(VCPKG_BUILD_TYPE release)
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_compile_definitions(CVAPI_EXPORTS)
 
@@ -21,8 +22,6 @@ include_directories(
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 add_subdirectory(src)
 
-#add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-
 add_library(
     ${PROJECT_NAME} SHARED 
     $<TARGET_OBJECTS:WRAPPER_SOURCES>)
@@ -31,5 +30,28 @@ target_link_libraries(
     ${OpenCV_LIBRARIES}
 )
 
-include (GenerateExportHeader)
-GENERATE_EXPORT_HEADER(${PROJECT_NAME})
+#include (GenerateExportHeader)
+#GENERATE_EXPORT_HEADER(${PROJECT_NAME})
+
+include(CTest)
+include(FetchContent)
+enable_testing()
+
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip)
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(
+    ${PROJECT_NAME}.Tests 
+    test/test_core.cpp)
+target_link_libraries(
+    ${PROJECT_NAME}.Tests 
+    gtest_main 
+    ${PROJECT_NAME})
+add_test(
+    NAME ${PROJECT_NAME}.Tests
+    COMMAND ${PROJECT_NAME}.Tests)
