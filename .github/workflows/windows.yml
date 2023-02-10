@@ -35,20 +35,24 @@ jobs:
         
     - name: Build OpenCV
       if: steps.cache_opencv.outputs.cache-hit != 'true'
+      working-directory: ${{github.workspace}}/cpp
       run: |
-        cd cpp
         . "./build_opencv_windows.ps1"
         BuildForWindows "x64"    
 
     - name: Build OpenCvSharpExtern
+      working-directory: ${{github.workspace}}/cpp
       run: |
-        cd cpp
         cmake `
           -S . `
           -B build `
           -D OpenCV_DIR=opencv/build_windows_x64
         cmake --build build --config Release -- -maxcpucount 
     
+    - name: Test OpenCvSharpExtern
+      working-directory: ${{github.workspace}}/cpp/build
+      run: ctest -C Release
+
     #- name: Restore NuGet packages
     #  working-directory: ${{env.GITHUB_WORKSPACE}}
     #  run: nuget restore ${{env.SOLUTION_FILE_PATH}}
