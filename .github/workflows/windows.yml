@@ -49,6 +49,10 @@ jobs:
           -D OpenCV_DIR=opencv/build_windows_x64
         cmake --build build --config Release -- -maxcpucount 
     
+    - name: Test OpenCvSharpExtern
+      working-directory: ${{github.workspace}}/cpp/build
+      run: ctest
+
     #- name: Restore NuGet packages
     #  working-directory: ${{env.GITHUB_WORKSPACE}}
     #  run: nuget restore ${{env.SOLUTION_FILE_PATH}}
