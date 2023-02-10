@@ -19,7 +19,6 @@ jobs:
     - name: Checkout OpenCvSharp
       uses: actions/checkout@v3
       with:
-        path: opencvsharp
         submodules: recursive
 
     - name: Install dependencies
@@ -31,18 +30,11 @@ jobs:
           cmake \
           libtbb-dev \
           libatlas-base-dev 
-
-    - name: Checkout OpenCV
-      uses: actions/checkout@v3
-      with:
-          repository: opencv/opencv
-          path: opencv
-          ref: ${{ env.OPENCV_VERSION }}
           
     - name: Build OpenCV
       if: steps.opencv-cache.outputs.cache-hit != 'true'
       run: |
-        cd ${{github.workspace}}/opencv
+        cd ${{github.workspace}}/cpp/opencv
         cmake \
           -S . \
           -B build \
@@ -71,12 +63,12 @@ jobs:
           
     - name: Build OpenCvSharpExtern
       run: |
-        cd ${{github.workspace}}/opencvsharp/cpp
+        cd ${{github.workspace}}/cpp
         cmake -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
         cmake --build build -- -j2
 
     - name: Test OpenCvSharpExtern
-      working-directory: ${{github.workspace}}/opencvsharp/cpp/build
+      working-directory: ${{github.workspace}}/cpp/build
       run: ctest

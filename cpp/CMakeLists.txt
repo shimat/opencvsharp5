@@ -16,7 +16,8 @@ message("### CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
 find_package(OpenCV REQUIRED)
 
 include_directories(
-    ${OpenCV_INCLUDE_DIRS})
+    ${OpenCV_INCLUDE_DIRS}
+)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 add_subdirectory(src)
@@ -26,17 +27,21 @@ add_library(
     $<TARGET_OBJECTS:WRAPPER_SOURCES>)
 target_link_libraries(
     ${PROJECT_NAME}
-    ${OpenCV_LIBRARIES})
+    ${OpenCV_LIBRARIES}
+)
 
 #include (GenerateExportHeader)
 #GENERATE_EXPORT_HEADER(${PROJECT_NAME})
+
 include(CTest)
 include(FetchContent)
 enable_testing()
 
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip)
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        b796f7d44681514f58a683a3a71ff17c94edb0c1 # release-1.30.0
+)
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
