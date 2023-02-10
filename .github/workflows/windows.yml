@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+env:
+  OPENCV_VERSION: 4.7.0
+  OPENCV_CACHE_VERSION: beta-1
+  
 permissions:
   contents: read
 
@@ -22,27 +26,28 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Cache OpenCV binaries
+      id: cache_opencv
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/cpp/opencv/build_windows_x64
+        key: opencv-${{ env.OPENCV_VERSION }}-rev${{ env.OPENCV_CACHE_VERSION }}
+        
     - name: Build OpenCV
+      if: steps.cache_opencv.outputs.cache-hit != 'true'
       run: |
         cd cpp
         . "./build_opencv_windows.ps1"
-        BuildForWindows "x64"
+        BuildForWindows "x64"    
 
-    - name: CMake OpenCvSharpExtern
-      #working-directory: ${{env.GITHUB_WORKSPACE}}\cpp
+    - name: Build OpenCvSharpExtern
       run: |
         cd cpp
         cmake `
           -S . `
           -B build `
-          -D CMAKE_BUILD_TYPE=Release `
           -D OpenCV_DIR=opencv/build_windows_x64
-
-    - name: Build OpenCvSharpExtern
-      #working-directory: ${{env.GITHUB_WORKSPACE}}/cpp/build
-      run: | 
-        cd cpp
-        cmake --build build
+        cmake --build build --config Release -- -maxcpucount 
     
     #- name: Restore NuGet packages
     #  working-directory: ${{env.GITHUB_WORKSPACE}}
