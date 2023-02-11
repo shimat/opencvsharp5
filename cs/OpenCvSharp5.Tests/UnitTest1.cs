@@ -14,6 +14,6 @@ public class UnitTest1
     [Fact]
     public void Test1()
     {
-        testOutputHelper.WriteLine(NativeMethods.core_getTickCount().ToString());
+        testOutputHelper.WriteLine("cv::getTickCount() = {0}", NativeMethods.core_getTickCount());
     }
 }
