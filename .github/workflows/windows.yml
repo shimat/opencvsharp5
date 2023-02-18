@@ -49,16 +49,14 @@ jobs:
           -D OpenCV_DIR=opencv/build_windows_x64
         cmake --build build --config Release -- -maxcpucount
         dir build
+        dir build/Release        
+        dir build/x64
     
     - name: Test Native Bindings
       working-directory: ${{github.workspace}}/cpp/build
       run: ctest -C Release
 
-    - name: Restore NuGet packages
-      working-directory: ${{github.workspace}}/cs
-      run: nuget restore
-
     - name: Test Managed Library
       working-directory: ${{github.workspace}}/cs
       run: |
-        dotnet test --no-restore --configuration Release --logger:"console;verbosity=detailed"
+        dotnet test --configuration Release --logger:"console;verbosity=detailed"
