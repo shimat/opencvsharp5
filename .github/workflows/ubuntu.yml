@@ -77,7 +77,7 @@ jobs:
         cmake --build build -- -j2
         echo "--- ls ${{github.workspace}}/cpp/build/ ---"
         ls build
-        cp libOpenCvSharpExtern.so /usr/lib
+        cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.so /usr/lib
 
     - name: Test OpenCvSharpExtern
       working-directory: ${{github.workspace}}/cpp/build
