@@ -68,7 +68,15 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
         cmake --build build -- -j2
+        ls build
+        echo "---"
+        ls ${GITHUB_WORKSPACE}/opencv_artifacts
 
     - name: Test OpenCvSharpExtern
       working-directory: ${{github.workspace}}/cpp/build
       run: ctest
+
+    - name: Test Managed Library
+      working-directory: ${{github.workspace}}/cs
+      run: |
+        dotnet test --configuration Release --logger:"console;verbosity=detailed"
