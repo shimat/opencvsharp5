@@ -30,9 +30,16 @@ jobs:
           cmake \
           libtbb-dev \
           libatlas-base-dev 
-          
+
+    - name: Cache OpenCV binaries
+      id: cache_opencv
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/opencv_artifacts
+        key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
+        
     - name: Build OpenCV
-      if: steps.opencv-cache.outputs.cache-hit != 'true'
+      if: steps.cache_opencv.outputs.cache-hit != 'true'
       run: |
         cd ${{github.workspace}}/cpp/opencv
         cmake \
@@ -68,7 +75,15 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
         cmake --build build -- -j2
+        echo "--- ls ${{github.workspace}}/cpp/build/ ---"
+        ls build
+        sudo cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.so /usr/lib
 
     - name: Test OpenCvSharpExtern
       working-directory: ${{github.workspace}}/cpp/build
       run: ctest
+
+    - name: Test Managed Library
+      working-directory: ${{github.workspace}}/cs
+      run: |
+        dotnet test --configuration Release --logger:"console;verbosity=detailed"
