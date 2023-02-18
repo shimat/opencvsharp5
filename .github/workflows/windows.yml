@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/cpp/opencv/build_windows_x64
-        key: opencv-${{ env.OPENCV_VERSION }}-rev${{ env.OPENCV_CACHE_VERSION }}
+        key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
         
     - name: Build OpenCV
       if: steps.cache_opencv.outputs.cache-hit != 'true'
