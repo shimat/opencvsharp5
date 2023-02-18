@@ -40,25 +40,30 @@ jobs:
         . "./build_opencv_windows.ps1"
         BuildForWindows "x64"    
 
-    - name: Build OpenCvSharpExtern
+    - name: Build Native Bindings
       working-directory: ${{github.workspace}}/cpp
       run: |
         cmake `
           -S . `
           -B build `
           -D OpenCV_DIR=opencv/build_windows_x64
-        cmake --build build --config Release -- -maxcpucount 
+        cmake --build build --config Release -- -maxcpucount
+        dir build
+        dir build/Release
+        dir build/x64
+        dir build/x64/Release
+        xcopy /Y ${{github.workspace}}\cpp\build\Release\OpenCvSharpExtern.dll ${{github.workspace}}\cs\OpenCvSharp5.Tests\
     
-    - name: Test OpenCvSharpExtern
+    - name: Test Native Bindings
       working-directory: ${{github.workspace}}/cpp/build
       run: ctest -C Release
-
-    #- name: Restore NuGet packages
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-    #- name: Build
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  # Add additional options to the MSBuild command line here (like platform or verbosity level).
-    #  # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-    #  run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      
+    - name: Build Managed Library
+      working-directory: ${{github.workspace}}/cs
+      run: |
+        dotnet build --configuration Release
+      
+    - name: Test Managed Library
+      working-directory: ${{github.workspace}}/cs
+      run: |
+        dotnet test --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
