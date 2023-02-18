@@ -16,9 +16,18 @@ public class MatTests
     }
 
     [Fact]
-    public void Rows()
+    public void RowsCols()
     {
         using var mat = new Mat(3, 4, 0);
         Assert.Equal(3, mat.Rows);
+        Assert.Equal(4, mat.Cols);
+    }
+
+    [Fact]
+    public void SafeRowsCols()
+    {
+        using var mat = new Mat(3, 4, 0);
+        Assert.Equal(3, mat.SafeRows);
+        Assert.Equal(4, mat.SafeCols);
     }
 }

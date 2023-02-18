@@ -63,3 +63,9 @@ dotnet_style_allow_statement_immediately_after_block_experimental=false:silent
 
 [*]
 insert_final_newline = true
+
+[*.json]
+indent_size = 2
+
+[*.csproj]
+indent_size = 2
