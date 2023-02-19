@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AnalysisMode>Recommended</AnalysisMode>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 

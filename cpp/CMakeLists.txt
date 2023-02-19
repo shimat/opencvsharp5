@@ -60,8 +60,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(
-    ${PROJECT_NAME}.Tests 
-    test/test_core.cpp)
+    ${PROJECT_NAME}.Tests
+    test/test_core.cpp
+    test/test_core_Mat.cpp)
 target_link_libraries(
     ${PROJECT_NAME}.Tests 
     gtest_main 

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
@@ -13,9 +12,14 @@ public class Mat : IDisposable
         handle = NativeMethods.core_Mat_new1();
     }
     
-    public Mat(int row, int col, int type)
+    public Mat(int row, int col, MatType type)
     {
         handle = NativeMethods.core_Mat_new2(row, col, type);
+    }
+    
+    public Mat(int row, int col, MatType type, Scalar s)
+    {
+        handle = NativeMethods.core_Mat_new3(row, col, type, s);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -68,7 +72,7 @@ public class Mat : IDisposable
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public unsafe struct NativeMat
+internal unsafe struct NativeMat
 {
     public int flags;
     //! the matrix dimensionality, >= 2
