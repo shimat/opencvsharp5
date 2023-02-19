@@ -1,4 +1,6 @@
-﻿namespace OpenCvSharp5.Tests;
+﻿using OpenCvSharp5.Internal;
+
+namespace OpenCvSharp5.Tests;
 
 public class StdStringTests
 {

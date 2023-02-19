@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace OpenCvSharp5;
+namespace OpenCvSharp5.Internal;
 
 internal static class SafeHandleExtensions
 {

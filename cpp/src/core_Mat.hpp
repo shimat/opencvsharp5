@@ -16,6 +16,11 @@ CVAPI(cv::Mat*) core_Mat_new2(const int row, const int col, const int type)
     return new cv::Mat(row, col, type);
 }
 
+CVAPI(cv::Mat*) core_Mat_new3(const int row, const int col, const int type, const cv::Scalar s)
+{
+    return new cv::Mat(row, col, type, s);
+}
+
 CVAPI(void) core_Mat_delete(const cv::Mat* obj)
 {
     delete obj;

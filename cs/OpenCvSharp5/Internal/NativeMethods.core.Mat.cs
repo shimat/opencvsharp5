@@ -1,38 +1,35 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
 
-namespace OpenCvSharp5;
+namespace OpenCvSharp5.Internal;
 
 internal static partial class NativeMethods
 {
-    private const string LibraryName = "OpenCvSharpExtern";
-    
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial long core_getTickCount();
-    
-    [DllImport(LibraryName)]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static extern void core_getBuildInformation(StdString obj);
-    
-    [LibraryImport(LibraryName)]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    internal static partial StdString std_string_new1();
-    
-    [LibraryImport(LibraryName, StringMarshallingCustomType = typeof(Utf8StringMarshaller))]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    internal static partial StdString std_string_new2(string str);
+    public static partial MatHandle core_Mat_new1();
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    internal static partial void std_string_new3(ref StdString obj);
+    public static partial MatHandle core_Mat_new2(int row, int col, MatType type);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    internal static partial void std_string_delete(IntPtr obj);
-    
+    public static partial MatHandle core_Mat_new3(int row, int col, MatType type, Scalar s);
+
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    internal static partial IntPtr std_string_c_str(StdString obj);
+    public static partial void core_Mat_delete(IntPtr obj);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial int core_Mat_rows(MatHandle obj);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial int core_Mat_cols(MatHandle obj);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static unsafe partial IntPtr core_Mat_data(MatHandle obj);
 }

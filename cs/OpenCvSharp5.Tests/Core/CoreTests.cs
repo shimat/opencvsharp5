@@ -12,14 +12,12 @@ public class CoreTests
     [Fact]
     public void GetTickCount()
     {
-        testOutputHelper.WriteLine("cv::getTickCount() = {0}", NativeMethods.core_getTickCount());
+        testOutputHelper.WriteLine("cv::getTickCount() = {0}", Cv2.GetTickCount());
     }
 
     [Fact]
     public void GetBuildInformation()
     {
-        using var stdString = StdString.Create();
-        NativeMethods.core_getBuildInformation(stdString);
-        testOutputHelper.WriteLine(stdString.ToString());
+        testOutputHelper.WriteLine(Cv2.GetBuildInformation());
     }
 }
