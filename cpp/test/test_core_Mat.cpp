@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/core_Mat.hpp"
 
-TEST(test_core_Mat_newdelete_1, success) {
+TEST(test_core_Mat, newdelete_1) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -11,7 +11,7 @@ TEST(test_core_Mat_newdelete_1, success) {
     ASSERT_EQ(obj->empty(), true);
 }
 
-TEST(test_core_Mat_newdelete_2, success) {
+TEST(test_core_Mat, _newdelete_2) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -23,7 +23,7 @@ TEST(test_core_Mat_newdelete_2, success) {
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(test_core_Mat_newdelete_3, success) {
+TEST(test_core_Mat, _newdelete_3) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -36,9 +36,13 @@ TEST(test_core_Mat_newdelete_3, success) {
     ASSERT_EQ(obj->at<cv::Vec4b>(0, 0), cv::Vec4b(1, 2, 3, 4));
 }
 
-TEST(test_core_Mat_rowscols, success) {
+TEST(test_core_Mat, rowcols) {
     const cv::Mat m(3, 4, CV_8UC1);
 
     ASSERT_EQ(core_Mat_rows(&m), 3);
     ASSERT_EQ(core_Mat_cols(&m), 4);
+}
+
+TEST(test_core_Mat, exception) {
+    cv::Mat m(-1, -1, -1);
 }

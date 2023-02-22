@@ -1,3 +1,4 @@
+// ReSharper disable ArrangeMethodOrOperatorBody
 namespace OpenCvSharp5.Tests.Core;
 
 public class CoreTests
