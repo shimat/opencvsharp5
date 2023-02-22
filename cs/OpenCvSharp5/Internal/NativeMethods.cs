@@ -10,6 +10,13 @@ internal static partial class NativeMethods
     
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static unsafe partial nint cvRedirectError(
+        delegate* unmanaged[Cdecl]<ErrorCode, byte*, byte*, byte*, int, void*, int> errorHandler,
+        void* userdata, 
+        void** prevUserdata);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial long core_getTickCount();
     
     [DllImport(LibraryName)]
