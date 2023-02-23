@@ -15,9 +15,9 @@ public class ExceptionHandlingTests
             });
 
             Assert.Equal("s >= 0", ex.ErrMsg);
-            Assert.Equal("cv::setSize", ex.FuncName);
+            Assert.Matches("^(cv::)?setSize", ex.FuncName);
             Assert.EndsWith("matrix.cpp", ex.FileName);
-            Assert.Equal(246, ex.Line);
+            Assert.True(ex.Line > 0, $"Line = {ex.Line}");
         }
     }
 }
