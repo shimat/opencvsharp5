@@ -6,23 +6,6 @@ namespace OpenCvSharp5.Internal;
 
 internal static partial class NativeMethods
 {
-    private const string LibraryName = "OpenCvSharpExtern";
-    
-    [LibraryImport(LibraryName)]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe partial nint cvRedirectError(
-        delegate* unmanaged[Cdecl]<ErrorCode, byte*, byte*, byte*, int, void*, int> errorHandler,
-        void* userdata, 
-        void** prevUserdata);
-
-    [LibraryImport(LibraryName)]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial long core_getTickCount();
-    
-    [DllImport(LibraryName)]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static extern void core_getBuildInformation(StdString obj);
-    
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     internal static partial StdString std_string_new1();

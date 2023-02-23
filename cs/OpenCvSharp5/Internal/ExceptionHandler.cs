@@ -47,12 +47,22 @@ public static class ExceptionHandler
     }
 
     /// <summary>
-    /// Registers the callback function to OpenCV, so exception caught before the p/invoke boundary 
+    /// Custom error handler to be thrown by OpenCV
     /// </summary>
-    public static unsafe void RegisterExceptionCallback()
-    {
-        NativeMethods.cvRedirectError(&ErrorHandlerCallback, null, null);
-    }
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static unsafe int ErrorHandlerThrowException(
+        ErrorCode status, 
+        byte *funcName, 
+        byte *errMsg, 
+        byte *fileName, 
+        int line, 
+        void *userData) =>
+        throw new OpenCVException(
+            status,
+            Utf8StringMarshaller.ConvertToManaged(funcName) ?? "",
+            Utf8StringMarshaller.ConvertToManaged(errMsg) ?? "",
+            Utf8StringMarshaller.ConvertToManaged(fileName) ?? "", 
+            line);
 
     /// <summary>
     /// Throws appropriate exception if one happened

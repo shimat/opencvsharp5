@@ -13,7 +13,9 @@ public static class Cv2
     /// <returns></returns>
     public static long GetTickCount()
     {
-        return NativeMethods.core_getTickCount();
+        NativeMethods.HandleException(
+            NativeMethods.core_getTickCount(out var result));
+        return result;
     }
 
     /// <summary>
@@ -26,7 +28,8 @@ public static class Cv2
     public static string GetBuildInformation()
     {
         using var stdString = StdString.Create();
-        NativeMethods.core_getBuildInformation(stdString);
+        NativeMethods.HandleException(
+            NativeMethods.core_getBuildInformation(stdString));
         return stdString.ToString();
     }
 }

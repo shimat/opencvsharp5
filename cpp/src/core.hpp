@@ -1,44 +1,25 @@
 ﻿#pragma once
 
-#include <opencv2/core.hpp>
-#include <opencv2/core/types_c.h>
+#include "common.hpp"
 
 // ReSharper disable CppNonInlineFunctionDefinitionInHeaderFile
 // ReSharper disable CppInconsistentNaming
 
-CVAPI(int64) core_getTickCount()
+CVAPI(cv::ErrorCallback) core_redirectError(cv::ErrorCallback errCallback, void* userData, void** prevUserData)
 {
-    return cv::getTickCount();
+    return cv::redirectError(errCallback, userData, prevUserData);
 }
 
-CVAPI(void) core_getBuildInformation(std::string *buffer)
+CVAPI(ExceptionStatus) core_getTickCount(int64 *result)
 {
+    BEGIN_WRAP
+    *result = cv::getTickCount();
+    END_WRAP
+}
+
+CVAPI(ExceptionStatus) core_getBuildInformation(std::string *buffer)
+{
+    BEGIN_WRAP
     buffer->assign(cv::getBuildInformation());
+    END_WRAP
 }
-
-
-CVAPI(std::string*) std_string_new1()
-{
-    return new std::string;
-}
-
-CVAPI(std::string*) std_string_new2(const char *str)
-{
-    return new std::string(str);
-}
-
-CVAPI(void) std_string_new3(std::string **obj)
-{
-    *obj = new std::string;
-}
-
-CVAPI(void) std_string_delete(const std::string *obj)
-{
-    delete obj;
-}
-
-CVAPI(const char*) std_string_c_str(std::string *obj)
-{
-    return obj->c_str();
-}
-

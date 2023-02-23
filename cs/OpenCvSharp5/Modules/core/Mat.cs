@@ -9,17 +9,20 @@ public class Mat : IDisposable
 
     public Mat()
     {
-        handle = NativeMethods.core_Mat_new1();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_new1(out handle));
     }
     
     public Mat(int row, int col, MatType type)
     {
-        handle = NativeMethods.core_Mat_new2(row, col, type);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_new2(row, col, type, out handle));
     }
     
     public Mat(int row, int col, MatType type, Scalar s)
     {
-        handle = NativeMethods.core_Mat_new3(row, col, type, s);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_new3(row, col, type, s, out handle));
     }
 
     protected virtual void Dispose(bool disposing)
@@ -93,7 +96,8 @@ internal class MatHandle : SafeHandle
     
     protected override bool ReleaseHandle()
     {
-        NativeMethods.core_Mat_delete(handle);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_delete(handle));
         return true;
     }
 
