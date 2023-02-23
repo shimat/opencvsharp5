@@ -12,14 +12,14 @@ CVAPI(cv::ErrorCallback) core_redirectError(cv::ErrorCallback errCallback, void*
 
 CVAPI(ExceptionStatus) core_getTickCount(int64 *result)
 {
-    BEGIN_WRAP
+    BEGIN_WRAP;
     *result = cv::getTickCount();
-    END_WRAP
+    END_WRAP;
 }
 
 CVAPI(ExceptionStatus) core_getBuildInformation(std::string *buffer)
 {
-    BEGIN_WRAP
+    BEGIN_WRAP;
     buffer->assign(cv::getBuildInformation());
-    END_WRAP
+    END_WRAP;
 }
