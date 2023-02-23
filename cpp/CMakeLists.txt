@@ -22,15 +22,15 @@ include_directories(
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-fuse-ld=gold" COMPILER_SUPPORTS_GOLD)
-if(COMPILER_SUPPORTS_GOLD)
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -fuse-ld=gold -Wl,--version OUTPUT_VARIABLE stdout ERROR_QUIET)
-  if("${stdout}" MATCHES "GNU gold")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=gold")
-  endif()
-endif()
+#include(CheckCXXCompilerFlag)
+#check_cxx_compiler_flag("-fuse-ld=gold" COMPILER_SUPPORTS_GOLD)
+#if(COMPILER_SUPPORTS_GOLD)
+#  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -fuse-ld=gold -Wl,--version OUTPUT_VARIABLE stdout ERROR_QUIET)
+#  if("${stdout}" MATCHES "GNU gold")
+#    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
+#    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=gold")
+#  endif()
+#endif()
 
 add_subdirectory(src)
 
