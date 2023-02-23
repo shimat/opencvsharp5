@@ -7,19 +7,19 @@ internal static partial class NativeMethods
 {
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial MatHandle core_Mat_new1();
+    public static partial ExceptionStatus core_Mat_new1(out MatHandle handle);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial MatHandle core_Mat_new2(int row, int col, MatType type);
+    public static partial ExceptionStatus core_Mat_new2(int row, int col, MatType type, out MatHandle handle);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial MatHandle core_Mat_new3(int row, int col, MatType type, Scalar s);
+    public static partial ExceptionStatus core_Mat_new3(int row, int col, MatType type, Scalar s, out MatHandle handle);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial void core_Mat_delete(IntPtr obj);
+    public static partial ExceptionStatus core_Mat_delete(IntPtr obj);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]

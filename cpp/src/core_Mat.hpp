@@ -1,29 +1,36 @@
 #pragma once
 
-#include <opencv2/core.hpp>
-#include <opencv2/core/types_c.h>
+#include "common.hpp"
 
 // ReSharper disable CppNonInlineFunctionDefinitionInHeaderFile
 // ReSharper disable CppInconsistentNaming
 
-CVAPI(cv::Mat*) core_Mat_new1()
+CVAPI(ExceptionStatus) core_Mat_new1(cv::Mat **result)
 {
-    return new cv::Mat;
+    BEGIN_WRAP
+    *result = new cv::Mat;
+    END_WRAP
 }
 
-CVAPI(cv::Mat*) core_Mat_new2(const int row, const int col, const int type)
+CVAPI(ExceptionStatus) core_Mat_new2(const int row, const int col, const int type, cv::Mat** result)
 {
-    return new cv::Mat(row, col, type);
+    BEGIN_WRAP
+    * result = new cv::Mat(row, col, type);
+    END_WRAP
 }
 
-CVAPI(cv::Mat*) core_Mat_new3(const int row, const int col, const int type, const cv::Scalar s)
+CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int type, const cv::Scalar s, cv::Mat** result)
 {
-    return new cv::Mat(row, col, type, s);
+    BEGIN_WRAP
+    * result = new cv::Mat(row, col, type, s);
+    END_WRAP
 }
 
-CVAPI(void) core_Mat_delete(const cv::Mat* obj)
+CVAPI(ExceptionStatus) core_Mat_delete(const cv::Mat* obj)
 {
+    BEGIN_WRAP
     delete obj;
+    END_WRAP
 }
 
 CVAPI(int) core_Mat_rows(const cv::Mat* obj)
