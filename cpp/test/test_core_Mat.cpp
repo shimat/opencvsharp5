@@ -6,7 +6,7 @@ TEST(test_core_Mat, newdelete_1) {
         core_Mat_delete(obj);
     };
 
-    cv::Mat* mat;
+    cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new1(&mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
 
@@ -18,7 +18,7 @@ TEST(test_core_Mat, _newdelete_2) {
         core_Mat_delete(obj);
     };
 
-    cv::Mat* mat;
+    cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new2(3, 4, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
 
@@ -32,8 +32,8 @@ TEST(test_core_Mat, _newdelete_3) {
         core_Mat_delete(obj);
     };
 
-    cv::Mat* mat;
-    ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC1, cv::Scalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
+    cv::Mat* mat = nullptr;
+    ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC4, cv::Scalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 3);
