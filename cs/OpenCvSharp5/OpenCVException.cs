@@ -12,27 +12,32 @@ public class OpenCVException : Exception
     /// <summary>
     /// The numeric code for error status
     /// </summary>
-    public ErrorCode Status { get; set; }
+    public ErrorCode Status { get; }
 
     /// <summary>
     /// The source file name where error is encountered
     /// </summary>
-    public string FuncName { get; set; }
+    public string FuncName { get; }
 
     /// <summary>
     /// A description of the error
     /// </summary>
-    public string ErrMsg { get; set; }
+    public string ErrMsg { get; }
 
     /// <summary>
     /// The source file name where error is encountered
     /// </summary>
-    public string FileName { get; set; }
+    public string FileName { get; }
 
     /// <summary>
     /// The line number in the source where error is encountered
     /// </summary>
-    public int Line { get; set; }
+    public int Line { get; }
+
+    /// <summary>
+    /// The user data
+    /// </summary>
+    public IntPtr UserData { get; }
 
     /// <summary>
     /// Constructor
@@ -42,7 +47,8 @@ public class OpenCVException : Exception
     /// <param name="errMsg">A description of the error</param>
     /// <param name="fileName">The source file name where error is encountered</param>
     /// <param name="line">The line number in the source where error is encountered</param>
-    public OpenCVException(ErrorCode status, string funcName, string errMsg, string fileName, int line)
+    /// <param name="userData"></param>
+    public OpenCVException(ErrorCode status, string funcName, string errMsg, string fileName, int line, IntPtr userData = default)
         : base(errMsg)
     {
         Status = status;
@@ -50,6 +56,7 @@ public class OpenCVException : Exception
         ErrMsg = errMsg;
         FileName = fileName;
         Line = line;
+        UserData = userData;
     }
 
     /// <inheritdoc />
@@ -60,6 +67,7 @@ public class OpenCVException : Exception
         FileName = info.GetString(nameof(FileName)) ?? "";
         ErrMsg = info.GetString(nameof(ErrMsg)) ?? "";
         Line = info.GetInt32(nameof(Line));
+        UserData = new IntPtr(info.GetInt64(nameof(UserData)));
     }
 
     /// <inheritdoc />
@@ -71,6 +79,7 @@ public class OpenCVException : Exception
         info.AddValue(nameof(FileName), FileName);
         info.AddValue(nameof(ErrMsg), ErrMsg);
         info.AddValue(nameof(Line), Line);
+        info.AddValue(nameof(UserData), UserData.ToInt64());
     }
 
     /// <inheritdoc />
@@ -81,6 +90,7 @@ public class OpenCVException : Exception
         ErrMsg = "";
         FileName = "";
         Line = 0;
+        UserData = default;
     }
 
     /// <inheritdoc />
@@ -91,6 +101,7 @@ public class OpenCVException : Exception
         ErrMsg = "";
         FileName = "";
         Line = 0;
+        UserData = default;
     }
 
     /// <inheritdoc />
@@ -101,5 +112,6 @@ public class OpenCVException : Exception
         ErrMsg = "";
         FileName = "";
         Line = 0;
+        UserData = default;
     }
 }
