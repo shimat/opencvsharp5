@@ -1,5 +1,5 @@
 # opencvsharp5
-Experimental OpenCV4/5 wrapper for .NET
+Experimental OpenCV5 wrapper for .NET
 
 # Concept
 - I will try the new P/Invoke mechanism introduced in .NET 7.
@@ -11,5 +11,5 @@ Experimental OpenCV4/5 wrapper for .NET
 - .NET 7
 
 # Target Platforms
-- Windows
-- Linux
+- Windows x64
+- Linux x64

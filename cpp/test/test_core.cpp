@@ -18,3 +18,12 @@ TEST(test_core, getBuildInformation) {
 
     ASSERT_FALSE(buf.empty());
 }
+
+TEST(test_core, getVersionString) {
+    std::string buf;
+    ASSERT_EQ(
+        core_getVersionString(&buf),
+        ExceptionStatus::NotOccurred);
+
+    ASSERT_FALSE(buf.empty());
+}

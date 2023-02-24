@@ -32,4 +32,17 @@ public static class Cv2
             NativeMethods.core_getBuildInformation(stdString));
         return stdString.ToString();
     }
+
+    /// <summary>
+    /// Returns library version string.
+    /// For example "3.4.1-dev".
+    /// </summary>
+    /// <returns></returns>
+    public static string GetVersionString()
+    {
+        using var stdString = StdString.Create();
+        NativeMethods.HandleException(
+            NativeMethods.core_getVersionString(stdString));
+        return stdString.ToString();
+    }
 }

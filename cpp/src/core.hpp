@@ -23,3 +23,11 @@ CVAPI(ExceptionStatus) core_getBuildInformation(std::string *buffer)
     buffer->assign(cv::getBuildInformation());
     END_WRAP;
 }
+
+
+CVAPI(ExceptionStatus) core_getVersionString(std::string *buffer)
+{
+    BEGIN_WRAP;
+    buffer->assign(cv::getVersionString());
+    END_WRAP;
+}
