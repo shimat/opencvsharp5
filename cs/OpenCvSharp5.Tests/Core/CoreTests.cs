@@ -1,5 +1,4 @@
 // ReSharper disable ArrangeMethodOrOperatorBody
-using Xunit.Sdk;
 
 namespace OpenCvSharp5.Tests.Core;
 
@@ -21,6 +20,17 @@ public class CoreTests
     [Fact]
     public void GetBuildInformation()
     {
-        testOutputHelper.WriteLine(Cv2.GetBuildInformation());
+        var result = Cv2.GetBuildInformation();
+        Assert.NotEmpty(result);
+        testOutputHelper.WriteLine(result);
+    }
+
+    [Fact]
+    public void GetVersionString()
+    {
+        var result = Cv2.GetVersionString();
+        Assert.NotEmpty(result);
+        Assert.Matches(@"^\d", result);
+        testOutputHelper.WriteLine($"OpenCV Version = {result}");
     }
 }

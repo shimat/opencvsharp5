@@ -11,12 +11,13 @@ namespace OpenCvSharp5.Internal;
 public static class ExceptionHandler
 {
     // ThreadLocal variables to save the exception for the current thread
-    private static readonly ThreadLocal<bool> exceptionHappened = new(false);
-    private static readonly ThreadLocal<ErrorCode> localStatus = new();
-    private static readonly ThreadLocal<string?> localFuncName = new();
-    private static readonly ThreadLocal<string?> localErrMsg = new();
-    private static readonly ThreadLocal<string?> localFileName = new();
-    private static readonly ThreadLocal<int> localLine = new();
+    private static readonly ThreadLocal<bool> ExceptionHappened = new(false);
+    private static readonly ThreadLocal<ErrorCode> LocalStatus = new();
+    private static readonly ThreadLocal<string?> LocalFuncName = new();
+    private static readonly ThreadLocal<string?> LocalErrMsg = new();
+    private static readonly ThreadLocal<string?> LocalFileName = new();
+    private static readonly ThreadLocal<int> LocalLine = new();
+    private static readonly ThreadLocal<IntPtr> LocalUserData = new();
 
     /// <summary>
     /// Callback function invoked by OpenCV when exception occurs 
@@ -37,12 +38,13 @@ public static class ExceptionHandler
         }
         finally
         {
-            exceptionHappened.Value = true;
-            localStatus.Value = status;
-            localErrMsg.Value = Utf8StringMarshaller.ConvertToManaged(errMsg);
-            localFileName.Value = Utf8StringMarshaller.ConvertToManaged(fileName);
-            localLine.Value = line;
-            localFuncName.Value = Utf8StringMarshaller.ConvertToManaged(funcName);
+            ExceptionHappened.Value = true;
+            LocalStatus.Value = status;
+            LocalFuncName.Value = Utf8StringMarshaller.ConvertToManaged(funcName);
+            LocalErrMsg.Value = Utf8StringMarshaller.ConvertToManaged(errMsg);
+            LocalFileName.Value = Utf8StringMarshaller.ConvertToManaged(fileName);
+            LocalLine.Value = line;
+            LocalUserData.Value = new IntPtr(userData);
         }
     }
 
@@ -62,7 +64,8 @@ public static class ExceptionHandler
             Utf8StringMarshaller.ConvertToManaged(funcName) ?? "",
             Utf8StringMarshaller.ConvertToManaged(errMsg) ?? "",
             Utf8StringMarshaller.ConvertToManaged(fileName) ?? "", 
-            line);
+            line,
+            new IntPtr(userData));
 
     /// <summary>
     /// Throws appropriate exception if one happened
@@ -72,11 +75,11 @@ public static class ExceptionHandler
         if (CheckForException())
         {
             throw new OpenCVException(
-                localStatus.Value,
-                localFuncName.Value ?? "",
-                localErrMsg.Value ?? "",
-                localFileName.Value ?? "",
-                localLine.Value);
+                LocalStatus.Value,
+                LocalFuncName.Value ?? "",
+                LocalErrMsg.Value ?? "",
+                LocalFileName.Value ?? "",
+                LocalLine.Value);
         }
     }
 
@@ -86,9 +89,9 @@ public static class ExceptionHandler
     /// </summary>
     private static bool CheckForException()
     {
-        var value = exceptionHappened.Value;
+        var value = ExceptionHappened.Value;
         // reset exception value
-        exceptionHappened.Value = false;
+        ExceptionHappened.Value = false;
         return value;
     }
 }

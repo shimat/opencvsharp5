@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
 
 namespace OpenCvSharp5.Internal;
 
@@ -13,4 +12,8 @@ internal static partial class NativeMethods
     [DllImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static extern ExceptionStatus core_getBuildInformation(StdString obj);
+
+    [DllImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static extern ExceptionStatus core_getVersionString(StdString obj);
 }
