@@ -30,7 +30,7 @@ public class CoreTests
     {
         var result = Cv2.GetVersionString();
         Assert.NotEmpty(result);
-        Assert.Matches(@"^\d", result);
+        Assert.Matches(@"^5\.", result);
         testOutputHelper.WriteLine($"OpenCV Version = {result}");
     }
 }
