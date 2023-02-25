@@ -62,7 +62,8 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
     ${PROJECT_NAME}.Tests
     test/test_core.cpp
-    test/test_core_Mat.cpp)
+    test/test_core_Mat.cpp
+    test/test_imgproc.cpp)
 target_link_libraries(
     ${PROJECT_NAME}.Tests 
     gtest_main 
