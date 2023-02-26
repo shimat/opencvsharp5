@@ -19,7 +19,7 @@ CVAPI(ExceptionStatus) core_Mat_new2(const int row, const int col, const int typ
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int type, const cv::Scalar s, cv::Mat** result)
+CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int type, const CvScalar s, cv::Mat** result)
 {
     BEGIN_WRAP;
     *result = new cv::Mat(row, col, type, s);

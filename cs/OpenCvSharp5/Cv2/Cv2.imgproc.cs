@@ -8,13 +8,13 @@ static partial class Cv2
     /// Draws a simple, thick, or filled up-right rectangle.
     /// </summary>
     /// <param name="img">Image.</param>
-    /// <param name="pt1"></param>
-    /// <param name="pt2"></param>
-    /// <param name="color"></param>
-    /// <param name="thickness"></param>
-    /// <param name="lineType"></param>
-    /// <param name="shift"></param>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="pt1">Vertex of the rectangle.</param>
+    /// <param name="pt2">Vertex of the rectangle opposite to pt1 .</param>
+    /// <param name="color">Rectangle color or brightness (grayscale image).</param>
+    /// <param name="thickness">Thickness of lines that make up the rectangle.
+    /// Negative values, like #FILLED, mean that the function has to draw a filled rectangle.</param>
+    /// <param name="lineType">Type of the line. See #LineTypes</param>
+    /// <param name="shift">Number of fractional bits in the point coordinates.</param>
     public static void Rectangle(
         IInputOutputArray img, 
         Point pt1, 
@@ -44,12 +44,12 @@ static partial class Cv2
     /// r.br()-Point(1,1)` are opposite corners
     /// </summary>
     /// <param name="img">Image.</param>
-    /// <param name="rec"></param>
-    /// <param name="color"></param>
-    /// <param name="thickness"></param>
-    /// <param name="lineType"></param>
-    /// <param name="shift"></param>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="rec">Drawn rectangle: `r.tl() and r.br()-Point(1,1)` are opposite corners.</param>
+    /// <param name="color">Rectangle color or brightness (grayscale image).</param>
+    /// <param name="thickness">Thickness of lines that make up the rectangle.
+    /// Negative values, like #FILLED, mean that the function has to draw a filled rectangle.</param>
+    /// <param name="lineType">Type of the line. See #LineTypes</param>
+    /// <param name="shift">Number of fractional bits in the point coordinates.</param>
     public static void Rectangle(
         IInputOutputArray img,
         Rect rec,

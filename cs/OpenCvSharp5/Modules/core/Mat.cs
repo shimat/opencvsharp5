@@ -75,7 +75,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     /// <summary>
     /// the number of rows or -1 when the matrix has more than 2 dimensions
     /// </summary>
-    public int Rows
+    internal int UnsafeRows
     {
         get
         {
@@ -89,7 +89,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     /// <summary>
     /// the number of columns or -1 when the matrix has more than 2 dimensions
     /// </summary>
-    public int Cols
+    internal int UnsafeCols
     {
         get
         {
@@ -101,14 +101,9 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     }
 
     /// <summary>
-    /// unsafe pointer to the data
-    /// </summary>
-    public unsafe byte* DataPointer => ((NativeMat*)Handle.DangerousGetHandle())->data;
-
-    /// <summary>
     /// pointer to the data
     /// </summary>
-    public IntPtr Data
+    internal IntPtr UnsafeData
     {
         get
         {
@@ -118,10 +113,26 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
             }
         }
     }
+    
+    /// <summary>
+    /// the number of rows or -1 when the matrix has more than 2 dimensions
+    /// </summary>
+    public int Rows => NativeMethods.core_Mat_rows(Handle);
 
-    internal int SafeRows => NativeMethods.core_Mat_rows(Handle);
-    internal int SafeCols => NativeMethods.core_Mat_cols(Handle);
-    internal IntPtr SafeData => NativeMethods.core_Mat_data(Handle);
+    /// <summary>
+    /// the number of columns or -1 when the matrix has more than 2 dimensions
+    /// </summary>
+    public int Cols => NativeMethods.core_Mat_cols(Handle);
+
+    /// <summary>
+    /// pointer to the data
+    /// </summary>
+    public IntPtr Data => NativeMethods.core_Mat_data(Handle);
+
+    /// <summary>
+    /// unsafe pointer to the data
+    /// </summary>
+    public unsafe byte* DataPointer => (byte*)Data;
 
     public OutputArrayHandle ToOutputArrayHandle()
     {

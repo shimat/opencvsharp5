@@ -15,8 +15,8 @@ public class MatFieldsMeasurement
         var sum = 0;
         for (var i = 0; i < LoopCount; i++)
         {
-            sum += mat.Rows;
-            sum += mat.Cols;
+            sum += mat.UnsafeRows;
+            sum += mat.UnsafeCols;
         }
         return sum;
     }
@@ -27,8 +27,8 @@ public class MatFieldsMeasurement
         using var mat = new Mat(3, 4, 0); var sum = 0;
         for (var i = 0; i < LoopCount; i++)
         {
-            sum += mat.SafeRows;
-            sum += mat.SafeCols;
+            sum += mat.Rows;
+            sum += mat.Cols;
         }
         return sum;
     }

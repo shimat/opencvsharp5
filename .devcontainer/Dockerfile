@@ -8,7 +8,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
         libatlas-base-dev \
         git
 
-RUN git clone --depth 1 https://github.com/opencv/opencv -b 4.7.0
+RUN git clone --depth 1 https://github.com/opencv/opencv -b 5.x
 RUN cd opencv \
     && cmake \
         -S . \
