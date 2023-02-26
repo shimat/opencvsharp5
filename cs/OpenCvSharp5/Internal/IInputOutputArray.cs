@@ -18,7 +18,7 @@ public interface IOutputArray : IInputArray
     /// Creates a handle of cv::_OutputArray*
     /// </summary>
     /// <returns></returns>
-    OutputArrayHandle ToHandle();
+    OutputArrayHandle ToOutputArrayHandle();
 }
 
 /// <summary>
@@ -30,7 +30,7 @@ public interface IInputOutputArray : IOutputArray
     /// Creates a handle of cv::_InputOutputArray*
     /// </summary>
     /// <returns></returns>
-    InputOutputArrayHandle ToHandle();
+    InputOutputArrayHandle ToInputOutputArrayHandle();
 }
 
 /// <summary>

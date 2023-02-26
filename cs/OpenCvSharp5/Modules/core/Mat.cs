@@ -123,12 +123,12 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     internal int SafeCols => NativeMethods.core_Mat_cols(Handle);
     internal IntPtr SafeData => NativeMethods.core_Mat_data(Handle);
 
-    OutputArrayHandle IOutputArray.ToHandle()
+    public OutputArrayHandle ToOutputArrayHandle()
     {
         throw new NotImplementedException();
     }
 
-    InputOutputArrayHandle IInputOutputArray.ToHandle()
+    public InputOutputArrayHandle ToInputOutputArrayHandle()
     {
         NativeMethods.HandleException(
             NativeMethods.core_InputOutputArray_new_byMat(Handle, out var resultHandle));

@@ -24,7 +24,7 @@ static partial class Cv2
         LineTypes lineType = LineTypes.Link8, 
         int shift = 0)
     {
-        using var imgHandle = img.ToHandle();
+        using var imgHandle = img.ToInputOutputArrayHandle();
 
         NativeMethods.HandleException(
             NativeMethods.imgproc_rectangle1(
@@ -58,7 +58,7 @@ static partial class Cv2
         LineTypes lineType = LineTypes.Link8,
         int shift = 0)
     {
-        using var imgHandle = img.ToHandle();
+        using var imgHandle = img.ToInputOutputArrayHandle();
 
         NativeMethods.HandleException(
             NativeMethods.imgproc_rectangle2(
