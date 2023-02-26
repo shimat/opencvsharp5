@@ -2,13 +2,6 @@ namespace OpenCvSharp5.Tests.Core;
 
 public class MatTests
 {
-    private readonly ITestOutputHelper testOutputHelper;
-
-    public MatTests(ITestOutputHelper testOutputHelper)
-    {
-        this.testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void NewAndDispose()
     {
@@ -18,7 +11,7 @@ public class MatTests
     [Fact]
     public void RowsCols()
     {
-        using var mat = new Mat(3, 4, 0);
+        using var mat = new Mat(3, 4, MatType.CV_8UC1);
         Assert.Equal(3, mat.Rows);
         Assert.Equal(4, mat.Cols);
     }
@@ -26,8 +19,15 @@ public class MatTests
     [Fact]
     public void SafeRowsCols()
     {
-        using var mat = new Mat(3, 4, 0);
+        using var mat = new Mat(3, 4, MatType.CV_8UC1);
         Assert.Equal(3, mat.SafeRows);
         Assert.Equal(4, mat.SafeCols);
+    }
+
+    [Fact]
+    public void Data()
+    {
+        using var mat = new Mat(3, 4, MatType.CV_8UC1);
+        Assert.Equal(mat.Data, mat.SafeData);
     }
 }

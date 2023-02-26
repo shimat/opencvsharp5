@@ -1,77 +1,140 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
-public class Mat : IDisposable
+/// <summary>
+/// n-dimensional dense array class
+/// </summary>
+public class Mat : IDisposable, IOutputArray, IInputOutputArray
 {
-    private readonly MatHandle handle;
+    internal MatHandle Handle { get; }
 
+    /// <summary>
+    /// These are various constructors that form a matrix. As noted in the AutomaticAllocation, often
+    /// the default constructor is enough, and the proper matrix will be allocated by an OpenCV function.
+    /// The constructed matrix can further be assigned to another matrix or matrix expression or can be
+    /// allocated with Mat::create.In the former case, the old content is de-referenced.
+    /// </summary>
     public Mat()
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new1(out handle));
+            NativeMethods.core_Mat_new1(out var handle));
+        Handle = handle;
     }
-    
+
+    /// <summary> 
+    /// </summary>
+    /// <param name="row">Number of rows in a 2D array.</param>
+    /// <param name="col">Number of columns in a 2D array.</param>
+    /// <param name="type">Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
+    /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.</param>
     public Mat(int row, int col, MatType type)
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new2(row, col, type, out handle));
+            NativeMethods.core_Mat_new2(row, col, type, out var handle));
+        Handle = handle;
     }
-    
+
+    /// <summary> 
+    /// </summary>
+    /// <param name="row">Number of rows in a 2D array.</param>
+    /// <param name="col">Number of columns in a 2D array.</param>
+    /// <param name="type">Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
+    /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.</param>
+    /// <param name="s">An optional value to initialize each matrix element with. To set all the matrix elements to
+    /// the particular value after the construction, use the assignment operator
+    /// Mat::operator=(const Scalar&amp; value) .</param>
     public Mat(int row, int col, MatType type, Scalar s)
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new3(row, col, type, s, out handle));
+            NativeMethods.core_Mat_new3(row, col, type, s, out var handle));
+        Handle = handle;
     }
 
+    /// <summary>
+    /// Protected implementation of Dispose pattern.
+    /// </summary>
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
         {
-            handle.Dispose();
+            Handle.Dispose();
         }
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    public int Rows =>
-        handle.GetHandleInScope(ptr =>
+    /// <summary>
+    /// the number of rows or -1 when the matrix has more than 2 dimensions
+    /// </summary>
+    public int Rows
+    {
+        get
         {
             unsafe
             {
-                var s = (NativeMat*)ptr;
-                return s->rows;
+                return ((NativeMat*)Handle.DangerousGetHandle())->rows;
             }
-        });
+        }
+    }
 
-    public int Cols =>
-        handle.GetHandleInScope(ptr =>
+    /// <summary>
+    /// the number of columns or -1 when the matrix has more than 2 dimensions
+    /// </summary>
+    public int Cols
+    {
+        get
         {
             unsafe
             {
-                var s = (NativeMat*)ptr;
-                return s->cols;
+                return ((NativeMat*)Handle.DangerousGetHandle())->cols;
             }
-        });
+        }
+    }
 
-    public unsafe IntPtr Data =>
-        handle.GetHandleInScope(ptr =>
+    /// <summary>
+    /// unsafe pointer to the data
+    /// </summary>
+    public unsafe byte* DataPointer => ((NativeMat*)Handle.DangerousGetHandle())->data;
+
+    /// <summary>
+    /// pointer to the data
+    /// </summary>
+    public IntPtr Data
+    {
+        get
         {
             unsafe
             {
-                var s = (NativeMat*)ptr;
-                return (IntPtr)s->data;
+                return new IntPtr(DataPointer);
             }
-        });
+        }
+    }
 
-    public int SafeRows => NativeMethods.core_Mat_rows(handle);
-    public int SafeCols => NativeMethods.core_Mat_cols(handle);
-    public IntPtr SafeData => NativeMethods.core_Mat_data(handle);
+    internal int SafeRows => NativeMethods.core_Mat_rows(Handle);
+    internal int SafeCols => NativeMethods.core_Mat_cols(Handle);
+    internal IntPtr SafeData => NativeMethods.core_Mat_data(Handle);
+
+    OutputArrayHandle IOutputArray.ToHandle()
+    {
+        throw new NotImplementedException();
+    }
+
+    InputOutputArrayHandle IInputOutputArray.ToHandle()
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_InputOutputArray_new_byMat(Handle, out var resultHandle));
+        GC.KeepAlive(this);
+        return resultHandle;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
