@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
@@ -8,10 +6,10 @@ namespace OpenCvSharp5;
 /// <summary>
 /// n-dimensional dense array class
 /// </summary>
-public class Mat : IDisposable, IOutputArray, IInputOutputArray
+public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
 {
-    internal MatHandle Handle { get; }
-
+    private readonly MatHandle handle;
+    
     /// <summary>
     /// These are various constructors that form a matrix. As noted in the AutomaticAllocation, often
     /// the default constructor is enough, and the proper matrix will be allocated by an OpenCV function.
@@ -21,8 +19,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     public Mat()
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new1(out var handle));
-        Handle = handle;
+            NativeMethods.core_Mat_new1(out handle));
     }
 
     /// <summary> 
@@ -34,8 +31,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     public Mat(int row, int col, MatType type)
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new2(row, col, type, out var handle));
-        Handle = handle;
+            NativeMethods.core_Mat_new2(row, col, type, out handle));
     }
 
     /// <summary> 
@@ -50,8 +46,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     public Mat(int row, int col, MatType type, Scalar s)
     {
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_new3(row, col, type, s, out var handle));
-        Handle = handle;
+            NativeMethods.core_Mat_new3(row, col, type, s, out handle));
     }
 
     /// <summary>
@@ -61,7 +56,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     {
         if (disposing)
         {
-            Handle.Dispose();
+            handle.Dispose();
         }
     }
 
@@ -81,7 +76,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
         {
             unsafe
             {
-                return ((NativeMat*)Handle.DangerousGetHandle())->rows;
+                return ((NativeMat*)handle.DangerousGetHandle())->rows;
             }
         }
     }
@@ -95,7 +90,7 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
         {
             unsafe
             {
-                return ((NativeMat*)Handle.DangerousGetHandle())->cols;
+                return ((NativeMat*)handle.DangerousGetHandle())->cols;
             }
         }
     }
@@ -117,32 +112,37 @@ public class Mat : IDisposable, IOutputArray, IInputOutputArray
     /// <summary>
     /// the number of rows or -1 when the matrix has more than 2 dimensions
     /// </summary>
-    public int Rows => NativeMethods.core_Mat_rows(Handle);
+    public int Rows => NativeMethods.core_Mat_rows(handle);
 
     /// <summary>
     /// the number of columns or -1 when the matrix has more than 2 dimensions
     /// </summary>
-    public int Cols => NativeMethods.core_Mat_cols(Handle);
+    public int Cols => NativeMethods.core_Mat_cols(handle);
 
     /// <summary>
     /// pointer to the data
     /// </summary>
-    public IntPtr Data => NativeMethods.core_Mat_data(Handle);
+    public IntPtr Data => NativeMethods.core_Mat_data(handle);
 
     /// <summary>
     /// unsafe pointer to the data
     /// </summary>
     public unsafe byte* DataPointer => (byte*)Data;
 
-    public OutputArrayHandle ToOutputArrayHandle()
+    InputArrayHandle IInputArray.ToInputArrayHandle()
     {
         throw new NotImplementedException();
     }
 
-    public InputOutputArrayHandle ToInputOutputArrayHandle()
+    OutputArrayHandle IOutputArray.ToOutputArrayHandle()
+    {
+        throw new NotImplementedException();
+    }
+
+    InputOutputArrayHandle IInputOutputArray.ToInputOutputArrayHandle()
     {
         NativeMethods.HandleException(
-            NativeMethods.core_InputOutputArray_new_byMat(Handle, out var resultHandle));
+            NativeMethods.core_InputOutputArray_new_byMat(handle, out var resultHandle));
         GC.KeepAlive(this);
         return resultHandle;
     }

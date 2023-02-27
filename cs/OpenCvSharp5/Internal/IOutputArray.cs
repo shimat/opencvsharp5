@@ -3,26 +3,26 @@
 namespace OpenCvSharp5.Internal;
 
 /// <summary>
-/// This is the proxy interface for passing readable and writable input arrays into OpenCV functions.
+/// This is the proxy interface for passing writable input arrays into OpenCV functions.
 /// </summary>
-public interface IInputOutputArray : IOutputArray
+public interface IOutputArray : IInputArray
 {
     /// <summary>
-    /// Creates a handle of cv::_InputOutputArray*
+    /// Creates a handle of cv::_OutputArray*
     /// </summary>
     /// <returns></returns>
-    InputOutputArrayHandle ToInputOutputArrayHandle();
+    OutputArrayHandle ToOutputArrayHandle();
 }
 
 /// <summary>
-/// Represents cv::_InputOutputArray*
+/// Represents cv::_OutputArray*
 /// </summary>
-public class InputOutputArrayHandle : SafeHandle
+public class OutputArrayHandle : SafeHandle
 {
     /// <summary>
     /// Constructor
     /// </summary>
-    public InputOutputArrayHandle()
+    public OutputArrayHandle()
         : base(invalidHandleValue: IntPtr.Zero, ownsHandle: true)
     {
     }
@@ -30,9 +30,10 @@ public class InputOutputArrayHandle : SafeHandle
     /// <inheritdoc />
     protected override bool ReleaseHandle()
     {
-        NativeMethods.HandleException(
-            NativeMethods.core_InputOutputArray_delete(handle));
-        return true;
+        throw new NotImplementedException();
+        //NativeMethods.HandleException(
+        //    NativeMethods.core_OutputArray_delete(handle));
+        //return true;
     }
 
     /// <inheritdoc />
