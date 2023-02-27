@@ -2,13 +2,18 @@
 FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04
 
 # [Optional] Uncomment this section to install additional packages.
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+        wget \
         libtbb-dev \
         libatlas-base-dev \
-        git
+        git \
+    && wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb \
+    && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+        dotnet-sdk-7.0
 
-RUN git clone --depth 1 https://github.com/opencv/opencv -b 4.7.0
+RUN git clone --depth 1 https://github.com/opencv/opencv -b 5.x
 RUN cd opencv \
     && cmake \
         -S . \

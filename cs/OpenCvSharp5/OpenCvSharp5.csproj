@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <InternalsVIsibleTo Include="$(AssemblyName).Tests" />
+    <InternalsVIsibleTo Include="$(AssemblyName).Benchmark" />
   </ItemGroup>
 
 </Project>

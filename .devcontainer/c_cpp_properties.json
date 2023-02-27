@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/out/build/linux-release/_deps/googletest-src/googletest/include/"
+                "${workspaceFolder}/cpp/out/build/linux-release/_deps/googletest-src/googletest/include/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

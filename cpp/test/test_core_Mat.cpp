@@ -33,7 +33,7 @@ TEST(test_core_Mat, _newdelete_3) {
     };
 
     cv::Mat* mat = nullptr;
-    ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC4, cv::Scalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC4, cvScalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 3);

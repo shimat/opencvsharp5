@@ -2,7 +2,10 @@
 
 namespace OpenCvSharp5;
 
-public static class Cv2
+/// <summary>
+/// OpenCV functions (cv::fooBar in C++ / cv2.fooBar in Python)
+/// </summary>
+public static partial class Cv2
 {
     /// <summary>
     /// Returns the number of ticks.
