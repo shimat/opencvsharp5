@@ -1,4 +1,4 @@
-name: Ubuntu
+name: Wasm
 
 on:
   pull_request:
@@ -9,25 +9,27 @@ on:
 
 env:
   OPENCV_VERSION: "5.x"
+  EM_VERSION: 3.1.32
+  EM_CACHE_FOLDER: "emsdk-cache"
   OPENCV_CACHE_VERSION: 1
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
   build:
+
     runs-on: ubuntu-22.04
-
+    
     steps:
-    - name: Checkout OpenCvSharp
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
       with:
-        submodules: recursive
-
+      submodules: recursive
+        
     - name: Install dependencies
       run: |
         sudo apt-get update -y 
         sudo apt-get install -y --no-install-recommends \
           g++ \
-          make \
+          make\
           cmake \
           libtbb-dev \
           libatlas-base-dev 
@@ -38,12 +40,23 @@ jobs:
       with:
         path: ${{ github.workspace }}/opencv_artifacts
         key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
+
+    - name: Setup Emscripten cache
+      id: cache-system-libraries
+      uses: actions/cache@v3
+      with:
+        path: ${{env.EM_CACHE_FOLDER}}
+        key: ${{env.EM_VERSION}}-${{ runner.os }}
+    - uses: mymindstorm/setup-emsdk@v11
+      with:
+        version: ${{env.EM_VERSION}}
+        actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
         
     - name: Build OpenCV
       if: steps.cache_opencv.outputs.cache-hit != 'true'
       run: |
         cd ${{github.workspace}}/cpp/opencv
-        cmake \
+        emcmake cmake \
           -S . \
           -B build \
           -D CMAKE_BUILD_TYPE=Release \
@@ -58,33 +71,44 @@ jobs:
           -D BUILD_LIST=core,imgproc,imgcodecs \
           -D WITH_GSTREAMER=OFF \
           -D WITH_ADE=OFF \
-          -D BUILD_WEBP=ON \
-          -D WITH_WEBP=ON \
           -D WITH_PROTOBUF=OFF \
           -D WITH_QUIRC=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
-          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
+          -D CMAKE_C_FLAGS='-s WASM=1' 
+          -D CMAKE_CXX_FLAGS='-s WASM=1' \
+          -D WITH_EIGEN=OFF \
+          -D WITH_ITT=OFF \
+          -D WITH_JPEG=OFF \
+          -D WITH_TIFF=OFF \
+          -D WITH_PNG=OFF \
+          -D WITH_IPP=OFF \
+          -D WITH_LAPACK=OFF \
+          -D CV_ENABLE_INTRINSICS=OFF \
+          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_wasm \
         cd build
         make -j2
         make install
-        sudo ldconfig
-          
+        em++ -r -o ${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o \
+          -Wl,--whole-archive ${GITHUB_WORKSPACE}/opencv_wasm/lib/*.a \
+          ${GITHUB_WORKSPACE}/opencv_wasm/lib/opencv4/3rdparty/*.a
+        cd ${GITHUB_WORKSPACE}
+        ls
+    
     - name: Build OpenCvSharpExtern
       run: |
+        ls ${GITHUB_WORKSPACE}/opencv_wasm
+        echo "-----"
         cd ${{github.workspace}}/cpp
-        cmake -S . -B build \
+        emcmake cmake \
+          -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
-        cmake --build build -- -j2
+          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 \
+          -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o ..
+        cmake --build build -- -j2        
         echo "--- ls ${{github.workspace}}/cpp/build/ ---"
         ls build
-        sudo cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.so /usr/lib
+        cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.a ${GITHUB_WORKSPACE}/
 
     - name: Test OpenCvSharpExtern
       working-directory: ${{github.workspace}}/cpp/build
       run: ctest
-
-    - name: Test Managed Library
-      working-directory: ${{github.workspace}}/cs
-      run: |
-        dotnet test --configuration Release --logger:"console;verbosity=detailed"
