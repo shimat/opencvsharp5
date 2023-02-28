@@ -38,8 +38,8 @@ jobs:
       id: cache_opencv
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/opencv_artifacts
-        key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
+        path: ${{ github.workspace }}/opencv_wasm
+        key: opencv-${{ env.OPENCV_VERSION }}-wasm-rev-${{ env.OPENCV_CACHE_VERSION }}
 
     - name: Setup Emscripten cache
       id: cache-system-libraries
