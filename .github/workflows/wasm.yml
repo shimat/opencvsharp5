@@ -74,7 +74,7 @@ jobs:
           -D WITH_PROTOBUF=OFF \
           -D WITH_QUIRC=OFF \
           -D OPENCV_ENABLE_NONFREE=ON \
-          -D CMAKE_C_FLAGS='-s WASM=1' 
+          -D CMAKE_C_FLAGS='-s WASM=1' \
           -D CMAKE_CXX_FLAGS='-s WASM=1' \
           -D WITH_EIGEN=OFF \
           -D WITH_ITT=OFF \
@@ -84,7 +84,7 @@ jobs:
           -D WITH_IPP=OFF \
           -D WITH_LAPACK=OFF \
           -D CV_ENABLE_INTRINSICS=OFF \
-          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_wasm \
+          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_wasm 
         cd build
         make -j2
         make install
