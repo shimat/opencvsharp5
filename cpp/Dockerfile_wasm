@@ -1,0 +1,68 @@
+FROM ubuntu:22.04
+
+ARG EMSCRIPTEN_VERSION=3.1.32
+
+ENV EMSDK /emsdk_portable
+
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends \
+    g++ \
+    make\
+    cmake \
+    libtbb-dev \
+    libatlas-base-dev \
+    python3 \
+    python-is-python3 \
+    ca-certificates \
+    git \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo "## Install Emscripten" \
+  && git clone https://github.com/emscripten-core/emsdk.git --depth 1 \
+  && cd emsdk \
+  && ./emsdk install latest \
+  && ./emsdk activate latest \
+  && source "/emsdk/emsdk_env.sh" \
+&& echo "## Done"
+
+COPY opencv .
+
+RUN cd opencv \
+  && emcmake cmake \
+    -S . \
+    -B build \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D BUILD_SHARED_LIBS=OFF \
+    -D ENABLE_CXX11=ON \
+    -D BUILD_EXAMPLES=OFF \
+    -D BUILD_DOCS=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D BUILD_TESTS=OFF \
+    -D BUILD_JAVA=OFF \
+    -D BUILD_opencv_apps=OFF \
+    -D BUILD_LIST=core,imgproc,imgcodecs \
+    -D WITH_GSTREAMER=OFF \
+    -D WITH_ADE=OFF \
+    -D WITH_PROTOBUF=OFF \
+    -D WITH_QUIRC=OFF \
+    -D OPENCV_ENABLE_NONFREE=ON \
+    -D CMAKE_C_FLAGS='-s WASM=1' \
+    -D CMAKE_CXX_FLAGS='-s WASM=1' \
+    -D WITH_EIGEN=OFF \
+    -D WITH_ITT=OFF \
+    -D WITH_JPEG=OFF \
+    -D WITH_TIFF=OFF \
+    -D WITH_PNG=OFF \
+    -D WITH_IPP=OFF \
+    -D WITH_LAPACK=OFF \
+    -D CV_ENABLE_INTRINSICS=OFF \
+    -D CMAKE_INSTALL_PREFIX=/opencv_wasm 
+
+RUN cd opencv/build \
+  && make -j2 \
+  && make install 
+
+COPY src .
+COPY test .
+COPY CMakeLists.txt .
