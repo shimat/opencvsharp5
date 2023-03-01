@@ -98,8 +98,9 @@ jobs:
 
         em++ -r -o ${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o \
           -Wl,--whole-archive ${GITHUB_WORKSPACE}/opencv_wasm/lib/*.a 
-        cd ${GITHUB_WORKSPACE}
-        ls
+                
+        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/ ---"
+        ls -l ${GITHUB_WORKSPACE}/opencv_wasm
     
     - name: Build OpenCvSharpExtern
       run: |
@@ -108,11 +109,11 @@ jobs:
         emcmake cmake \
           -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 \
+          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm \
           -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o ..
         cmake --build build -- -j2        
         echo "--- ls ${{github.workspace}}/cpp/build/ ---"
-        ls build
+        ls -l build
         cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.a ${GITHUB_WORKSPACE}/
 
     - name: Test OpenCvSharpExtern
