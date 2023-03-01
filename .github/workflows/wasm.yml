@@ -109,8 +109,8 @@ jobs:
         emcmake cmake \
           -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm \
-          -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o ..
+          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_wasm \
+          -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o 
         cmake --build build -- -j2        
         echo "--- ls ${{github.workspace}}/cpp/build/ ---"
         ls -l build
