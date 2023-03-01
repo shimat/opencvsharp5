@@ -92,11 +92,9 @@ jobs:
     - name: Emscripten
       run: |
         echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/ ---"
-        ls ${GITHUB_WORKSPACE}/opencv_wasm
+        ls -l ${GITHUB_WORKSPACE}/opencv_wasm
         echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/lib ---"
-        ls ${GITHUB_WORKSPACE}/opencv_wasm/lib
-        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/lib/opencv4/3rdparty/ ---"
-        ls ${GITHUB_WORKSPACE}/opencv_wasm/lib/opencv4/3rdparty/
+        ls -l ${GITHUB_WORKSPACE}/opencv_wasm/lib
 
         em++ -r -o ${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o \
           -Wl,--whole-archive ${GITHUB_WORKSPACE}/opencv_wasm/lib/*.a 
