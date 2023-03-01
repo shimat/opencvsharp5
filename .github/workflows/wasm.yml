@@ -101,6 +101,8 @@ jobs:
                 
         echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/ ---"
         ls -l ${GITHUB_WORKSPACE}/opencv_wasm
+        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 ---"
+        ls -l ${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4
     
     - name: Build OpenCvSharpExtern
       run: |
@@ -109,8 +111,9 @@ jobs:
         emcmake cmake \
           -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_wasm \
+          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 \
           -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o 
+        #-D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_wasm \
         cmake --build build -- -j2        
         echo "--- ls ${{github.workspace}}/cpp/build/ ---"
         ls -l build
