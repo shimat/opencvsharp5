@@ -91,27 +91,16 @@ jobs:
 
     - name: Emscripten
       run: |
-        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/ ---"
-        ls -l ${GITHUB_WORKSPACE}/opencv_wasm
-        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/lib ---"
-        ls -l ${GITHUB_WORKSPACE}/opencv_wasm/lib
-
         em++ -r -o ${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o \
-          -Wl,--whole-archive ${GITHUB_WORKSPACE}/opencv_wasm/lib/*.a 
-                
-        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/ ---"
-        ls -l ${GITHUB_WORKSPACE}/opencv_wasm
-        echo "--- ls ${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 ---"
-        ls -l ${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4
+          -Wl,--whole-archive ${GITHUB_WORKSPACE}/opencv_wasm/lib/*.a
     
     - name: Build OpenCvSharpExtern
       run: |
-        echo "-----"
         cd ${{github.workspace}}/cpp
         emcmake cmake \
           -S . -B build \
           -D CMAKE_BUILD_TYPE=Release \
-          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv4 \
+          -D OpenCV_DIR=${GITHUB_WORKSPACE}/opencv_wasm/lib/cmake/opencv5 \
           -D WASM_LIB=${GITHUB_WORKSPACE}/opencv_wasm/libopencv.o 
         #-D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_wasm \
         cmake --build build -- -j2        
