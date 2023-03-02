@@ -110,4 +110,4 @@ jobs:
 
     - name: Test OpenCvSharpExtern
       working-directory: ${{github.workspace}}/cpp/build
-      run: ctest
+      run: ctest --output-on-failure
