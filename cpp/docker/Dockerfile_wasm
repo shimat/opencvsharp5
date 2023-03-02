@@ -2,8 +2,6 @@ FROM ubuntu:22.04
 
 ARG EMSCRIPTEN_VERSION=3.1.32
 
-ENV EMSDK /emsdk_portable
-
 RUN apt-get update -y \
   && apt-get install -y --no-install-recommends \
     g++ \
@@ -15,20 +13,23 @@ RUN apt-get update -y \
     python-is-python3 \
     ca-certificates \
     git \
+    xz-utils \
+    bzip2 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN echo "## Install Emscripten" \
-  && git clone https://github.com/emscripten-core/emsdk.git --depth 1 \
+WORKDIR /
+RUN git clone https://github.com/emscripten-core/emsdk.git --depth 1 \
   && cd emsdk \
-  && ./emsdk install latest \
-  && ./emsdk activate latest \
-  && source "/emsdk/emsdk_env.sh" \
-&& echo "## Done"
+  && ./emsdk install $EMSCRIPTEN_VERSION \
+  && ./emsdk activate $EMSCRIPTEN_VERSION 
+  #&& source "/emsdk/emsdk_env.sh"
 
-COPY opencv .
+RUN git clone https://github.com/opencv/opencv.git --depth 1 -b "5.x"
 
-RUN cd opencv \
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && cd /opencv \
   && emcmake cmake \
     -S . \
     -B build \
@@ -57,12 +58,33 @@ RUN cd opencv \
     -D WITH_IPP=OFF \
     -D WITH_LAPACK=OFF \
     -D CV_ENABLE_INTRINSICS=OFF \
-    -D CMAKE_INSTALL_PREFIX=/opencv_wasm 
+    -D CMAKE_INSTALL_PREFIX=/opencv_wasm \
+    "]
 
-RUN cd opencv/build \
+RUN cd /opencv/build \
   && make -j2 \
   && make install 
 
-COPY src .
-COPY test .
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && em++ -r -o /opencv_wasm/libopencv.o \
+    -Wl,--whole-archive /opencv_wasm/lib/*.a \
+  "]
+
+WORKDIR /workspace
+COPY src src
+COPY test test
 COPY CMakeLists.txt .
+
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && emcmake cmake \
+    -S . -B build \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D OpenCV_DIR=/opencv_wasm/lib/cmake/opencv5 \
+    -D WASM_LIB=/opencv_wasm/libopencv.o \
+  "]
+RUN cmake --build build -- -j2
+
+# source /emsdk/emsdk_env.sh
+# emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DWASM_LIB=/opencv_wasm/libopencv.o -DOpenCV_DIR=/opencv_wasm/lib/cmake/opencv5

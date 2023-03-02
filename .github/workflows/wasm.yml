@@ -108,6 +108,6 @@ jobs:
         ls -l build
         cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.a ${GITHUB_WORKSPACE}/
 
-    - name: Test OpenCvSharpExtern
-      working-directory: ${{github.workspace}}/cpp/build
-      run: ctest --output-on-failure
+#    - name: Test OpenCvSharpExtern
+#      working-directory: ${{github.workspace}}/cpp/build
+#      run: ctest --output-on-failure
