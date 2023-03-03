@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <WasmBuildNative>true</WasmBuildNative>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RunAOTCompilation>true</RunAOTCompilation>
+    <RunAOTCompilation>false</RunAOTCompilation>
     <!--<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>-->
   </PropertyGroup>
 
