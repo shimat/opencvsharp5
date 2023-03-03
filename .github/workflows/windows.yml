@@ -10,7 +10,7 @@ on:
 env:
   OPENCV_VERSION: 5.x
   OPENCV_CACHE_VERSION: beta-1
-  
+
 permissions:
   contents: read
 
@@ -19,51 +19,51 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Cache OpenCV binaries
-      id: cache_opencv
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/cpp/opencv/build_windows_x64
-        key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
-        
-    - name: Build OpenCV
-      if: steps.cache_opencv.outputs.cache-hit != 'true'
-      working-directory: ${{github.workspace}}/cpp
-      run: |
-        . "./build_opencv_windows.ps1"
-        BuildForWindows "x64"    
+      - name: Cache OpenCV binaries
+        id: cache_opencv
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/cpp/opencv/build_windows_x64
+          key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
 
-    - name: Build Native Bindings
-      working-directory: ${{github.workspace}}/cpp
-      run: |
-        cmake `
-          -S . `
-          -B build `
-          -D OpenCV_DIR=opencv/build_windows_x64
-        cmake --build build --config Release -- -maxcpucount
-        dir build
-        dir build/Release
-        dir build/x64
-        dir build/x64/Release
-        xcopy /Y ${{github.workspace}}\cpp\build\Release\OpenCvSharpExtern.dll ${{github.workspace}}\cs\OpenCvSharp5.Tests\
-    
-    - name: Test Native Bindings
-      working-directory: ${{github.workspace}}/cpp/build
-      run: ctest -C Release
-      
-    - name: Build Managed Library
-      working-directory: ${{github.workspace}}/cs
-      run: |
-        dotnet build --configuration Release
-      
-    - name: Test Managed Library
-      working-directory: ${{github.workspace}}/cs
-      run: |
-        dotnet test --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
+      - name: Build OpenCV
+        if: steps.cache_opencv.outputs.cache-hit != 'true'
+        working-directory: ${{github.workspace}}/cpp
+        run: |
+          . "./build_opencv_windows.ps1"
+          BuildForWindows "x64"
+
+      - name: Build Native Bindings
+        working-directory: ${{github.workspace}}/cpp
+        run: |
+          cmake `
+            -S . `
+            -B build `
+            -D OpenCV_DIR=opencv/build_windows_x64
+          cmake --build build --config Release -- -maxcpucount
+          dir build
+          dir build/Release
+          dir build/x64
+          dir build/x64/Release
+          xcopy /Y ${{github.workspace}}\cpp\build\Release\OpenCvSharpExtern.dll ${{github.workspace}}\cs\OpenCvSharp5.Tests\
+
+      - name: Test Native Bindings
+        working-directory: ${{github.workspace}}/cpp/build
+        run: ctest -C Release
+
+      - name: Build Managed Library
+        working-directory: ${{github.workspace}}/cs
+        run: |
+          dotnet build --configuration Release
+
+      - name: Test Managed Library
+        working-directory: ${{github.workspace}}/cs/OpenCvSharp5.Tests
+        run: |
+          dotnet test --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
