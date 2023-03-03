@@ -42,15 +42,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: "Setup .NET"
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: "7.0.x"
-
-      - name: "Setup wasm-tools"
-        run: |
-          dotnet workload install wasm-tools 
-
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -76,6 +67,12 @@ jobs:
       #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
       # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-the-codeql-workflow-for-compiled-languages#adding-build-steps-for-a-compiled-language
+      
+      - if: matrix.language == 'csharp'
+        name: "Setup .NET"
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "7.0.x"
       - if: matrix.language == 'csharp'
         name: Build C#
         working-directory: ${{github.workspace}}/cs/
