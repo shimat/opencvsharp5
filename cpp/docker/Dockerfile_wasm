@@ -1,0 +1,90 @@
+FROM ubuntu:22.04
+
+ARG EMSCRIPTEN_VERSION=3.1.32
+
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends \
+    g++ \
+    make\
+    cmake \
+    libtbb-dev \
+    libatlas-base-dev \
+    python3 \
+    python-is-python3 \
+    ca-certificates \
+    git \
+    xz-utils \
+    bzip2 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /
+RUN git clone https://github.com/emscripten-core/emsdk.git --depth 1 \
+  && cd emsdk \
+  && ./emsdk install $EMSCRIPTEN_VERSION \
+  && ./emsdk activate $EMSCRIPTEN_VERSION 
+  #&& source "/emsdk/emsdk_env.sh"
+
+RUN git clone https://github.com/opencv/opencv.git --depth 1 -b "5.x"
+
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && cd /opencv \
+  && emcmake cmake \
+    -S . \
+    -B build \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D BUILD_SHARED_LIBS=OFF \
+    -D ENABLE_CXX11=ON \
+    -D BUILD_EXAMPLES=OFF \
+    -D BUILD_DOCS=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D BUILD_TESTS=OFF \
+    -D BUILD_JAVA=OFF \
+    -D BUILD_opencv_apps=OFF \
+    -D BUILD_LIST=core,imgproc,imgcodecs \
+    -D WITH_GSTREAMER=OFF \
+    -D WITH_ADE=OFF \
+    -D WITH_PROTOBUF=OFF \
+    -D WITH_QUIRC=OFF \
+    -D OPENCV_ENABLE_NONFREE=ON \
+    -D CMAKE_C_FLAGS='-s WASM=1' \
+    -D CMAKE_CXX_FLAGS='-s WASM=1' \
+    -D WITH_EIGEN=OFF \
+    -D WITH_ITT=OFF \
+    -D WITH_JPEG=OFF \
+    -D WITH_TIFF=OFF \
+    -D WITH_PNG=OFF \
+    -D WITH_IPP=OFF \
+    -D WITH_LAPACK=OFF \
+    -D CV_ENABLE_INTRINSICS=OFF \
+    -D CMAKE_INSTALL_PREFIX=/opencv_wasm \
+    "]
+
+RUN cd /opencv/build \
+  && make -j2 \
+  && make install 
+
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && em++ -r -o /opencv_wasm/libopencv.o \
+    -Wl,--whole-archive /opencv_wasm/lib/*.a \
+  "]
+
+WORKDIR /workspace
+COPY src src
+COPY test test
+COPY CMakeLists.txt .
+
+RUN ["/bin/bash", "-c", "\
+  source /emsdk/emsdk_env.sh \
+  && emcmake cmake \
+    -S . -B build \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D OpenCV_DIR=/opencv_wasm/lib/cmake/opencv5 \
+    -D WASM_LIB=/opencv_wasm/libopencv.o \
+  "]
+RUN cmake --build build -- -j2
+
+# source /emsdk/emsdk_env.sh
+# emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DWASM_LIB=/opencv_wasm/libopencv.o -DOpenCV_DIR=/opencv_wasm/lib/cmake/opencv5

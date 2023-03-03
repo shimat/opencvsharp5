@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <WasmBuildNative>true</WasmBuildNative>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <!--<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.1" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\cs\OpenCvSharp5\OpenCvSharp5.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="OpenCvSharpExtern.a">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <NativeFileReference Include="OpenCvSharpExtern.a" />
+  </ItemGroup>
+
+</Project>

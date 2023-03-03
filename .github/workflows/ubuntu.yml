@@ -8,82 +8,83 @@ on:
       - main
 
 env:
-  OPENCV_VERSION: 5.x
+  OPENCV_VERSION: "5.x"
   OPENCV_CACHE_VERSION: 1
+  DEBIAN_FRONTEND: noninteractive
 
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout OpenCvSharp
-      uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - name: Checkout OpenCvSharp
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -y 
-        sudo apt-get install -y --no-install-recommends \
-          g++ \
-          make \
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            g++ \
+            make \
+            cmake \
+            libtbb-dev \
+            libatlas-base-dev
+
+      - name: Cache OpenCV binaries
+        id: cache_opencv
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/opencv_artifacts
+          key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
+
+      - name: Build OpenCV
+        if: steps.cache_opencv.outputs.cache-hit != 'true'
+        run: |
+          cd ${{github.workspace}}/cpp/opencv
           cmake \
-          libtbb-dev \
-          libatlas-base-dev 
+            -S . \
+            -B build \
+            -D CMAKE_BUILD_TYPE=Release \
+            -D BUILD_SHARED_LIBS=OFF \
+            -D ENABLE_CXX11=ON \
+            -D BUILD_EXAMPLES=OFF \
+            -D BUILD_DOCS=OFF \
+            -D BUILD_PERF_TESTS=OFF \
+            -D BUILD_TESTS=OFF \
+            -D BUILD_JAVA=OFF \
+            -D BUILD_opencv_apps=OFF \
+            -D BUILD_LIST=core,imgproc,imgcodecs \
+            -D WITH_GSTREAMER=OFF \
+            -D WITH_ADE=OFF \
+            -D BUILD_WEBP=ON \
+            -D WITH_WEBP=ON \
+            -D WITH_PROTOBUF=OFF \
+            -D WITH_QUIRC=OFF \
+            -D OPENCV_ENABLE_NONFREE=ON \
+            -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts
+          cd build
+          make -j2
+          make install
+          sudo ldconfig
 
-    - name: Cache OpenCV binaries
-      id: cache_opencv
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/opencv_artifacts
-        key: opencv-${{ env.OPENCV_VERSION }}-rev-${{ env.OPENCV_CACHE_VERSION }}
-        
-    - name: Build OpenCV
-      if: steps.cache_opencv.outputs.cache-hit != 'true'
-      run: |
-        cd ${{github.workspace}}/cpp/opencv
-        cmake \
-          -S . \
-          -B build \
-          -D CMAKE_BUILD_TYPE=Release \
-          -D BUILD_SHARED_LIBS=OFF \
-          -D ENABLE_CXX11=ON \
-          -D BUILD_EXAMPLES=OFF \
-          -D BUILD_DOCS=OFF \
-          -D BUILD_PERF_TESTS=OFF \
-          -D BUILD_TESTS=OFF \
-          -D BUILD_JAVA=OFF \
-          -D BUILD_opencv_apps=OFF \
-          -D BUILD_LIST=core,imgproc,imgcodecs \
-          -D WITH_GSTREAMER=OFF \
-          -D WITH_ADE=OFF \
-          -D BUILD_WEBP=ON \
-          -D WITH_WEBP=ON \
-          -D WITH_PROTOBUF=OFF \
-          -D WITH_QUIRC=OFF \
-          -D OPENCV_ENABLE_NONFREE=ON \
-          -D CMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/opencv_artifacts 
-        cd build
-        make -j2
-        make install
-        sudo ldconfig
-          
-    - name: Build OpenCvSharpExtern
-      run: |
-        cd ${{github.workspace}}/cpp
-        cmake -S . -B build \
-          -D CMAKE_BUILD_TYPE=Release \
-          -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
-        cmake --build build -- -j2
-        echo "--- ls ${{github.workspace}}/cpp/build/ ---"
-        ls build
-        sudo cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.so /usr/lib
+      - name: Build OpenCvSharpExtern
+        run: |
+          cd ${{github.workspace}}/cpp
+          cmake -S . -B build \
+            -D CMAKE_BUILD_TYPE=Release \
+            -D CMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/opencv_artifacts
+          cmake --build build -- -j2
+          echo "--- ls ${{github.workspace}}/cpp/build/ ---"
+          ls build
+          sudo cp ${{github.workspace}}/cpp/build/libOpenCvSharpExtern.so /usr/lib
 
-    - name: Test OpenCvSharpExtern
-      working-directory: ${{github.workspace}}/cpp/build
-      run: ctest
+      - name: Test OpenCvSharpExtern
+        working-directory: ${{github.workspace}}/cpp/build
+        run: ctest
 
-    - name: Test Managed Library
-      working-directory: ${{github.workspace}}/cs
-      run: |
-        dotnet test --configuration Release --logger:"console;verbosity=detailed"
+      - name: Test Managed Library
+        working-directory: ${{github.workspace}}/cs/
+        run: |
+          dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj --configuration Release --logger:"console;verbosity=detailed"

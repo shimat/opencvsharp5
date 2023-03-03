@@ -1,0 +1,45 @@
+﻿@page "/opencvsharp_sample"
+@using OpenCvSharp5
+@inject IJSRuntime jsRuntime;
+@inject HttpClient httpClient;
+@implements IDisposable
+
+<PageTitle>OpenCvSharp Sample</PageTitle>
+
+<h1>OpenCvSharp on WebAssembly</h1>
+
+<div>
+<canvas @ref="srcCanvas" width="256" height="256" style="border:1px solid gray;">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+<canvas @ref="dstCanvas" width="256" height="256" style="border:1px solid gray;">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+</div>
+<div>
+</div>
+
+@code {
+    private Mat? srcMat;
+    private ElementReference srcCanvas;
+    private ElementReference dstCanvas;
+    private CanvasClient? srcCanvasClient;
+    private CanvasClient? dstCanvasClient;
+
+    public void Dispose()
+    {
+        srcMat?.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {        
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //if (!firstRender)
+        //    return;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
