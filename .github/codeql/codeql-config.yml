@@ -3,4 +3,4 @@ name: "CodeQL config"
 paths:
   - cs
 paths-ignore:
-  - cs/samples
+  - samples
