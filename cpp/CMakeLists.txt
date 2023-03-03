@@ -13,6 +13,7 @@ add_compile_definitions(CVAPI_EXPORTS)
 message("### CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 message("### CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
 message("### CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
+message("### WASM_LIB = ${WASM_LIB}")
 
 find_package(OpenCV REQUIRED)
 
@@ -34,13 +35,18 @@ endif()
 
 add_subdirectory(src)
 
-add_library(
-    ${PROJECT_NAME} SHARED 
-    $<TARGET_OBJECTS:WRAPPER_SOURCES>)
-target_link_libraries(
-    ${PROJECT_NAME}
-    ${OpenCV_LIBRARIES}
-)
+IF(EMSCRIPTEN)
+    add_library(
+        ${PROJECT_NAME} SHARED 
+        $<TARGET_OBJECTS:WRAPPER_SOURCES> ${WASM_LIB})
+else()
+    add_library(
+        ${PROJECT_NAME} SHARED 
+        $<TARGET_OBJECTS:WRAPPER_SOURCES>)
+    target_link_libraries(
+        ${PROJECT_NAME}
+        ${OpenCV_LIBRARIES})
+ENDIF()
 
 #include (GenerateExportHeader)
 #GENERATE_EXPORT_HEADER(${PROJECT_NAME})
