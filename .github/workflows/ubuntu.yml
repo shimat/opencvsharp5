@@ -85,6 +85,6 @@ jobs:
         run: ctest
 
       - name: Test Managed Library
-        working-directory: ${{github.workspace}}/cs/OpenCvSharp5.Tests
+        working-directory: ${{github.workspace}}/cs/
         run: |
-          dotnet test --configuration Release --logger:"console;verbosity=detailed"
+          dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj --configuration Release --logger:"console;verbosity=detailed"

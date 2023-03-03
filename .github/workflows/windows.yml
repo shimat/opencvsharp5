@@ -64,6 +64,6 @@ jobs:
           dotnet build --configuration Release
 
       - name: Test Managed Library
-        working-directory: ${{github.workspace}}/cs/OpenCvSharp5.Tests
+        working-directory: ${{github.workspace}}/cs/
         run: |
-          dotnet test --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
+          dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
