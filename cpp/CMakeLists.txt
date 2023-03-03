@@ -35,7 +35,7 @@ endif()
 
 add_subdirectory(src)
 
-IF(EMSCRIPTEN)
+if(EMSCRIPTEN)
     add_library(
         ${PROJECT_NAME} SHARED 
         $<TARGET_OBJECTS:WRAPPER_SOURCES> ${WASM_LIB})
@@ -46,7 +46,7 @@ else()
     target_link_libraries(
         ${PROJECT_NAME}
         ${OpenCV_LIBRARIES})
-ENDIF()
+endif()
 
 #include (GenerateExportHeader)
 #GENERATE_EXPORT_HEADER(${PROJECT_NAME})
