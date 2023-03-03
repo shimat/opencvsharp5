@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvSharp5.Benchmark", "OpenCvSharp5.Benchmark\OpenCvSharp5.Benchmark.csproj", "{515C6680-6299-4E6A-9CE3-A863C207CF1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCvSharp5.Benchmark", "OpenCvSharp5.Benchmark\OpenCvSharp5.Benchmark.csproj", "{515C6680-6299-4E6A-9CE3-A863C207CF1C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "samples\BlazorApp\BlazorApp.csproj", "{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7812E02-8557-4985-8E60-A8033570CF98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +36,16 @@ Global
 		{515C6680-6299-4E6A-9CE3-A863C207CF1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{515C6680-6299-4E6A-9CE3-A863C207CF1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{515C6680-6299-4E6A-9CE3-A863C207CF1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9D9F777D-FA8E-4F11-B3A8-9A4A1BA3DB9B} = {B7812E02-8557-4985-8E60-A8033570CF98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {964B94E7-FADE-47FD-9770-72A08E5B0286}

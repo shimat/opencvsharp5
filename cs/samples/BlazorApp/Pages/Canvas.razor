@@ -1,0 +1,47 @@
+﻿@page "/canvas"
+@inject IJSRuntime jsRuntime;
+
+<PageTitle>Canvas Sample</PageTitle>
+
+<h1>Canvas Sample</h1>
+
+<canvas @ref="canvasElement" width="128" height="128">
+</canvas>
+
+@code {
+    private ElementReference canvasElement;
+    private CanvasClient? canvasClient;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        var imageBytes = new byte[128 * 128 * 4];
+        unsafe
+        {
+            fixed (byte* pImageBytes = imageBytes)
+            {
+                var p = pImageBytes;
+                for (int y = 0; y < 128; y++)
+                {
+                    for (int x = 0; x < 128; x++)
+                    {
+                        // Percentage in the x direction, times 255
+                        var xp = (byte)(x / 128.0 * 255);
+                        // Percentage in the y direction, times 255
+                        var yp = (byte)(y / 128.0 * 255);
+
+                        *(p++) = xp; // R
+                        *(p++) = yp; // G
+                        *(p++) = (byte)(255 - xp); // B
+                        *(p++) = 255; // A
+                    }
+                }
+            }
+        }
+
+        canvasClient ??= new CanvasClient(jsRuntime, canvasElement);
+
+        await canvasClient.DrawPixelsAsync(imageBytes);
+    }  
+}
