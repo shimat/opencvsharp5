@@ -107,7 +107,7 @@ jobs:
           ls -l build
 
           mkdir ${GITHUB_WORKSPACE}/artifacts
-          cp ${GITHUB_WORKSPACE}/cpp/build/libOpenCvSharpExtern.a ${GITHUB_WORKSPACE}/artifacts
+          cp ${GITHUB_WORKSPACE}/cpp/build/libOpenCvSharpExtern.a ${GITHUB_WORKSPACE}/artifacts/OpenCvSharpExtern.a
 
       - name: Test OpenCvSharpExtern
         working-directory: ${{github.workspace}}/cpp/build

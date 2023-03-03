@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <WasmBuildNative>true</WasmBuildNative>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RunAOTCompilation>True</RunAOTCompilation>
+    <RunAOTCompilation>true</RunAOTCompilation>
     <!--<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>-->
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OpenCvSharp5\OpenCvSharp5.csproj" />
+    <ProjectReference Include="..\..\cs\OpenCvSharp5\OpenCvSharp5.csproj" />
   </ItemGroup>
 
   <ItemGroup>
