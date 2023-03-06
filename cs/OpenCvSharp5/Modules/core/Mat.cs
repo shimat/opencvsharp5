@@ -66,49 +66,21 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
-    /// <summary>
-    /// the number of rows or -1 when the matrix has more than 2 dimensions
-    /// </summary>
-    internal int UnsafeRows
-    {
-        get
-        {
-            unsafe
-            {
-                return ((NativeMat*)handle.DangerousGetHandle())->rows;
-            }
-        }
-    }
-
-    /// <summary>
-    /// the number of columns or -1 when the matrix has more than 2 dimensions
-    /// </summary>
-    internal int UnsafeCols
-    {
-        get
-        {
-            unsafe
-            {
-                return ((NativeMat*)handle.DangerousGetHandle())->cols;
-            }
-        }
-    }
-
-    /// <summary>
-    /// pointer to the data
-    /// </summary>
-    internal IntPtr UnsafeData
-    {
-        get
-        {
-            unsafe
-            {
-                return new IntPtr(DataPointer);
-            }
-        }
-    }
     
+    /// <summary>
+    /// includes several bit-fields:
+    /// - the magic signature
+    /// - continuity flag
+    /// - depth
+    /// - number of channels
+    /// </summary>
+    public int Flags => NativeMethods.core_Mat_flags(handle);
+    
+    /// <summary>
+    /// the matrix dimensionality, >= 2
+    /// </summary>
+    public int Dims => NativeMethods.core_Mat_dims(handle);
+
     /// <summary>
     /// the number of rows or -1 when the matrix has more than 2 dimensions
     /// </summary>
@@ -123,6 +95,26 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
     /// pointer to the data
     /// </summary>
     public IntPtr Data => NativeMethods.core_Mat_data(handle);
+    
+    /// <summary>
+    /// Returns a matrix size.
+    /// </summary>
+    public Size Size() => NativeMethods.core_Mat_size(handle);
+    
+    /// <summary>
+    /// Returns a matrix size.
+    /// </summary>
+    public int Size(int dim) => NativeMethods.core_Mat_sizeAt(handle, dim);
+    
+    /// <summary>
+    /// Returns number of bytes each matrix row occupies.
+    /// </summary>
+    public nint Step() => NativeMethods.core_Mat_step(handle);
+    
+    /// <summary>
+    /// Returns number of bytes each matrix row occupies.
+    /// </summary>
+    public nint Step(int dim) => NativeMethods.core_Mat_stepAt(handle, dim);
 
     /// <summary>
     /// unsafe pointer to the data
@@ -146,19 +138,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
         GC.KeepAlive(this);
         return resultHandle;
     }
-}
-
-[StructLayout(LayoutKind.Sequential)]
-internal unsafe struct NativeMat
-{
-    public int flags;
-    //! the matrix dimensionality, >= 2
-    public int dims;
-    //! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
-    public int rows;
-    public int cols;
-    //! pointer to the data
-    public byte* data;
 }
 
 internal class MatHandle : SafeHandle

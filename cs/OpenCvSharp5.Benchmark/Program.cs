@@ -7,22 +7,9 @@ var summary = BenchmarkRunner.Run<MatFieldsMeasurement>();
 public class MatFieldsMeasurement
 {
     private int LoopCount = 10000;
-
+    
     [Benchmark]
-    public int Unsafe()
-    {
-        using var mat = new Mat(3, 4, 0);
-        var sum = 0;
-        for (var i = 0; i < LoopCount; i++)
-        {
-            sum += mat.UnsafeRows;
-            sum += mat.UnsafeCols;
-        }
-        return sum;
-    }
-
-    [Benchmark]
-    public int Safe()
+    public int RowCol()
     {
         using var mat = new Mat(3, 4, 0); var sum = 0;
         for (var i = 0; i < LoopCount; i++)
