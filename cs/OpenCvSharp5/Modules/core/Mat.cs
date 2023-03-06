@@ -104,8 +104,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
     /// <summary>
     /// Returns a matrix size.
     /// </summary>
-    public int Size(int dim) => NativeMethods.core_Mat_sizeAt(handle, dim);
-    
+    public int Size(int dim)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_sizeAt(handle, dim, out var result));
+        return result;
+    }
+
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
@@ -114,7 +119,12 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
-    public nint Step(int dim) => NativeMethods.core_Mat_stepAt(handle, dim);
+    public nint Step(int dim)
+    {
+        NativeMethods.HandleException( 
+            NativeMethods.core_Mat_stepAt(handle, dim, out var result));
+        return result;
+    }
 
     /// <summary>
     /// unsafe pointer to the data

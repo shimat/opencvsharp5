@@ -47,7 +47,7 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe partial int core_Mat_sizeAt(MatHandle obj, int i);
+    public static unsafe partial ExceptionStatus core_Mat_sizeAt(MatHandle obj, int i, out int result);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -55,5 +55,5 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe partial nint core_Mat_stepAt(MatHandle obj, int i);
+    public static unsafe partial ExceptionStatus core_Mat_stepAt(MatHandle obj, int i, out nint result);
 }

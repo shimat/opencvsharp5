@@ -47,7 +47,19 @@ TEST(test_core_Mat, size) {
 
     ASSERT_EQ(core_Mat_rows(&m), 3);
     ASSERT_EQ(core_Mat_cols(&m), 4);
+
     ASSERT_EQ(static_cast<cv::Size>(core_Mat_size(&m)), cv::Size(4, 3));
+
+    int dim0, dim1;
+    ASSERT_EQ(
+        core_Mat_sizeAt(&m, 0, &dim0),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(
+        core_Mat_sizeAt(&m, 1, &dim1),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(dim0, 3);
+    ASSERT_EQ(dim1, 4);
+
 }
 
 TEST(test_core_Mat, data) {
@@ -60,4 +72,10 @@ TEST(test_core_Mat, step) {
     const cv::Mat m(3, 7, CV_8UC1);
     
     ASSERT_EQ(core_Mat_step(&m), 7);
+
+    size_t step0{};
+    ASSERT_EQ(
+        core_Mat_stepAt(&m, 0, &step0), 
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(step0, 7);
 }

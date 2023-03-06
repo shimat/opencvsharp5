@@ -64,9 +64,11 @@ CVAPI(CvSize) core_Mat_size(const cv::Mat *obj)
     return cvSize(obj->size());
 }
 
-CVAPI(int) core_Mat_sizeAt(const cv::Mat *obj, const int i)
+CVAPI(ExceptionStatus) core_Mat_sizeAt(const cv::Mat *obj, const int i, int *result)
 {
-    return obj->size[i];
+    BEGIN_WRAP;
+    *result = obj->size[i];
+    END_WRAP;
 }
 
 CVAPI(size_t) core_Mat_step(const cv::Mat* obj)
@@ -74,7 +76,9 @@ CVAPI(size_t) core_Mat_step(const cv::Mat* obj)
     return obj->step;
 }
 
-CVAPI(size_t) core_Mat_stepAt(const cv::Mat *obj, const int i)
+CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *result)
 {
-    return obj->step[i];
+    BEGIN_WRAP;
+    *result = obj->step[i];
+    END_WRAP;
 }
