@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
 /// <summary>
@@ -11,21 +9,17 @@ namespace OpenCvSharp5;
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Range : IEquatable<Range>
 {
-    /// <summary>
-    /// 
+    /// <summary> 
     /// </summary>
     public readonly int Start;
 
-    /// <summary>
-    /// 
+    /// <summary> 
     /// </summary>
     public readonly int End;
 
     /// <summary>
-    /// 
+    /// Constructor
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
     public Range(int start, int end)
     {
         Start = start;
@@ -35,48 +29,28 @@ public readonly struct Range : IEquatable<Range>
     /// <summary>
     /// 
     /// </summary>
-    public static Range All => new Range(int.MinValue, int.MaxValue);
-        
+    public static Range All => new (int.MinValue, int.MaxValue);
+ 
     /// <inheritdoc />
-    public readonly bool Equals(Range other)
-    {
-        return Start == other.Start && End == other.End;
-    }
+    public bool Equals(Range other) => Start == other.Start && End == other.End;
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Range other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is Range other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-        unchecked
-        {
-            return (Start * 397) ^ End;
-        }
-    }
+    public override int GetHashCode() => HashCode.Combine(Start, End);
 
-    /// <summary>
-    /// 
+    /// <summary> 
     /// </summary>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
-    public static bool operator ==(Range left, Range right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(Range left, Range right) => left.Equals(right);
 
     /// <summary>
-    /// 
-    /// </summary>
+    ///  </summary>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
-    public static bool operator !=(Range left, Range right)
-    {
-        return !(left == right);
-    }
+    public static bool operator !=(Range left, Range right) => !(left == right);
 }
