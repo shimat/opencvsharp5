@@ -14,9 +14,6 @@ public class MatTests
         using var mat = new Mat(3, 4, MatType.CV_8UC1);
         Assert.Equal(3, mat.Rows);
         Assert.Equal(4, mat.Cols);
-        
-        //Assert.Equal(mat.Rows, mat.UnsafeRows);
-        //Assert.Equal(mat.Cols, mat.UnsafeCols);
     }
     
     [Fact]
@@ -24,5 +21,22 @@ public class MatTests
     {
         using var mat = new Mat(3, 4, MatType.CV_8UC1);
         Assert.NotEqual(IntPtr.Zero, mat.Data);
+    }
+
+    [Fact]
+    public void Size()
+    {
+        using var mat = new Mat(3, 4, MatType.CV_8UC1);
+        Assert.Equal(new Size(4, 3), mat.Size());
+        Assert.Equal(3, mat.Size(0));
+        Assert.Equal(4, mat.Size(1));
+    }
+
+    [Fact]
+    public void Step()
+    {
+        using var mat = new Mat(3, 7, MatType.CV_8UC1);
+        Assert.Equal(7, mat.Step());
+        Assert.Equal(7, mat.Step(0));
     }
 }
