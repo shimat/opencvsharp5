@@ -5,7 +5,7 @@ public class ImgProcTests
     [Fact]
     public void Rectangle1()
     {
-        using var mat = new Mat(10, 10, MatType.CV_8UC1, 0);
+        using var mat = new Mat(10, 10, MatType.CV_8UC1, Scalar.All(0));
 
         Cv2.Rectangle(
             mat,
@@ -18,7 +18,7 @@ public class ImgProcTests
     [Fact]
     public void Rectangle2()
     {
-        using var mat = new Mat(10, 10, MatType.CV_8UC1, 0);
+        using var mat = new Mat(10, 10, MatType.CV_8UC1, Scalar.All(0));
 
         Cv2.Rectangle(
             mat, 

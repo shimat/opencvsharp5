@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace OpenCvSharp5;
 
@@ -49,7 +51,7 @@ public class OpenCVException : Exception
     /// <param name="line">The line number in the source where error is encountered</param>
     /// <param name="userData"></param>
     public OpenCVException(ErrorCode status, string funcName, string errMsg, string fileName, int line, IntPtr userData = default)
-        : base(errMsg)
+        : base(BuildMessage(status, funcName, errMsg, fileName, line))
     {
         Status = status;
         FuncName = funcName;
@@ -113,5 +115,13 @@ public class OpenCVException : Exception
         FileName = "";
         Line = 0;
         UserData = default;
+    }
+
+    private static string BuildMessage(ErrorCode status, string funcName, string errMsg, string fileName, int line)
+    {
+        fileName = Regex.Replace(fileName, @".*(?=opencv)", "");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            fileName = fileName.Replace("\\", "/");
+        return $"{errMsg} (FuncName={funcName}, FileName={fileName}, Line={line}, Status={status})";
     }
 }
