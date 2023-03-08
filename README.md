@@ -1,6 +1,9 @@
 # opencvsharp5
 Experimental OpenCV5 wrapper for .NET
 
+[![Windows](https://github.com/shimat/opencvsharp5/actions/workflows/windows.yml/badge.svg)](https://github.com/shimat/opencvsharp5/actions/workflows/windows.yml)
+[![Ubuntu](https://github.com/shimat/opencvsharp5/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shimat/opencvsharp5/actions/workflows/ubuntu.yml)
+
 # Concept
 - I will try the new P/Invoke mechanism introduced in .NET 7.
 - I makes only what is needed for me.
