@@ -87,15 +87,16 @@ jobs:
       - name: Test Managed Library
         working-directory: ${{github.workspace}}/cs/
         run: |
+          # https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/VSTestIntegration.md#advanced-options-supported-via-runsettings
           dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj \
             --configuration Release \
             --logger:"console;verbosity=detailed" \
-            --collect:"XPlat Code Coverage" \
-            -p:CoverletOutput=TestResults/ \
-            -p:CoverletOutputFormat="cobertura,opencover"
+            --collect:"XPlat Code Coverage;Format=json,opencover,cobertura"
           ls 
           echo "---"
-          ls TestResults/
+          ls OpenCvSharp5.Tests/
+          echo "---"
+          ls OpenCvSharp5.Tests/TestResults/
           cp $(find . -name "coverage.cobertura.xml") .
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator -reports:"coverage.cobertura.xml" -targetdir:"report" -reporttypes:"Html;MarkdownSummary"
