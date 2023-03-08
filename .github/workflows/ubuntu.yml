@@ -90,8 +90,21 @@ jobs:
           dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj \
             --configuration Release \
             --logger:"console;verbosity=detailed" \
-            --collect:"XPlat Code Coverage"
+            --collect:"XPlat Code Coverage" \
+            -p:CoverletOutput=TestResults/ \
+            -p:CoverletOutputFormat="cobertura,opencover"
+          ls 
+          echo "---"
+          ls TestResults/
           cp $(find . -name "coverage.cobertura.xml") .
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:"coverage.cobertura.xml" -targetdir:"report" -reporttypes:"Html;MarkdownSummary"
+
+      - name: Store Code Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ${{github.workspace}}/cs/report/ 
 
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
