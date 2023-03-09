@@ -118,15 +118,11 @@ jobs:
           fail_below_min: true
           format: markdown
           hide_branch_rate: false
-          hide_complexity: false
-          indicators: true
+          hide_complexity: true
+          indicators: false
           output: both
           thresholds: '0 50'
 
-      - run: |
-          ls
-          echo "---"
-          ls cs/
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2.5.0
         if: github.event_name == 'pull_request'
