@@ -106,13 +106,13 @@ jobs:
           
       - uses: actions/upload-artifact@v3
         with:
-          name: TestResults
+          name: test-results
           path: ${{github.workspace}}/cs/OpenCvSharp5.Tests/TestResults 
 
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: ${{github.workspace}}/cs/coverage.cobertura.xml
+          filename: ${{github.workspace}}/cs/OpenCvSharp5.Tests/TestResults/**/coverage.cobertura.xml
           badge: true
           fail_below_min: true
           format: markdown
