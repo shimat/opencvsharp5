@@ -91,7 +91,8 @@ jobs:
           dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj \
             --configuration Release \
             --logger:"console;verbosity=detailed" \
-            --collect:"XPlat Code Coverage;Format=json,opencover,cobertura"
+            --collect:"XPlat Code Coverage;Format=json,opencover,cobertura" \
+            --settings OpenCvSharp5.Tests/coverlet.runsettings
           cp $(find . -name "coverage.cobertura.xml") .
           ls ${{github.workspace}}/cs/
           dotnet tool install -g dotnet-reportgenerator-globaltool
