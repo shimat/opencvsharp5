@@ -78,10 +78,7 @@ public struct Point3f : IEquatable<Point3f>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point3f lhs, Point3f rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Point3f lhs, Point3f rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two CvPoint2D32f objects. The result specifies whether the values of the X or Y properties of the two CvPoint2D32f objects are unequal.
@@ -89,10 +86,7 @@ public struct Point3f : IEquatable<Point3f>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point3f lhs, Point3f rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Point3f lhs, Point3f rhs) => !lhs.Equals(rhs);
 
     #endregion
 
@@ -177,17 +171,11 @@ public struct Point3f : IEquatable<Point3f>
     #region Override
 
     /// <inheritdoc />
-    public readonly bool Equals(Point3f other)
-    {
-        return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-    }
-        
+    public readonly bool Equals(Point3f other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Point3f other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Point3f other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -205,10 +193,7 @@ public struct Point3f : IEquatable<Point3f>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y} z:{Z})";
-    }
+    public override readonly string ToString() => $"(x:{X} y:{Y} z:{Z})";
 
     #endregion
 

@@ -94,10 +94,7 @@ public struct KeyPoint : IEquatable<KeyPoint>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(KeyPoint lhs, KeyPoint rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(KeyPoint lhs, KeyPoint rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two CvPoint objects. The result specifies whether the members of each object are unequal.
@@ -105,27 +102,18 @@ public struct KeyPoint : IEquatable<KeyPoint>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(KeyPoint lhs, KeyPoint rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(KeyPoint lhs, KeyPoint rhs) => !lhs.Equals(rhs);
 
     #endregion
 
     #region Overrided Methods
         
     /// <inheritdoc />
-    public readonly bool Equals(KeyPoint other)
-    {
-        return Pt.Equals(other.Pt) && Size.Equals(other.Size) && Angle.Equals(other.Angle) && Response.Equals(other.Response) && Octave == other.Octave && ClassId == other.ClassId;
-    }
-        
+    public readonly bool Equals(KeyPoint other) => Pt.Equals(other.Pt) && Size.Equals(other.Size) && Angle.Equals(other.Angle) && Response.Equals(other.Response) && Octave == other.Octave && ClassId == other.ClassId;
+
     /// <inheritdoc />
-    public readonly override bool Equals(object? obj)
-    {
-        return obj is KeyPoint other && Equals(other);
-    }
-        
+    public readonly override bool Equals(object? obj) => obj is KeyPoint other && Equals(other);
+
     /// <inheritdoc />
     public readonly override int GetHashCode()
     {
@@ -146,14 +134,12 @@ public struct KeyPoint : IEquatable<KeyPoint>
     }
         
     /// <inheritdoc />
-    public readonly override string ToString()
-    {
+    public readonly override string ToString() =>
         // ReSharper disable once UseStringInterpolation
-        return string.Format(
+        string.Format(
             CultureInfo.InvariantCulture,
             "[Pt:{0}, Size:{1}, Angle:{2}, Response:{3}, Octave:{4}, ClassId:{5}]",
             Pt, Size, Angle, Response, Octave, ClassId);
-    }
 
     #endregion
 }
