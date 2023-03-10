@@ -40,25 +40,17 @@ public readonly struct TermCriteria : IEquatable<TermCriteria>
     /// </summary>
     /// <param name="maxCount"></param>
     /// <param name="epsilon"></param>
-    public static TermCriteria Both(int maxCount, double epsilon)
-    {
-        return new (
+    public static TermCriteria Both(int maxCount, double epsilon) =>
+        new (
             type: CriteriaTypes.Count | CriteriaTypes.Eps,
             maxCount: maxCount,
             epsilon: epsilon);
-    }
 
 #pragma warning disable CS1591
 
-    public bool Equals(TermCriteria other)
-    {
-        return Type == other.Type && MaxCount == other.MaxCount && Epsilon.Equals(other.Epsilon);
-    }
+    public bool Equals(TermCriteria other) => Type == other.Type && MaxCount == other.MaxCount && Epsilon.Equals(other.Epsilon);
 
-    public override bool Equals(object? obj)
-    {
-        return obj is TermCriteria other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is TermCriteria other && Equals(other);
 
     public override int GetHashCode()
     {
@@ -75,15 +67,9 @@ public readonly struct TermCriteria : IEquatable<TermCriteria>
 #endif
     }
 
-    public static bool operator ==(TermCriteria left, TermCriteria right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(TermCriteria left, TermCriteria right) => left.Equals(right);
 
-    public static bool operator !=(TermCriteria left, TermCriteria right)
-    {
-        return !left.Equals(right);
-    }
+    public static bool operator !=(TermCriteria left, TermCriteria right) => !left.Equals(right);
 
 #pragma warning restore CS1591
 }

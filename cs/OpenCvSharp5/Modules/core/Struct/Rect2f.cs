@@ -86,10 +86,7 @@ public struct Rect2f : IEquatable<Rect2f>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Rect2f lhs, Rect2f rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Rect2f lhs, Rect2f rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two Rect2f objects. The result specifies whether the members of each object are unequal.
@@ -97,10 +94,7 @@ public struct Rect2f : IEquatable<Rect2f>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(Rect2f lhs, Rect2f rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Rect2f lhs, Rect2f rhs) => !lhs.Equals(rhs);
 
     #endregion
 
@@ -177,10 +171,7 @@ public struct Rect2f : IEquatable<Rect2f>
     /// <param name="b">A rectangle to intersect. </param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
-    public static Rect2f operator &(Rect2f a, Rect2f b)
-    {
-        return Intersect(a, b);
-    }
+    public static Rect2f operator &(Rect2f a, Rect2f b) => Intersect(a, b);
 
     /// <summary>
     /// Gets a Rect2f structure that contains the union of two Rect2f structures. 
@@ -189,10 +180,7 @@ public struct Rect2f : IEquatable<Rect2f>
     /// <param name="b">A rectangle to union. </param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
-    public static Rect2f operator |(Rect2f a, Rect2f b)
-    {
-        return Union(a, b);
-    }
+    public static Rect2f operator |(Rect2f a, Rect2f b) => Union(a, b);
 
     #endregion
 
@@ -274,33 +262,25 @@ public struct Rect2f : IEquatable<Rect2f>
     /// <param name="x">x-coordinate of the point</param>
     /// <param name="y">y-coordinate of the point</param>
     /// <returns></returns>
-    public readonly bool Contains(float x, float y)
-    {
-        return (X <= x && Y <= y && X + Width > x && Y + Height > y);
-    }
+    public readonly bool Contains(float x, float y) => (X <= x && Y <= y && X + Width > x && Y + Height > y);
 
     /// <summary>
     /// Determines if the specified point is contained within the rectangular region defined by this Rectangle. 
     /// </summary>
     /// <param name="pt">point</param>
     /// <returns></returns>
-    public readonly bool Contains(Point2f pt)
-    {
-        return Contains(pt.X, pt.Y);
-    }
+    public readonly bool Contains(Point2f pt) => Contains(pt.X, pt.Y);
 
     /// <summary>
     /// Determines if the specified rectangle is contained within the rectangular region defined by this Rectangle. 
     /// </summary>
     /// <param name="rect">rectangle</param>
     /// <returns></returns>
-    public readonly bool Contains(Rect2f rect)
-    {
-        return X <= rect.X &&
-               (rect.X + rect.Width) <= (X + Width) &&
-               Y <= rect.Y &&
-               (rect.Y + rect.Height) <= (Y + Height);
-    }
+    public readonly bool Contains(Rect2f rect) =>
+        X <= rect.X &&
+        (rect.X + rect.Width) <= (X + Width) &&
+        Y <= rect.Y &&
+        (rect.Y + rect.Height) <= (Y + Height);
 
     /// <summary>
     /// Inflates this Rect by the specified amount. 
@@ -319,10 +299,7 @@ public struct Rect2f : IEquatable<Rect2f>
     /// Inflates this Rect by the specified amount. 
     /// </summary>
     /// <param name="size">The amount to inflate this rectangle. </param>
-    public void Inflate(Size2f size)
-    {
-        Inflate(size.Width, size.Height);
-    }
+    public void Inflate(Size2f size) => Inflate(size.Width, size.Height);
 
     /// <summary>
     /// Creates and returns an inflated copy of the specified Rect2f structure.
@@ -360,34 +337,25 @@ public struct Rect2f : IEquatable<Rect2f>
     /// </summary>
     /// <param name="rect">A rectangle to intersect. </param>
     /// <returns></returns>
-    public readonly Rect2f Intersect(Rect2f rect)
-    {
-        return Intersect(this, rect);
-    }
+    public readonly Rect2f Intersect(Rect2f rect) => Intersect(this, rect);
 
     /// <summary>
     /// Determines if this rectangle intersects with rect. 
     /// </summary>
     /// <param name="rect">Rectangle</param>
     /// <returns></returns>
-    public readonly bool IntersectsWith(Rect2f rect)
-    {
-        return 
-            (X < rect.X + rect.Width) &&
-            (X + Width > rect.X) &&
-            (Y < rect.Y + rect.Height) &&
-            (Y + Height > rect.Y);
-    }
+    public readonly bool IntersectsWith(Rect2f rect) =>
+        (X < rect.X + rect.Width) &&
+        (X + Width > rect.X) &&
+        (Y < rect.Y + rect.Height) &&
+        (Y + Height > rect.Y);
 
     /// <summary>
     /// Gets a Rect2f structure that contains the union of two Rect2f structures. 
     /// </summary>
     /// <param name="rect">A rectangle to union. </param>
     /// <returns></returns>
-    public readonly Rect2f Union(Rect2f rect)
-    {
-        return Union(this, rect);
-    }
+    public readonly Rect2f Union(Rect2f rect) => Union(this, rect);
 
     /// <summary>
     /// Gets a Rect2f structure that contains the union of two Rect2f structures. 
@@ -406,17 +374,11 @@ public struct Rect2f : IEquatable<Rect2f>
     }
         
     /// <inheritdoc />
-    public readonly bool Equals(Rect2f other)
-    {
-        return X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height);
-    }
-        
+    public readonly bool Equals(Rect2f other) => X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height);
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Rect2f other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Rect2f other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -435,10 +397,7 @@ public struct Rect2f : IEquatable<Rect2f>
     }
         
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y} width:{Width} height:{Height})";
-    }
+    public override readonly string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

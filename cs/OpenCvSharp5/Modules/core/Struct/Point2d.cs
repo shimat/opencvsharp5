@@ -69,10 +69,7 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point2d lhs, Point2d rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Point2d lhs, Point2d rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two CvPoint2D32f objects. The result specifies whether the values of the X or Y properties of the two CvPoint2D32f objects are unequal.
@@ -80,10 +77,7 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point2d lhs, Point2d rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Point2d lhs, Point2d rhs) => !lhs.Equals(rhs);
 
     #endregion
 
@@ -167,17 +161,11 @@ public struct Point2d : IEquatable<Point2d>
     #region Override
 
     /// <inheritdoc />
-    public readonly bool Equals(Point2d other)
-    {
-        return X.Equals(other.X) && Y.Equals(other.Y);
-    }
-        
+    public readonly bool Equals(Point2d other) => X.Equals(other.X) && Y.Equals(other.Y);
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Point2d other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Point2d other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -192,10 +180,7 @@ public struct Point2d : IEquatable<Point2d>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y})";
-    }
+    public override readonly string ToString() => $"(x:{X} y:{Y})";
 
     #endregion
 
@@ -207,20 +192,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double Distance(Point2d p1, Point2d p2)
-    {
-        return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
-    }
+    public static double Distance(Point2d p1, Point2d p2) => Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
 
     /// <summary>
     /// Returns the distance between the specified two points
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double DistanceTo(Point2d p)
-    {
-        return Distance(this, p);
-    }
+    public readonly double DistanceTo(Point2d p) => Distance(this, p);
 
     /// <summary>
     /// Calculates the dot product of two 2D vectors.
@@ -228,20 +207,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double DotProduct(Point2d p1, Point2d p2)
-    {
-        return p1.X*p2.X + p1.Y*p2.Y;
-    }
+    public static double DotProduct(Point2d p1, Point2d p2) => p1.X*p2.X + p1.Y*p2.Y;
 
     /// <summary>
     /// Calculates the dot product of two 2D vectors.
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double DotProduct(Point2d p)
-    {
-        return DotProduct(this, p);
-    }
+    public readonly double DotProduct(Point2d p) => DotProduct(this, p);
 
     /// <summary>
     /// Calculates the cross product of two 2D vectors.
@@ -249,20 +222,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double CrossProduct(Point2d p1, Point2d p2)
-    {
-        return p1.X*p2.Y - p2.X*p1.Y;
-    }
+    public static double CrossProduct(Point2d p1, Point2d p2) => p1.X*p2.Y - p2.X*p1.Y;
 
     /// <summary>
     /// Calculates the cross product of two 2D vectors.
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double CrossProduct(Point2d p)
-    {
-        return CrossProduct(this, p);
-    }
+    public readonly double CrossProduct(Point2d p) => CrossProduct(this, p);
 
     #endregion
 }

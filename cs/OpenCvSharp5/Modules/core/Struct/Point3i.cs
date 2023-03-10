@@ -68,10 +68,7 @@ public struct Point3i : IEquatable<Point3i>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point3i lhs, Point3i rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Point3i lhs, Point3i rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two CvPoint2D32f objects. The result specifies whether the values of the X or Y properties of the two CvPoint2D32f objects are unequal.
@@ -79,10 +76,7 @@ public struct Point3i : IEquatable<Point3i>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point3i lhs, Point3i rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Point3i lhs, Point3i rhs) => !lhs.Equals(rhs);
 
     #endregion
 
@@ -106,10 +100,7 @@ public struct Point3i : IEquatable<Point3i>
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public static Point3i operator -(Point3i pt)
-    {
-        return pt.Negate();
-    }
+    public static Point3i operator -(Point3i pt) => pt.Negate();
 
     /// <summary>
     /// Unary minus operator
@@ -169,17 +160,11 @@ public struct Point3i : IEquatable<Point3i>
     #region Override
 
     /// <inheritdoc />
-    public readonly bool Equals(Point3i other)
-    {
-        return X == other.X && Y == other.Y && Z == other.Z;
-    }
-        
+    public readonly bool Equals(Point3i other) => X == other.X && Y == other.Y && Z == other.Z;
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Point3i other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Point3i other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -197,10 +182,7 @@ public struct Point3i : IEquatable<Point3i>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y} z:{Z})";
-    }
-        
+    public override readonly string ToString() => $"(x:{X} y:{Y} z:{Z})";
+
     #endregion
 }
