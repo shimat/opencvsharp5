@@ -94,9 +94,9 @@ jobs:
             --collect:"XPlat Code Coverage;Format=json,opencover,cobertura" \
             --settings OpenCvSharp5.Tests/coverlet.runsettings
           cp $(find . -name "coverage.cobertura.xml") .
-          ls ${{github.workspace}}/cs/
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator -reports:"coverage.cobertura.xml" -targetdir:"report" -reporttypes:"Html;MarkdownSummary"
+          echo "$(cat report/Summary.md)" >> $GITHUB_STEP_SUMMARY
 
       - name: Store Code Coverage Raw Results
         uses: actions/upload-artifact@v3
