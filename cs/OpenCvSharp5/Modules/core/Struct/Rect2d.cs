@@ -397,10 +397,10 @@ public struct Rect2d : IEquatable<Rect2d>
     public readonly bool Equals(Rect2d other) => X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height);
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Rect2d other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Rect2d other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
+    public readonly override int GetHashCode()
     {
         unchecked
         {
@@ -413,7 +413,7 @@ public struct Rect2d : IEquatable<Rect2d>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
+    public readonly override string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

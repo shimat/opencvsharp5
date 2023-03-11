@@ -99,7 +99,7 @@ public struct DMatch
 #pragma warning restore 1591
 
     /// <inheritdoc />
-    public override readonly string ToString() =>
+    public readonly override string ToString() =>
         // ReSharper disable once UseStringInterpolation
         $"DMatch (QueryIdx:{QueryIdx}, TrainIdx:{TrainIdx}, ImgIdx:{ImgIdx}, Distance:{Distance})";
 }

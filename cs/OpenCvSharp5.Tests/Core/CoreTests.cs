@@ -12,10 +12,7 @@ public class CoreTests
     }
 
     [Fact]
-    public void GetTickCount()
-    {
-        testOutputHelper.WriteLine("cv::getTickCount() = {0}", Cv2.GetTickCount());
-    }
+    public void GetTickCount() => testOutputHelper.WriteLine("cv::getTickCount() = {0}", Cv2.GetTickCount());
 
     [Fact]
     public void GetBuildInformation()

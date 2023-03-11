@@ -52,20 +52,7 @@ public readonly struct TermCriteria : IEquatable<TermCriteria>
 
     public override bool Equals(object? obj) => obj is TermCriteria other && Equals(other);
 
-    public override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-        unchecked
-        {
-            var hashCode = Type.GetHashCode();
-            hashCode = (hashCode * 397) ^ MaxCount.GetHashCode();
-            hashCode = (hashCode * 397) ^ Epsilon.GetHashCode();
-            return hashCode;
-        }
-#else
-            return HashCode.Combine((int) Type, MaxCount, Epsilon);
-#endif
-    }
+    public override int GetHashCode() => HashCode.Combine((int) Type, MaxCount, Epsilon);
 
     public static bool operator ==(TermCriteria left, TermCriteria right) => left.Equals(right);
 

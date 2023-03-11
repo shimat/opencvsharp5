@@ -74,23 +74,13 @@ public struct Size : IEquatable<Size>
     public readonly bool Equals(Size other) => Width == other.Width && Height == other.Height;
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Size other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Size other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-        unchecked
-        {
-            return (Width * 397) ^ Height;
-        }
-#else
-            return HashCode.Combine(Width, Height);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(Width, Height);
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(width:{Width} height:{Height})";
+    public readonly override string ToString() => $"(width:{Width} height:{Height})";
 
     #endregion
 

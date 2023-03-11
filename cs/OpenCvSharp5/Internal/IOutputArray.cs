@@ -28,14 +28,11 @@ public class OutputArrayHandle : SafeHandle
     }
 
     /// <inheritdoc />
-    protected override bool ReleaseHandle()
-    {
-        throw new NotImplementedException();
-        //NativeMethods.HandleException(
-        //    NativeMethods.core_OutputArray_delete(handle));
-        //return true;
-    }
+    protected override bool ReleaseHandle() => throw new NotImplementedException();
 
+    //NativeMethods.HandleException(
+    //    NativeMethods.core_OutputArray_delete(handle));
+    //return true;
     /// <inheritdoc />
     public override bool IsInvalid => handle == IntPtr.Zero;
 }

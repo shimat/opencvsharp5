@@ -164,23 +164,13 @@ public struct Point2d : IEquatable<Point2d>
     public readonly bool Equals(Point2d other) => X.Equals(other.X) && Y.Equals(other.Y);
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Point2d other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Point2d other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                return (X.GetHashCode() * 397) ^ Y.GetHashCode();
-            }
-#else
-        return HashCode.Combine(X, Y);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(X, Y);
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y})";
+    public readonly override string ToString() => $"(x:{X} y:{Y})";
 
     #endregion
 

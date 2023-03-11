@@ -57,19 +57,7 @@ public readonly struct Rangef : IEquatable<Rangef>
 
     public override bool Equals(object? obj) => obj is Rangef other && Equals(other);
 
-    public override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = Start.GetHashCode();
-                hashCode = (hashCode * 397) ^ End.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(Start, End);
-#endif
-    }
+    public override int GetHashCode() => HashCode.Combine(Start, End);
 
     public static bool operator ==(Rangef left, Rangef right) => left.Equals(right);
 

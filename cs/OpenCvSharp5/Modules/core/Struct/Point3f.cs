@@ -174,26 +174,13 @@ public struct Point3f : IEquatable<Point3f>
     public readonly bool Equals(Point3f other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Point3f other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Point3f other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = X.GetHashCode();
-                hashCode = (hashCode * 397) ^ Y.GetHashCode();
-                hashCode = (hashCode * 397) ^ Z.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(X, Y, Z);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(X, Y, Z);
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y} z:{Z})";
+    public readonly override string ToString() => $"(x:{X} y:{Y} z:{Z})";
 
     #endregion
 

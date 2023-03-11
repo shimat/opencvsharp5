@@ -140,17 +140,7 @@ public struct Vec2d : IVec<Vec2d, double>, IEquatable<Vec2d>
     public static bool operator !=(Vec2d a, Vec2d b) => !(a == b);
 
     /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                return (Item0.GetHashCode() * 397) ^ Item1.GetHashCode();
-            }
-#else
-        return HashCode.Combine(Item0, Item1);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(Item0, Item1);
 
     /// <inheritdoc />
     public readonly override string ToString() => $"{nameof(Vec2d)} ({Item0}, {Item1})";

@@ -395,10 +395,10 @@ public struct Rect : IEquatable<Rect>
     public readonly bool Equals(Rect other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Rect other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Rect other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
+    public readonly override int GetHashCode()
     {
         unchecked
         {
@@ -411,7 +411,7 @@ public struct Rect : IEquatable<Rect>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
+    public readonly override string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

@@ -206,10 +206,10 @@ public struct Scalar : IEquatable<Scalar>
     public readonly bool Equals(Scalar other) => Val0.Equals(other.Val0) && Val1.Equals(other.Val1) && Val2.Equals(other.Val2) && Val3.Equals(other.Val3);
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Scalar other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Scalar other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
+    public readonly override int GetHashCode()
     {
 #if NET48 || NETSTANDARD2_0
             unchecked
@@ -226,7 +226,7 @@ public struct Scalar : IEquatable<Scalar>
     }
         
     /// <inheritdoc />
-    public override readonly string ToString() => $"[{Val0}, {Val1}, {Val2}, {Val3}]";
+    public readonly override string ToString() => $"[{Val0}, {Val1}, {Val2}, {Val3}]";
 
     #endregion
 

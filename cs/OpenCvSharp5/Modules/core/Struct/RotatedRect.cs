@@ -85,20 +85,7 @@ public struct RotatedRect : IEquatable<RotatedRect>
 
     public override bool Equals(object? obj) => obj is RotatedRect other && Equals(other);
 
-    public override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-        unchecked
-        {
-            var hashCode = Center.GetHashCode();
-            hashCode = (hashCode * 397) ^ Size.GetHashCode();
-            hashCode = (hashCode * 397) ^ Angle.GetHashCode();
-            return hashCode;
-        }
-#else
-            return HashCode.Combine(Center, Size, Angle);
-#endif
-    }
+    public override int GetHashCode() => HashCode.Combine(Center, Size, Angle);
 
     public static bool operator ==(RotatedRect left, RotatedRect right) => left.Equals(right);
 

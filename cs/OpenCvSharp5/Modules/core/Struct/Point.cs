@@ -155,23 +155,13 @@ public struct Point : IEquatable<Point>
     public readonly bool Equals(Point other) => X == other.X && Y == other.Y;
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Point other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Point other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                return (X.GetHashCode() * 397) ^ Y.GetHashCode();
-            }
-#else
-        return HashCode.Combine(X, Y);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(X, Y);
 
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y})";
+    public readonly override string ToString() => $"(x:{X} y:{Y})";
 
     #endregion
 

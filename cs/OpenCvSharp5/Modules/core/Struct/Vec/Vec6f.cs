@@ -207,23 +207,7 @@ public struct Vec6f : IVec<Vec6f, float>, IEquatable<Vec6f>
     public static bool operator !=(Vec6f a, Vec6f b) => !a.Equals(b);
 
     /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = Item0.GetHashCode();
-                hashCode = (hashCode * 397) ^ Item1.GetHashCode();
-                hashCode = (hashCode * 397) ^ Item2.GetHashCode();
-                hashCode = (hashCode * 397) ^ Item3.GetHashCode();
-                hashCode = (hashCode * 397) ^ Item4.GetHashCode();
-                hashCode = (hashCode * 397) ^ Item5.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(Item0, Item1, Item2, Item3, Item4, Item5);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(Item0, Item1, Item2, Item3, Item4, Item5);
 
     /// <inheritdoc />
     public readonly override string ToString() => $"{nameof(Vec6f)} ({Item0}, {Item1}, {Item2}, {Item3}, {Item4}, {Item5})";

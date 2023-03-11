@@ -181,21 +181,7 @@ public struct Vec4w : IVec<Vec4w, ushort>, IEquatable<Vec4w>
     public static bool operator !=(Vec4w a, Vec4w b) => !a.Equals(b);
 
     /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-        unchecked
-        {
-            var hashCode = Item0.GetHashCode();
-            hashCode = (hashCode * 397) ^ Item1.GetHashCode();
-            hashCode = (hashCode * 397) ^ Item2.GetHashCode();
-            hashCode = (hashCode * 397) ^ Item3.GetHashCode();
-            return hashCode;
-        }
-#else
-            return HashCode.Combine(Item0, Item1, Item2, Item3);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(Item0, Item1, Item2, Item3);
 
     /// <inheritdoc />
     public readonly override string ToString() => $"{nameof(Vec4w)} ({Item0}, {Item1}, {Item2}, {Item3})";

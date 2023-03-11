@@ -377,10 +377,10 @@ public struct Rect2f : IEquatable<Rect2f>
     public readonly bool Equals(Rect2f other) => X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height);
 
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj) => obj is Rect2f other && Equals(other);
+    public readonly override bool Equals(object? obj) => obj is Rect2f other && Equals(other);
 
     /// <inheritdoc />
-    public override readonly int GetHashCode()
+    public readonly override int GetHashCode()
     {
 #if NET48 || NETSTANDARD2_0
             unchecked
@@ -397,7 +397,7 @@ public struct Rect2f : IEquatable<Rect2f>
     }
         
     /// <inheritdoc />
-    public override readonly string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
+    public readonly override string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

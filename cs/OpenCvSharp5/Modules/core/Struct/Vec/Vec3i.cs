@@ -163,20 +163,7 @@ public struct Vec3i : IVec<Vec3i, int>, IEquatable<Vec3i>
     public static bool operator !=(Vec3i a, Vec3i b) => !a.Equals(b);
 
     /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = Item0;
-                hashCode = (hashCode * 397) ^ Item1;
-                hashCode = (hashCode * 397) ^ Item2;
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(Item0, Item1, Item2);
-#endif
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(Item0, Item1, Item2);
 
     /// <inheritdoc />
     public readonly override string ToString() => $"{nameof(Vec3i)} ({Item0}, {Item1}, {Item2})";
