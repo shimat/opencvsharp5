@@ -81,15 +81,9 @@ public struct RotatedRect : IEquatable<RotatedRect>
 
 #pragma warning disable CS1591
 
-    public bool Equals(RotatedRect other)
-    {
-        return Center.Equals(other.Center) && Size.Equals(other.Size) && Angle.Equals(other.Angle);
-    }
+    public bool Equals(RotatedRect other) => Center.Equals(other.Center) && Size.Equals(other.Size) && Angle.Equals(other.Angle);
 
-    public override bool Equals(object? obj)
-    {
-        return obj is RotatedRect other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is RotatedRect other && Equals(other);
 
     public override int GetHashCode()
     {
@@ -106,15 +100,9 @@ public struct RotatedRect : IEquatable<RotatedRect>
 #endif
     }
 
-    public static bool operator ==(RotatedRect left, RotatedRect right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(RotatedRect left, RotatedRect right) => left.Equals(right);
 
-    public static bool operator !=(RotatedRect left, RotatedRect right)
-    {
-        return !left.Equals(right);
-    }
+    public static bool operator !=(RotatedRect left, RotatedRect right) => !left.Equals(right);
 
 #pragma warning restore CS1591
 }

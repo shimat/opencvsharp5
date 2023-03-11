@@ -39,9 +39,8 @@ public struct Scalar : IEquatable<Scalar>
     /// </summary>
     public double this[int i]
     {
-        get
-        {
-            return i switch
+        get =>
+            i switch
             {
                 0 => Val0,
                 1 => Val1,
@@ -49,7 +48,6 @@ public struct Scalar : IEquatable<Scalar>
                 3 => Val3,
                 _ => throw new ArgumentOutOfRangeException(nameof(i)),
             };
-        }
         set
         {
             switch (i)
@@ -127,10 +125,7 @@ public struct Scalar : IEquatable<Scalar>
     /// <param name="r"></param>
     /// <param name="g"></param>
     /// <param name="b"></param>
-    public static Scalar FromRgb(int r, int g, int b)
-    {
-        return new(b, g, r);
-    }
+    public static Scalar FromRgb(int r, int g, int b) => new(b, g, r);
 
     /// <summary>
     /// Gets random color
@@ -208,17 +203,11 @@ public struct Scalar : IEquatable<Scalar>
     #region Override
 
     /// <inheritdoc />
-    public readonly bool Equals(Scalar other)
-    {
-        return Val0.Equals(other.Val0) && Val1.Equals(other.Val1) && Val2.Equals(other.Val2) && Val3.Equals(other.Val3);
-    }
-        
+    public readonly bool Equals(Scalar other) => Val0.Equals(other.Val0) && Val1.Equals(other.Val1) && Val2.Equals(other.Val2) && Val3.Equals(other.Val3);
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Scalar other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Scalar other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -237,10 +226,7 @@ public struct Scalar : IEquatable<Scalar>
     }
         
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"[{Val0}, {Val1}, {Val2}, {Val3}]";
-    }
+    public override readonly string ToString() => $"[{Val0}, {Val1}, {Val2}, {Val3}]";
 
     #endregion
 
@@ -252,10 +238,7 @@ public struct Scalar : IEquatable<Scalar>
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static bool operator ==(Scalar s1, Scalar s2)
-    {
-        return s1.Equals(s2);
-    }
+    public static bool operator ==(Scalar s1, Scalar s2) => s1.Equals(s2);
 
     /// <summary>
     /// 
@@ -263,10 +246,7 @@ public struct Scalar : IEquatable<Scalar>
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public static bool operator !=(Scalar s1, Scalar s2)
-    {
-        return !s1.Equals(s2);
-    }
+    public static bool operator !=(Scalar s1, Scalar s2) => !s1.Equals(s2);
 
     #endregion
 
@@ -277,10 +257,7 @@ public struct Scalar : IEquatable<Scalar>
     /// </summary>
     /// <param name="v"></param>
     /// <returns></returns>
-    public static Scalar All(double v)
-    {
-        return new(v, v, v, v);
-    }
+    public static Scalar All(double v) => new(v, v, v, v);
 
     /// <summary>
     /// 
@@ -288,50 +265,37 @@ public struct Scalar : IEquatable<Scalar>
     /// <param name="it"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public readonly Scalar Mul(Scalar it, double scale)
-    {
-        return new(Val0*it.Val0*scale, Val1*it.Val1*scale,
+    public readonly Scalar Mul(Scalar it, double scale) =>
+        new(Val0*it.Val0*scale, Val1*it.Val1*scale,
             Val2*it.Val2*scale, Val3*it.Val3*scale);
-    }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="it"></param>
     /// <returns></returns>
-    public readonly Scalar Mul(Scalar it)
-    {
-        return Mul(it, 1);
-    }
+    public readonly Scalar Mul(Scalar it) => Mul(it, 1);
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public readonly Scalar Conj()
-    {
-        return new(Val0, -Val1, -Val2, -Val3);
-    }
+    public readonly Scalar Conj() => new(Val0, -Val1, -Val2, -Val3);
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public readonly bool IsReal()
-    {
+    public readonly bool IsReal() =>
         // ReSharper disable CompareOfFloatsByEqualityOperator
-        return Val1 == 0 && Val2 == 0 && Val3 == 0;
-    }
+        Val1 == 0 && Val2 == 0 && Val3 == 0;
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     // ReSharper disable once InconsistentNaming
-    public readonly Vec3b ToVec3b()
-    {
-        return new((byte)Val0, (byte)Val1, (byte)Val2);
-    }
+    public readonly Vec3b ToVec3b() => new((byte)Val0, (byte)Val1, (byte)Val2);
 
     #endregion
 

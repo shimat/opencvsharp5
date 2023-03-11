@@ -53,15 +53,9 @@ public readonly struct Rangef : IEquatable<Rangef>
     public static Range All => new (int.MinValue, int.MaxValue);
 
 #pragma warning disable CS1591
-    public bool Equals(Rangef other)
-    {
-        return Start.Equals(other.Start) && End.Equals(other.End);
-    }
+    public bool Equals(Rangef other) => Start.Equals(other.Start) && End.Equals(other.End);
 
-    public override bool Equals(object? obj)
-    {
-        return obj is Rangef other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is Rangef other && Equals(other);
 
     public override int GetHashCode()
     {
@@ -77,14 +71,8 @@ public readonly struct Rangef : IEquatable<Rangef>
 #endif
     }
 
-    public static bool operator ==(Rangef left, Rangef right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(Rangef left, Rangef right) => left.Equals(right);
 
-    public static bool operator !=(Rangef left, Rangef right)
-    {
-        return !left.Equals(right);
-    }
+    public static bool operator !=(Rangef left, Rangef right) => !left.Equals(right);
 #pragma warning restore CS1591
 }

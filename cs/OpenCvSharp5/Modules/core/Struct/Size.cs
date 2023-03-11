@@ -56,10 +56,7 @@ public struct Size : IEquatable<Size>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Size lhs, Size rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Size lhs, Size rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two CvPoint objects. The result specifies whether the members of each object are unequal.
@@ -67,27 +64,18 @@ public struct Size : IEquatable<Size>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(Size lhs, Size rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Size lhs, Size rhs) => !lhs.Equals(rhs);
 
     #endregion
 
     #region Override
         
     /// <inheritdoc />
-    public readonly bool Equals(Size other)
-    {
-        return Width == other.Width && Height == other.Height;
-    }
-        
+    public readonly bool Equals(Size other) => Width == other.Width && Height == other.Height;
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Size other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Size other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -102,10 +90,8 @@ public struct Size : IEquatable<Size>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(width:{Width} height:{Height})";
-    }
+    public override readonly string ToString() => $"(width:{Width} height:{Height})";
+
     #endregion
 
 }

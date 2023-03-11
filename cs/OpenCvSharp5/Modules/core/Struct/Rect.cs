@@ -104,10 +104,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Rect lhs, Rect rhs)
-    {
-        return lhs.Equals(rhs);
-    }
+    public static bool operator ==(Rect lhs, Rect rhs) => lhs.Equals(rhs);
 
     /// <summary>
     /// Compares two Rect objects. The result specifies whether the members of each object are unequal.
@@ -115,10 +112,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="lhs">A Point to compare.</param>
     /// <param name="rhs">A Point to compare.</param>
     /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(Rect lhs, Rect rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
+    public static bool operator !=(Rect lhs, Rect rhs) => !lhs.Equals(rhs);
 
     #endregion
 
@@ -145,10 +139,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="rect"></param>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public static Rect operator -(Rect rect, Point pt)
-    {
-        return new (rect.X - pt.X, rect.Y - pt.Y, rect.Width, rect.Height);
-    }
+    public static Rect operator -(Rect rect, Point pt) => new (rect.X - pt.X, rect.Y - pt.Y, rect.Width, rect.Height);
 
     /// <summary>
     /// Shifts rectangle by a certain offset
@@ -163,10 +154,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect operator +(Rect rect, Size size)
-    {
-        return new (rect.X, rect.Y, rect.Width + size.Width, rect.Height + size.Height);
-    }
+    public static Rect operator +(Rect rect, Size size) => new (rect.X, rect.Y, rect.Width + size.Width, rect.Height + size.Height);
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -181,10 +169,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect operator -(Rect rect, Size size)
-    {
-        return new Rect(rect.X, rect.Y, rect.Width - size.Width, rect.Height - size.Height);
-    }
+    public static Rect operator -(Rect rect, Size size) => new Rect(rect.X, rect.Y, rect.Width - size.Width, rect.Height - size.Height);
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -204,10 +189,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="b">A rectangle to intersect. </param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
-    public static Rect operator &(Rect a, Rect b)
-    {
-        return Intersect(a, b);
-    }
+    public static Rect operator &(Rect a, Rect b) => Intersect(a, b);
 
     /// <summary>
     /// Gets a Rect structure that contains the union of two Rect structures. 
@@ -216,10 +198,7 @@ public struct Rect : IEquatable<Rect>
     /// <param name="b">A rectangle to union. </param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
-    public static Rect operator |(Rect a, Rect b)
-    {
-        return Union(a, b);
-    }
+    public static Rect operator |(Rect a, Rect b) => Union(a, b);
 
     #endregion
 
@@ -301,33 +280,25 @@ public struct Rect : IEquatable<Rect>
     /// <param name="x">x-coordinate of the point</param>
     /// <param name="y">y-coordinate of the point</param>
     /// <returns></returns>
-    public readonly bool Contains(int x, int y)
-    {
-        return (X <= x && Y <= y && X + Width > x && Y + Height > y);
-    }
+    public readonly bool Contains(int x, int y) => (X <= x && Y <= y && X + Width > x && Y + Height > y);
 
     /// <summary>
     /// Determines if the specified point is contained within the rectangular region defined by this Rectangle. 
     /// </summary>
     /// <param name="pt">point</param>
     /// <returns></returns>
-    public readonly bool Contains(Point pt)
-    {
-        return Contains(pt.X, pt.Y);
-    }
+    public readonly bool Contains(Point pt) => Contains(pt.X, pt.Y);
 
     /// <summary>
     /// Determines if the specified rectangle is contained within the rectangular region defined by this Rectangle. 
     /// </summary>
     /// <param name="rect">rectangle</param>
     /// <returns></returns>
-    public readonly bool Contains(Rect rect)
-    {
-        return X <= rect.X &&
-               (rect.X + rect.Width) <= (X + Width) &&
-               Y <= rect.Y &&
-               (rect.Y + rect.Height) <= (Y + Height);
-    }
+    public readonly bool Contains(Rect rect) =>
+        X <= rect.X &&
+        (rect.X + rect.Width) <= (X + Width) &&
+        Y <= rect.Y &&
+        (rect.Y + rect.Height) <= (Y + Height);
 
     /// <summary>
     /// Inflates this Rect by the specified amount. 
@@ -346,10 +317,7 @@ public struct Rect : IEquatable<Rect>
     /// Inflates this Rect by the specified amount. 
     /// </summary>
     /// <param name="size">The amount to inflate this rectangle. </param>
-    public void Inflate(Size size)
-    {
-        Inflate(size.Width, size.Height);
-    }
+    public void Inflate(Size size) => Inflate(size.Width, size.Height);
 
     /// <summary>
     /// Creates and returns an inflated copy of the specified Rect structure.
@@ -387,35 +355,26 @@ public struct Rect : IEquatable<Rect>
     /// </summary>
     /// <param name="rect">A rectangle to intersect. </param>
     /// <returns></returns>
-    public readonly Rect Intersect(Rect rect)
-    {
-        return Intersect(this, rect);
-    }
+    public readonly Rect Intersect(Rect rect) => Intersect(this, rect);
 
     /// <summary>
     /// Determines if this rectangle intersects with rect. 
     /// </summary>
     /// <param name="rect">Rectangle</param>
     /// <returns></returns>
-    public readonly bool IntersectsWith(Rect rect)
-    {
-        return 
-            (X < rect.X + rect.Width) &&
-            (X + Width > rect.X) &&
-            (Y < rect.Y + rect.Height) &&
-            (Y + Height > rect.Y);
-    }
+    public readonly bool IntersectsWith(Rect rect) =>
+        (X < rect.X + rect.Width) &&
+        (X + Width > rect.X) &&
+        (Y < rect.Y + rect.Height) &&
+        (Y + Height > rect.Y);
 
     /// <summary>
     /// Gets a Rect structure that contains the union of two Rect structures. 
     /// </summary>
     /// <param name="rect">A rectangle to union. </param>
     /// <returns></returns>
-    public readonly Rect Union(Rect rect)
-    {
-        return Union(this, rect);
-    }
-        
+    public readonly Rect Union(Rect rect) => Union(this, rect);
+
     /// <summary>
     /// Gets a Rect structure that contains the union of two Rect structures. 
     /// </summary>
@@ -433,17 +392,11 @@ public struct Rect : IEquatable<Rect>
     }
         
     /// <inheritdoc />
-    public readonly bool Equals(Rect other)
-    {
-        return X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
-    }
-        
+    public readonly bool Equals(Rect other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
+
     /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Rect other && Equals(other);
-    }
-        
+    public override readonly bool Equals(object? obj) => obj is Rect other && Equals(other);
+
     /// <inheritdoc />
     public override readonly int GetHashCode()
     {
@@ -458,10 +411,7 @@ public struct Rect : IEquatable<Rect>
     }
 
     /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y} width:{Width} height:{Height})";
-    }
+    public override readonly string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

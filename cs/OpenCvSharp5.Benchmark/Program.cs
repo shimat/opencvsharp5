@@ -2,11 +2,11 @@
 using BenchmarkDotNet.Running;
 using OpenCvSharp5;
 
-var summary = BenchmarkRunner.Run<MatFieldsMeasurement>();
+BenchmarkRunner.Run<MatFieldsMeasurement>();
 
 public class MatFieldsMeasurement
 {
-    private int LoopCount = 10000;
+    private const int LoopCount = 10000;
     
     [Benchmark]
     public int RowCol()
