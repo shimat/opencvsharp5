@@ -1,4 +1,7 @@
-﻿namespace OpenCvSharp5.Internal;
+﻿using System.Numerics;
+using System.Reflection;
+
+namespace OpenCvSharp5.Internal;
 
 internal static class SaturateCast
 {
@@ -63,4 +66,23 @@ internal static class SaturateCast
     public static ulong ToUInt64(long v) => (ulong)Math.Max(v, 0);
 
     public static long ToInt64(ulong v) => (long)Math.Min(v, long.MaxValue);
+
+    public static TOut IntToInt<TInInt, TOut>(TInInt v)
+        where TInInt : IBinaryInteger<TInInt>
+        where TOut : IBinaryInteger<TOut>
+    {
+        return TOut.CreateSaturating(v);
+        throw new NotImplementedException();
+    }
+
+    public static TOut FloatToInt<TInFloat, TOut>(TInFloat v)
+        where TInFloat : IBinaryFloatingPointIeee754<TInFloat>
+        where TOut : IBinaryInteger<TOut>
+    {
+        //throw new NotImplementedException();
+        
+        var rounded = TInFloat.Round(v,0, MidpointRounding.ToEven); 
+        var iv = int.CreateSaturating(rounded);
+        return IntToInt<int, TOut>(iv);
+    }
 }

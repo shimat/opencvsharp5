@@ -1,5 +1,7 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
@@ -23,7 +25,7 @@ public interface IVec2<T>
     /// <param name="item0"></param>
     /// <param name="item1"></param>
     public void Deconstruct(out T item0, out T item1) => (item0, item1) = (Item0, Item1);
-    
+
     /// <summary>
     /// Indexer
     /// </summary>
@@ -93,6 +95,17 @@ public interface IVec2<T>
     public static IVec2<T> operator /(IVec2<T> a, double alpha) => a.Divide(alpha);
 }
 
+public static class Vec2
+{
+    /// <summary>
+    /// returns a Vec with all elements set to v0
+    /// </summary>
+    /// <param name="v0"></param>
+    /// <returns></returns>
+    public static Vec2<T> All<T>(T v0)
+        where T : unmanaged, INumber<T> => new(v0, v0);
+}
+
 /// <summary>
 /// 2-Tuple
 /// </summary>
@@ -129,14 +142,9 @@ public struct Vec2<T>
     {
         Item0 = item0;
         Item1 = item1;
-    }
 
-    /// <summary>
-    /// returns a Vec with all elements set to v0
-    /// </summary>
-    /// <param name="v0"></param>
-    /// <returns></returns>
-    public static Vec2<T> All(T v0) => new(v0, v0);
+        SaturateCast.FloatToInt<double, int>(111.1);
+    }
     
     /// <summary>
     /// Indexer
@@ -194,40 +202,31 @@ public struct Vec2<T>
 
     /// <inheritdoc />
     public readonly override string ToString() => $"{GetType().Name} ({Item0}, {Item1})";
-}
-
-public struct Vec2b_
-{
-    public byte Item0;
-    public byte Item1;
 
     /// <summary>
-    /// Indexer
+    /// this + other
     /// </summary>
-    /// <param name="i"></param>
+    /// <param name="other"></param>
     /// <returns></returns>
-    public byte this[int i]
+    public readonly Vec2<T> Add(Vec2<T> other)
     {
-        get
-        {
-            switch (i)
-            {
-                case 0:
-                    return Item0;
-                case 1:
-                    return Item1;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(i));
-            }
-        }
-        set
-        {
-            switch (i)
-            {
-                case 0: Item0 = value; break;
-                case 1: Item1 = value; break;
-                default: throw new ArgumentOutOfRangeException(nameof(i));
-            }
-        }
+        throw new NotImplementedException();
+        //return new(
+        //    SaturateCast.ToByte(Item0 + other.Item0),
+        //    SaturateCast.ToByte(Item1 + other.Item1));
     }
+}
+
+public struct Vec2bTry : IVec2<byte>
+{
+    public byte Item0 { get; set; }
+    public byte Item1 { get; set; }
+
+    public IVec2<byte> Add(IVec2<byte> other) => throw new NotImplementedException();
+
+    public IVec2<byte> Subtract(IVec2<byte> other) => throw new NotImplementedException();
+
+    public IVec2<byte> Multiply(double alpha) => throw new NotImplementedException();
+
+    public IVec2<byte> Divide(double alpha) => throw new NotImplementedException();
 }
