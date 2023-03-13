@@ -1,13 +1,11 @@
-﻿global using Point2d_ = OpenCvSharp5.Point_<double>;
-
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct Point_<T> : IEquatable<Point_<T>>
-    where T : INumber<T>, IConvertible
+    where T : IBinaryInteger<T>, IConvertible
 {
     public T X;
     public T Y;

@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
 /// <summary>
@@ -37,14 +35,14 @@ public struct Point : IEquatable<Point>
 #pragma warning disable 1591
 
     // ReSharper disable once InconsistentNaming
-    public readonly Vec2i ToVec2i() => new(X, Y);
+    public readonly Vec2<int> ToVec2i() => new(X, Y);
 
-    public static implicit operator Vec2i(Point point) => point.ToVec2i();
+    public static implicit operator Vec2<int>(Point point) => point.ToVec2i();
 
     // ReSharper disable once InconsistentNaming
-    public static Point FromVec2i(Vec2i vec) => new(vec.Item0, vec.Item1);
+    public static Point FromVec2i(Vec2<int> vec) => new(vec.Item0, vec.Item1);
 
-    public static implicit operator Point(Vec2i vec) => FromVec2i(vec);
+    public static implicit operator Point(Vec2<int> vec) => FromVec2i(vec);
 
 #pragma warning restore 1591
 

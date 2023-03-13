@@ -45,14 +45,14 @@ public struct Point2f : IEquatable<Point2f>
     public static implicit operator Point2f(Point point) => FromPoint(point);
 
     // ReSharper disable once InconsistentNaming
-    public readonly Vec2f ToVec2f() => new(X, Y);
+    public readonly Vec2<float> ToVec2f() => new(X, Y);
 
-    public static implicit operator Vec2f(Point2f point) => point.ToVec2f();
+    public static implicit operator Vec2<float>(Point2f point) => point.ToVec2f();
 
     // ReSharper disable once InconsistentNaming
-    public static Point2f FromVec2f(Vec2f vec) => new(vec.Item0, vec.Item1);
+    public static Point2f FromVec2f(Vec2<float> vec) => new(vec.Item0, vec.Item1);
 
-    public static implicit operator Point2f(Vec2f vec) => FromVec2f(vec);
+    public static implicit operator Point2f(Vec2<float> vec) => FromVec2f(vec);
 
 #pragma warning restore 1591
 
