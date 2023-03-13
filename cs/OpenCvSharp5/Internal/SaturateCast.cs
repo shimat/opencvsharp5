@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5.Internal;
 
@@ -66,23 +68,47 @@ internal static class SaturateCast
     public static ulong ToUInt64(long v) => (ulong)Math.Max(v, 0);
 
     public static long ToInt64(ulong v) => (long)Math.Min(v, long.MaxValue);
-
-    public static TOut IntToInt<TInInt, TOut>(TInInt v)
-        where TInInt : IBinaryInteger<TInInt>
-        where TOut : IBinaryInteger<TOut>
+    
+    public static TOut Cast<TIn, TOut>(TIn v)
+        where TIn : unmanaged, IBinaryNumber<TIn>
+        where TOut : unmanaged, IBinaryInteger<TOut>
     {
         return TOut.CreateSaturating(v);
-        throw new NotImplementedException();
+        /*
+        if (TIn.IsInteger(v))
+            return IntToInt<TIn, TOut>(v);
+        
+        var tIn = typeof(IBinaryFloatingPointIeee754<>).MakeGenericType(typeof(TIn));
+        var methodBase = typeof(SaturateCast).GetMethod(nameof(FloatToIntWithRounding), BindingFlags.Static | BindingFlags.Public);
+        var genericMethod = methodBase?.MakeGenericMethod(tIn, typeof(TOut));
+        if (genericMethod is null)
+            throw new NotSupportedException($"Failed to get MethodInfo (TIn={tIn.Name}, TOut={typeof(TOut).Name})");
+        var result = genericMethod.Invoke(null, new object[] { v });
+        if (result is null)
+            throw new NotSupportedException($"{nameof(FloatToInt)} returned null");
+        return (TOut)result;
+        //*/
     }
 
+    public static TOut IntToInt<TInInt, TOut>(TInInt v)
+        where TInInt : unmanaged, IBinaryNumber<TInInt>
+        where TOut : unmanaged, IBinaryInteger<TOut> =>
+        TOut.CreateSaturating(v);
+
     public static TOut FloatToInt<TInFloat, TOut>(TInFloat v)
-        where TInFloat : IBinaryFloatingPointIeee754<TInFloat>
-        where TOut : IBinaryInteger<TOut>
+        where TInFloat : unmanaged, IBinaryNumber<TInFloat>
+        where TOut : unmanaged, IBinaryInteger<TOut>
     {
-        //throw new NotImplementedException();
-        
+        //var rounded = TInFloat.Round(v,0, MidpointRounding.ToEven); 
+        //var iv = int.CreateSaturating(rounded);
+        return TOut.CreateSaturating(v);
+    }
+
+    public static TOut FloatToIntWithRounding<TInFloat, TOut>(TInFloat v)
+        where TInFloat : unmanaged, IBinaryFloatingPointIeee754<TInFloat>
+        where TOut : unmanaged, IBinaryInteger<TOut>
+    {
         var rounded = TInFloat.Round(v,0, MidpointRounding.ToEven); 
-        var iv = int.CreateSaturating(rounded);
-        return IntToInt<int, TOut>(iv);
+        return TOut.CreateSaturating(rounded);
     }
 }

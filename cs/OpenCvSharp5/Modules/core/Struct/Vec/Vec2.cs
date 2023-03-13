@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
-using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
@@ -142,8 +140,6 @@ public struct Vec2<T>
     {
         Item0 = item0;
         Item1 = item1;
-
-        SaturateCast.FloatToInt<double, int>(111.1);
     }
     
     /// <summary>
@@ -208,25 +204,41 @@ public struct Vec2<T>
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public readonly Vec2<T> Add(Vec2<T> other)
-    {
-        throw new NotImplementedException();
-        //return new(
-        //    SaturateCast.ToByte(Item0 + other.Item0),
-        //    SaturateCast.ToByte(Item1 + other.Item1));
-    }
-}
+    public readonly Vec2<T> Add(Vec2<T> other) => new(
+        T.CreateSaturating(Item0 + other.Item0),
+        T.CreateSaturating(Item1 + other.Item1));
 
-public struct Vec2bTry : IVec2<byte>
-{
-    public byte Item0 { get; set; }
-    public byte Item1 { get; set; }
+    /// <summary>
+    /// this - other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> Subtract(Vec2<T> other) => new(
+        T.CreateSaturating(Item0 - other.Item0),
+        T.CreateSaturating(Item1 - other.Item1));
 
-    public IVec2<byte> Add(IVec2<byte> other) => throw new NotImplementedException();
+    /// <summary>
+    /// this * alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> Multiply(double alpha) => new(
+        T.CreateSaturating(double.CreateSaturating(Item0) * alpha),
+        T.CreateSaturating(double.CreateSaturating(Item1) * alpha));
 
-    public IVec2<byte> Subtract(IVec2<byte> other) => throw new NotImplementedException();
+    /// <summary>
+    /// this / alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> Divide(double alpha) => new(
+        T.CreateSaturating(double.CreateSaturating(Item0) / alpha),
+        T.CreateSaturating(double.CreateSaturating(Item1) / alpha));
 
-    public IVec2<byte> Multiply(double alpha) => throw new NotImplementedException();
-
-    public IVec2<byte> Divide(double alpha) => throw new NotImplementedException();
+#pragma warning disable 1591
+    public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b) => a.Add(b);
+    public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b) => a.Subtract(b);
+    public static Vec2<T> operator *(Vec2<T> a, double alpha) => a.Multiply(alpha);
+    public static Vec2<T> operator /(Vec2<T> a, double alpha) => a.Divide(alpha);
+#pragma warning restore 1591
 }
