@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
+/// <summary>
+/// 2-Tuple interface
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public interface IVec2<T>
     : IEquatable<IVec2<T>>
     where T : unmanaged, INumber<T>
@@ -54,9 +58,15 @@ public interface IVec2<T>
         other is not null &&
         Item0 == other.Item0 &&
         Item1 == other.Item1;
-    
+
+    /// <summary>
+    /// Returns the hash code for the current object.
+    /// </summary>
     public int GetHashCode() => HashCode.Combine(Item0, Item1);
-    
+
+    /// <summary>
+    /// Returns a string that represents the value of the instance.
+    /// </summary>
     public string ToString() => $"{GetType().Name} ({Item0}, {Item1})";
 
     /// <summary>
@@ -87,12 +97,17 @@ public interface IVec2<T>
     /// <returns></returns>
     public IVec2<T> Divide(double alpha);
 
+#pragma warning disable 1591
     public static IVec2<T> operator +(IVec2<T> a, IVec2<T> b) => a.Add(b);
     public static IVec2<T> operator -(IVec2<T> a, IVec2<T> b) => a.Subtract(b);
     public static IVec2<T> operator *(IVec2<T> a, double alpha) => a.Multiply(alpha);
     public static IVec2<T> operator /(IVec2<T> a, double alpha) => a.Divide(alpha);
+#pragma warning restore 1591
 }
 
+/// <summary>
+/// 2-Tuple factory methods
+/// </summary>
 public static class Vec2
 {
     /// <summary>
@@ -110,19 +125,18 @@ public static class Vec2
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
-public struct Vec2<T>
-    : IEquatable<Vec2<T>>
+public record struct Vec2<T>(T Item0, T Item1)
     where T : unmanaged, INumber<T>
 {
     /// <summary>
     /// The value of the first component of this object.
     /// </summary>
-    public T Item0;
+    public T Item0 = Item0;
 
     /// <summary>
     /// The value of the second component of this object.
     /// </summary>
-    public T Item1;
+    public T Item1 = Item1;
 
     /// <summary>
     /// Deconstructing a Vector
@@ -130,17 +144,6 @@ public struct Vec2<T>
     /// <param name="item0"></param>
     /// <param name="item1"></param>
     public readonly void Deconstruct(out T item0, out T item1) => (item0, item1) = (Item0, Item1);
-
-    /// <summary>
-    /// Initializer
-    /// </summary>
-    /// <param name="item0"></param>
-    /// <param name="item1"></param>
-    public Vec2(T item0, T item1)
-    {
-        Item0 = item0;
-        Item1 = item1;
-    }
     
     /// <summary>
     /// Indexer
@@ -166,39 +169,7 @@ public struct Vec2<T>
             }
         }
     }
-
-    /// <inheritdoc />
-    public readonly bool Equals(Vec2<T> other) =>
-        Item0 == other.Item0 &&
-        Item1 == other.Item1;
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj)
-    {
-        if (obj is null) return false;
-        return obj is Vec2<T> v && Equals(v);
-    }
-
-    /// <summary> 
-    /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
-    public static bool operator ==(Vec2<T> a, Vec2<T> b) => a.Equals(b);
-
-    /// <summary> 
-    /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
-    public static bool operator !=(Vec2<T> a, Vec2<T> b) => !a.Equals(b);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode() => HashCode.Combine(Item0, Item1);
-
-    /// <inheritdoc />
-    public readonly override string ToString() => $"{GetType().Name} ({Item0}, {Item1})";
-
+    
     /// <summary>
     /// this + other
     /// </summary>
