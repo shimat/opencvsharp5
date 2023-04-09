@@ -120,7 +120,7 @@ public static class Vec2
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
 public record struct Vec2<T>(T Item0, T Item1)
-    where T : unmanaged, INumber<T>, IMinMaxValue<T>
+    where T : unmanaged, INumber<T>
 {
     /// <summary>
     /// The value of the first component of this object.
@@ -196,7 +196,7 @@ public record struct Vec2<T>(T Item0, T Item1)
             }
         }
     }
-
+    
     /// <summary>
     /// this + other
     /// </summary>
@@ -205,88 +205,68 @@ public record struct Vec2<T>(T Item0, T Item1)
     public readonly Vec2<T> Add(Vec2<T> other)
     {
         T result0, result1;
-        
+
         if (typeof(T).IsAssignableTo(typeof(IBinaryInteger<>)))
         {
-            if (T.MaxValue - Item0 >= other.Item0)
+            var size = Marshal.SizeOf<T>();
+            if (typeof(T).IsAssignableTo(typeof(ISignedNumber<>)))
             {
-                result0 = Item0 + other.Item0;
-                result1 = Item1 + other.Item1;
-            }
-            else
-            {
-                var size = Marshal.SizeOf<T>();
-                if (typeof(T).IsAssignableTo(typeof(ISignedNumber<>)))
+                if (size < 4)
                 {
-                    switch (size)
-                    {
-                        case < 4:
-                        {
-                            var item0 = int.CreateSaturating(Item0);
-                            var item1 = int.CreateSaturating(Item1);
-                            var otherItem0 = int.CreateSaturating(other.Item0);
-                            var otherItem1 = int.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                        case < 8:
-                        {
-                            var item0 = long.CreateSaturating(Item0);
-                            var item1 = long.CreateSaturating(Item1);
-                            var otherItem0 = long.CreateSaturating(other.Item0);
-                            var otherItem1 = long.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                        default:
-                        {
-                            var item0 = Int128.CreateSaturating(Item0);
-                            var item1 = Int128.CreateSaturating(Item1);
-                            var otherItem0 = Int128.CreateSaturating(other.Item0);
-                            var otherItem1 = Int128.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                    }
+                    var item0 = int.CreateSaturating(Item0);
+                    var item1 = int.CreateSaturating(Item1);
+                    var otherItem0 = int.CreateSaturating(other.Item0);
+                    var otherItem1 = int.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
+                }
+                else if (size < 8)
+                {
+                    var item0 = long.CreateSaturating(Item0);
+                    var item1 = long.CreateSaturating(Item1);
+                    var otherItem0 = long.CreateSaturating(other.Item0);
+                    var otherItem1 = long.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
                 }
                 else
                 {
-                    switch (size)
-                    {
-                        case < 4:
-                        {
-                            var item0 = uint.CreateSaturating(Item0);
-                            var item1 = uint.CreateSaturating(Item1);
-                            var otherItem0 = uint.CreateSaturating(other.Item0);
-                            var otherItem1 = uint.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                        case < 8:
-                        {
-                            var item0 = ulong.CreateSaturating(Item0);
-                            var item1 = ulong.CreateSaturating(Item1);
-                            var otherItem0 = ulong.CreateSaturating(other.Item0);
-                            var otherItem1 = ulong.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                        default:
-                        {
-                            var item0 = UInt128.CreateSaturating(Item0);
-                            var item1 = UInt128.CreateSaturating(Item1);
-                            var otherItem0 = UInt128.CreateSaturating(other.Item0);
-                            var otherItem1 = UInt128.CreateSaturating(other.Item1);
-                            result0 = T.CreateSaturating(item0 + otherItem0);
-                            result1 = T.CreateSaturating(item1 + otherItem1);
-                            break;
-                        }
-                    }
+                    var item0 = Int128.CreateSaturating(Item0);
+                    var item1 = Int128.CreateSaturating(Item1);
+                    var otherItem0 = Int128.CreateSaturating(other.Item0);
+                    var otherItem1 = Int128.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
+                }
+            }
+            else
+            {
+                if (size < 4)
+                {
+                    var item0 = uint.CreateSaturating(Item0);
+                    var item1 = uint.CreateSaturating(Item1);
+                    var otherItem0 = uint.CreateSaturating(other.Item0);
+                    var otherItem1 = uint.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
+                }
+                else if (size < 8)
+                {
+                    var item0 = ulong.CreateSaturating(Item0);
+                    var item1 = ulong.CreateSaturating(Item1);
+                    var otherItem0 = ulong.CreateSaturating(other.Item0);
+                    var otherItem1 = ulong.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
+                }
+                else
+                {
+                    var item0 = UInt128.CreateSaturating(Item0);
+                    var item1 = UInt128.CreateSaturating(Item1);
+                    var otherItem0 = UInt128.CreateSaturating(other.Item0);
+                    var otherItem1 = UInt128.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 + otherItem0);
+                    result1 = T.CreateSaturating(item1 + otherItem1);
                 }
             }
         }
@@ -345,9 +325,101 @@ public record struct Vec2<T>(T Item0, T Item1)
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public readonly Vec2<T> Subtract(Vec2<T> other) => new(
-        T.CreateSaturating(Item0 - other.Item0),
-        T.CreateSaturating(Item1 - other.Item1));
+    public readonly Vec2<T> Subtract(Vec2<T> other)
+    {
+        T result0, result1;
+
+        if (typeof(T).IsAssignableTo(typeof(IBinaryInteger<>)))
+        {
+            var size = Marshal.SizeOf<T>();
+            if (typeof(T).IsAssignableTo(typeof(ISignedNumber<>)))
+            {
+                if (size < 4)
+                {
+                    var item0 = int.CreateSaturating(Item0);
+                    var item1 = int.CreateSaturating(Item1);
+                    var otherItem0 = int.CreateSaturating(other.Item0);
+                    var otherItem1 = int.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+                else if (size < 8)
+                {
+                    var item0 = long.CreateSaturating(Item0);
+                    var item1 = long.CreateSaturating(Item1);
+                    var otherItem0 = long.CreateSaturating(other.Item0);
+                    var otherItem1 = long.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+                else
+                {
+                    var item0 = Int128.CreateSaturating(Item0);
+                    var item1 = Int128.CreateSaturating(Item1);
+                    var otherItem0 = Int128.CreateSaturating(other.Item0);
+                    var otherItem1 = Int128.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+            }
+            else
+            {
+                if (size < 4)
+                {
+                    var item0 = uint.CreateSaturating(Item0);
+                    var item1 = uint.CreateSaturating(Item1);
+                    var otherItem0 = uint.CreateSaturating(other.Item0);
+                    var otherItem1 = uint.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+                else if (size < 8)
+                {
+                    var item0 = ulong.CreateSaturating(Item0);
+                    var item1 = ulong.CreateSaturating(Item1);
+                    var otherItem0 = ulong.CreateSaturating(other.Item0);
+                    var otherItem1 = ulong.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+                else
+                {
+                    var item0 = UInt128.CreateSaturating(Item0);
+                    var item1 = UInt128.CreateSaturating(Item1);
+                    var otherItem0 = UInt128.CreateSaturating(other.Item0);
+                    var otherItem1 = UInt128.CreateSaturating(other.Item1);
+                    result0 = T.CreateSaturating(item0 - otherItem0);
+                    result1 = T.CreateSaturating(item1 - otherItem1);
+                }
+            }
+        }
+        else
+        {
+            var item0 = double.CreateSaturating(Item0);
+            var item1 = double.CreateSaturating(Item1);
+            var otherItem0 = double.CreateSaturating(other.Item0);
+            var otherItem1 = double.CreateSaturating(other.Item1);
+            result0 = T.CreateSaturating(item0 - otherItem0);
+            result1 = T.CreateSaturating(item1 - otherItem1);
+        }
+
+        return new Vec2<T>(result0, result1);
+    }
+
+    /// <summary>
+    /// this - other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> SubtractChecked(Vec2<T> other)
+    {
+        var item0 = checked(Item0 - other.Item0);
+        var item1 = checked(Item1 - other.Item1);
+
+        return new Vec2<T>(
+            T.CreateSaturating(item0),
+            T.CreateSaturating(item1));
+    }
 
     /// <summary>
     /// this * alpha
@@ -370,8 +442,5 @@ public record struct Vec2<T>(T Item0, T Item1)
 #pragma warning disable 1591
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b) => a.Add(b);
     public static Vec2<T> operator checked +(Vec2<T> a, Vec2<T> b) => a.AddChecked(b);
-    public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b) => a.Subtract(b);
-    public static Vec2<T> operator *(Vec2<T> a, double alpha) => a.Multiply(alpha);
-    public static Vec2<T> operator /(Vec2<T> a, double alpha) => a.Divide(alpha);
 #pragma warning restore 1591
 }
