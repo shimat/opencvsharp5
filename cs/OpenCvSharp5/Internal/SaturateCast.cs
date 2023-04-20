@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace OpenCvSharp5.Internal;
+﻿namespace OpenCvSharp5.Internal;
 
 internal static class SaturateCast
 {
@@ -65,33 +63,15 @@ internal static class SaturateCast
     public static ulong ToUInt64(long v) => (ulong)Math.Max(v, 0);
 
     public static long ToInt64(ulong v) => (long)Math.Min(v, long.MaxValue);
-    
-    public static TOut Cast<TIn, TOut>(TIn v)
-        where TIn : unmanaged, IBinaryNumber<TIn>
-        where TOut : unmanaged, IBinaryInteger<TOut> =>
-        TOut.CreateSaturating(v);
 
-    public static TOut CastWithRounding<TIn, TOut>(TIn v)
-        where TIn : unmanaged, IBinaryNumber<TIn>
-        where TOut : unmanaged, IBinaryInteger<TOut>
-    {
-        if (TIn.IsInteger(v))
-            return IntToInt<TIn, TOut>(v);
-        
-        var doubleValue = double.CreateSaturating(v);
-        return FloatToIntWithRounding<double, TOut>(doubleValue);
-    }
-
-    public static TOut IntToInt<TInInt, TOut>(TInInt v)
-        where TInInt : unmanaged, IBinaryNumber<TInInt>
-        where TOut : unmanaged, IBinaryInteger<TOut> =>
-        TOut.CreateSaturating(v);
-    
-    public static TOut FloatToIntWithRounding<TInFloat, TOut>(TInFloat v)
-        where TInFloat : unmanaged, IBinaryFloatingPointIeee754<TInFloat>
-        where TOut : unmanaged, IBinaryInteger<TOut>
-    {
-        var rounded = TInFloat.Round(v,0, MidpointRounding.ToEven); 
-        return TOut.CreateSaturating(rounded);
-    }
+    public static Half ToHalf(byte v) => (Half)(float)v;
+    public static Half ToHalf(sbyte v) => (Half)(float)v;
+    public static Half ToHalf(short v) => (Half)(float)v;
+    public static Half ToHalf(ushort v) => (Half)(float)v;
+    public static Half ToHalf(uint v) => (Half)(float)v;
+    public static Half ToHalf(int v) => (Half)(float)v;
+    public static Half ToHalf(ulong v) => (Half)(float)v;
+    public static Half ToHalf(long v) => (Half)(float)v;
+    public static Half ToHalf(float v) => (Half)v;
+    public static Half ToHalf(double v) => (Half)v;
 }
