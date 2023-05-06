@@ -6,7 +6,6 @@ namespace OpenCvSharp5;
 /// <summary>
 /// Struct for matching: query descriptor index, train descriptor index, train image index and distance between descriptors.
 /// </summary>
-[SuppressMessage("Microsoft.Design", "CA1815: Override equals and operator equals on value types")]
 public struct DMatch
 {
     /// <summary>
@@ -94,7 +93,7 @@ public struct DMatch
     public static explicit operator DMatch(Vec4f v) => FromVec4f(v);
 
     // ReSharper disable once InconsistentNaming
-    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item0, (int)v.Item1, (int)v.Item2, v.Item3);
+    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item1, (int)v.Item2, (int)v.Item3, v.Item4);
 
 #pragma warning restore 1591
 

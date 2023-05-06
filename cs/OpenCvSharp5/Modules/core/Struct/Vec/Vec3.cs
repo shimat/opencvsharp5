@@ -83,6 +83,16 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
         T.CreateSaturating(Item3 + other.Item3));
 
     /// <summary>
+    /// this + other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec3<T> AddChecked(Vec3<T> other) => new(
+        T.CreateSaturating(checked(Item1 + other.Item1)),
+        T.CreateSaturating(checked(Item2 + other.Item2)),
+        T.CreateSaturating(checked(Item3 + other.Item3)));
+
+    /// <summary>
     /// this - other
     /// </summary>
     /// <param name="other"></param>
@@ -91,6 +101,16 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
         T.CreateSaturating(Item1 - other.Item1),
         T.CreateSaturating(Item2 - other.Item2),
         T.CreateSaturating(Item3 - other.Item3));
+
+    /// <summary>
+    /// this - other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec3<T> SubtractChecked(Vec3<T> other) => new(
+        T.CreateSaturating(checked(Item1 - other.Item1)),
+        T.CreateSaturating(checked(Item2 - other.Item2)),
+        T.CreateSaturating(checked(Item3 - other.Item3)));
 
     /// <summary>
     /// this * alpha
@@ -114,7 +134,9 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
 
 #pragma warning disable 1591
     public static Vec3<T> operator +(Vec3<T> a, Vec3<T> b) => a.Add(b);
+    public static Vec3<T> operator checked +(Vec3<T> a, Vec3<T> b) => a.AddChecked(b);
     public static Vec3<T> operator -(Vec3<T> a, Vec3<T> b) => a.Subtract(b);
+    public static Vec3<T> operator checked -(Vec3<T> a, Vec3<T> b) => a.SubtractChecked(b);
     public static Vec3<T> operator *(Vec3<T> a, double alpha) => a.Multiply(alpha);
     public static Vec3<T> operator /(Vec3<T> a, double alpha) => a.Divide(alpha);
 #pragma warning restore 1591

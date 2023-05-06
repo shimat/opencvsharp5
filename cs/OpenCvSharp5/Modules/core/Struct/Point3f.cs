@@ -8,7 +8,6 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-[SuppressMessage("Design", "CA1051: Do not declare visible instance fields")]
 // ReSharper disable once InconsistentNaming
 public struct Point3f : IEquatable<Point3f>
 {
@@ -62,7 +61,7 @@ public struct Point3f : IEquatable<Point3f>
     public static implicit operator Point3f(Vec3f vec) => FromVec3f(vec);
 
     // ReSharper disable once InconsistentNaming
-    public static Point3f FromVec3f(Vec3f vec) => new (vec.Item0, vec.Item1, vec.Item2);
+    public static Point3f FromVec3f(Vec3f vec) => new (vec.Item1, vec.Item2, vec.Item3);
 
 #pragma warning restore 1591
 

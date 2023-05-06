@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
 /// <summary>
@@ -163,13 +161,13 @@ public struct Scalar : IEquatable<Scalar>
     // ReSharper disable InconsistentNaming
     public static Scalar FromDouble(double val) => new(val);
     public static Scalar FromDMatch(DMatch d) => new(d.QueryIdx, d.TrainIdx, d.ImgIdx, d.Distance);
-    public static Scalar FromVec3b(Vec3b v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec3f(Vec3f v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4f(Vec4f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6f(Vec6f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec3d(Vec3d v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4d(Vec4d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6d(Vec6d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec3b(Vec3b v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec3f(Vec3f v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4f(Vec4f v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec6f(Vec6f v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec3d(Vec3d v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4d(Vec4d v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec6d(Vec6d v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
     public static Scalar FromPoint(Point p) => new(p.X, p.Y);
     public static Scalar FromPoint2f(Point2f p) => new(p.X, p.Y);
     public static Scalar FromPoint2d(Point2d p) => new(p.X, p.Y);

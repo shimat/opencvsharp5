@@ -90,6 +90,17 @@ public record struct Vec4<T>(T Item1, T Item2, T Item3, T Item4)
         T.CreateSaturating(Item2 + other.Item2),
         T.CreateSaturating(Item3 + other.Item3),
         T.CreateSaturating(Item4 + other.Item4));
+    
+    /// <summary>
+    /// this + other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec4<T> AddChecked(Vec4<T> other) => new(
+        T.CreateSaturating(checked(Item1 + other.Item1)),
+        T.CreateSaturating(checked(Item2 + other.Item2)),
+        T.CreateSaturating(checked(Item3 + other.Item3)),
+        T.CreateSaturating(checked(Item4 + other.Item4)));
 
     /// <summary>
     /// this - other
@@ -101,6 +112,17 @@ public record struct Vec4<T>(T Item1, T Item2, T Item3, T Item4)
         T.CreateSaturating(Item2 - other.Item2),
         T.CreateSaturating(Item3 - other.Item3),
         T.CreateSaturating(Item4 - other.Item4));
+    
+    /// <summary>
+    /// this - other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec4<T> SubtractChecked(Vec4<T> other) => new(
+        T.CreateSaturating(checked(Item1 - other.Item1)),
+        T.CreateSaturating(checked(Item2 - other.Item2)),
+        T.CreateSaturating(checked(Item3 - other.Item3)),
+        T.CreateSaturating(checked(Item4 - other.Item4)));
 
     /// <summary>
     /// this * alpha
@@ -126,7 +148,9 @@ public record struct Vec4<T>(T Item1, T Item2, T Item3, T Item4)
 
 #pragma warning disable 1591
     public static Vec4<T> operator +(Vec4<T> a, Vec4<T> b) => a.Add(b);
+    public static Vec4<T> operator checked +(Vec4<T> a, Vec4<T> b) => a.AddChecked(b);
     public static Vec4<T> operator -(Vec4<T> a, Vec4<T> b) => a.Subtract(b);
+    public static Vec4<T> operator checked -(Vec4<T> a, Vec4<T> b) => a.SubtractChecked(b);
     public static Vec4<T> operator *(Vec4<T> a, double alpha) => a.Multiply(alpha);
     public static Vec4<T> operator /(Vec4<T> a, double alpha) => a.Divide(alpha);
 #pragma warning restore 1591

@@ -1,7 +1,4 @@
-﻿
-global using Vec6d = OpenCvSharp5.Vec6<double>;
-global using Vec3b = OpenCvSharp5.Vec3<byte>;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
@@ -111,6 +108,19 @@ public record struct Vec6<T>(T Item1, T Item2, T Item3, T Item4, T Item5, T Item
         T.CreateSaturating(Item4 + other.Item4),
         T.CreateSaturating(Item5 + other.Item5),
         T.CreateSaturating(Item6 + other.Item6));
+    
+    /// <summary>
+    /// this + other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec6<T> AddChecked(Vec6<T> other) => new(
+        T.CreateSaturating(checked(Item1 + other.Item1)),
+        T.CreateSaturating(checked(Item2 + other.Item2)),
+        T.CreateSaturating(checked(Item3 + other.Item3)),
+        T.CreateSaturating(checked(Item4 + other.Item4)),
+        T.CreateSaturating(checked(Item5 + other.Item5)),
+        T.CreateSaturating(checked(Item6 + other.Item6)));
 
     /// <summary>
     /// this - other
@@ -124,6 +134,19 @@ public record struct Vec6<T>(T Item1, T Item2, T Item3, T Item4, T Item5, T Item
         T.CreateSaturating(Item4 - other.Item4),
         T.CreateSaturating(Item5 - other.Item5),
         T.CreateSaturating(Item6 - other.Item6));
+
+    /// <summary>
+    /// this - other
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public readonly Vec6<T> SubtractChecked(Vec6<T> other) => new(
+        T.CreateSaturating(checked(Item1 - other.Item1)),
+        T.CreateSaturating(checked(Item2 - other.Item2)),
+        T.CreateSaturating(checked(Item3 - other.Item3)),
+        T.CreateSaturating(checked(Item4 - other.Item4)),
+        T.CreateSaturating(checked(Item5 - other.Item5)),
+        T.CreateSaturating(checked(Item6 - other.Item6)));
 
     /// <summary>
     /// this * alpha
@@ -153,7 +176,9 @@ public record struct Vec6<T>(T Item1, T Item2, T Item3, T Item4, T Item5, T Item
 
 #pragma warning disable 1591
     public static Vec6<T> operator +(Vec6<T> a, Vec6<T> b) => a.Add(b);
+    public static Vec6<T> operator checked +(Vec6<T> a, Vec6<T> b) => a.AddChecked(b);
     public static Vec6<T> operator -(Vec6<T> a, Vec6<T> b) => a.Subtract(b);
+    public static Vec6<T> operator checked -(Vec6<T> a, Vec6<T> b) => a.SubtractChecked(b);
     public static Vec6<T> operator *(Vec6<T> a, double alpha) => a.Multiply(alpha);
     public static Vec6<T> operator /(Vec6<T> a, double alpha) => a.Divide(alpha);
 #pragma warning restore 1591
