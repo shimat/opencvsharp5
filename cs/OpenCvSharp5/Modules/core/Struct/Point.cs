@@ -7,29 +7,18 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Point : IEquatable<Point>
+public record struct Point(int X, int Y)
 {
     /// <summary>
     /// 
     /// </summary>
-    public int X;
+    public int X = X;
 
     /// <summary>
     /// 
     /// </summary>
-    public int Y;
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    public Point(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    
+    public int Y = Y;
+        
     #region Cast
         
 #pragma warning disable 1591
@@ -49,29 +38,7 @@ public struct Point : IEquatable<Point>
     #endregion
 
     #region Operators
-
-    #region == / !=
-
-    /// <summary>
-    /// Compares two Point objects. The result specifies whether the values of the X and Y properties of the two Point objects are equal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point lhs, Point rhs) => lhs.Equals(rhs);
-
-    /// <summary>
-    /// Compares two Point objects. The result specifies whether the values of the X or Y properties of the two Point objects are unequal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point lhs, Point rhs) => !lhs.Equals(rhs);
-
-    #endregion
-
-    #region + / -
-        
+   
     /// <summary>
     /// Unary plus operator
     /// </summary>
@@ -142,24 +109,6 @@ public struct Point : IEquatable<Point>
     /// <param name="scale"></param>
     /// <returns></returns>
     public static Point operator *(Point pt, double scale) => pt.Multiply(scale);
-
-    #endregion
-
-    #endregion
-
-    #region Override
-
-    /// <inheritdoc />
-    public readonly bool Equals(Point other) => X == other.X && Y == other.Y;
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj) => obj is Point other && Equals(other);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode() => HashCode.Combine(X, Y);
-
-    /// <inheritdoc />
-    public readonly override string ToString() => $"(x:{X} y:{Y})";
 
     #endregion
 

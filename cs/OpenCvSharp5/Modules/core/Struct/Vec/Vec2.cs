@@ -42,13 +42,6 @@ public record struct Vec2<T>(T Item0, T Item1)
     /// <param name="item0"></param>
     /// <param name="item1"></param>
     public readonly void Deconstruct(out T item0, out T item1) => (item0, item1) = (Item0, Item1);
-    
-    /// <summary>
-    /// returns a Vec with all elements set to v0
-    /// </summary>
-    /// <param name="v0"></param>
-    /// <returns></returns>
-    public static Vec2<T> All(T v0) => new(v0, v0);
 
     /// <summary>
     /// Indexer

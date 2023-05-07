@@ -5,35 +5,22 @@ namespace OpenCvSharp5;
 /// <summary>
 /// The class defining termination criteria for iterative algorithms.
 /// </summary>
-public readonly struct TermCriteria : IEquatable<TermCriteria>
+public readonly record struct TermCriteria(CriteriaTypes Type, int MaxCount, double Epsilon)
 {
     /// <summary>
     /// the type of termination criteria: COUNT, EPS or COUNT + EPS
     /// </summary>
-    public readonly CriteriaTypes Type;
+    public readonly CriteriaTypes Type = Type;
 
     /// <summary>
     /// the maximum number of iterations/elements
     /// </summary>
-    public readonly int MaxCount;
+    public readonly int MaxCount = MaxCount;
 
     /// <summary>
     /// the desired accuracy
     /// </summary>
-    public readonly double Epsilon;
-
-    /// <summary>
-    /// full constructor
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="maxCount"></param>
-    /// <param name="epsilon"></param>
-    public TermCriteria(CriteriaTypes type, int maxCount, double epsilon)
-    {
-        Type = type;
-        MaxCount = maxCount;
-        Epsilon = epsilon;
-    }
+    public readonly double Epsilon = Epsilon;
 
     /// <summary>
     /// full constructor with both type (count | epsilon)
@@ -42,21 +29,7 @@ public readonly struct TermCriteria : IEquatable<TermCriteria>
     /// <param name="epsilon"></param>
     public static TermCriteria Both(int maxCount, double epsilon) =>
         new (
-            type: CriteriaTypes.Count | CriteriaTypes.Eps,
-            maxCount: maxCount,
-            epsilon: epsilon);
-
-#pragma warning disable CS1591
-
-    public bool Equals(TermCriteria other) => Type == other.Type && MaxCount == other.MaxCount && Epsilon.Equals(other.Epsilon);
-
-    public override bool Equals(object? obj) => obj is TermCriteria other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine((int) Type, MaxCount, Epsilon);
-
-    public static bool operator ==(TermCriteria left, TermCriteria right) => left.Equals(right);
-
-    public static bool operator !=(TermCriteria left, TermCriteria right) => !left.Equals(right);
-
-#pragma warning restore CS1591
+            Type: CriteriaTypes.Count | CriteriaTypes.Eps,
+            MaxCount: maxCount,
+            Epsilon: epsilon);
 }
