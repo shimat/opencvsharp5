@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
 /// <summary>
@@ -10,51 +8,27 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Rect : IEquatable<Rect>
+public record struct Rect(int X, int Y, int Width, int Height)
 {
-    #region Field
+    /// <summary>
+    /// The x-coordinate of the upper-left corner of the rectangle.
+    /// </summary>
+    public int X = X;
 
     /// <summary>
-    /// 
+    /// The y-coordinate of the upper-left corner of the rectangle.
     /// </summary>
-    public int X;
+    public int Y = Y;
 
     /// <summary>
-    /// 
+    /// The width of the rectangle.
     /// </summary>
-    public int Y;
+    public int Width = Width;
 
     /// <summary>
-    /// 
+    /// he height of the rectangle.
     /// </summary>
-    public int Width;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public int Height;
-
-    /// <summary>
-    /// Represents a Rect structure with its properties left uninitialized. 
-    /// </summary>
-    public static readonly Rect Empty;
-
-    #endregion
-
-    /// <summary>
-    /// Initializes a new instance of the Rectangle class with the specified location and size.
-    /// </summary>
-    /// <param name="x">The x-coordinate of the upper-left corner of the rectangle.</param>
-    /// <param name="y">The y-coordinate of the upper-left corner of the rectangle.</param>
-    /// <param name="width">The width of the rectangle.</param>
-    /// <param name="height">The height of the rectangle.</param>
-    public Rect(int x, int y, int width, int height)
-    {
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
-    }
+    public int Height = Height;
 
     /// <summary>
     /// Initializes a new instance of the Rectangle class with the specified location and size.
@@ -62,11 +36,8 @@ public struct Rect : IEquatable<Rect>
     /// <param name="location">A Point that represents the upper-left corner of the rectangular region.</param>
     /// <param name="size">A Size that represents the width and height of the rectangular region.</param>
     public Rect(Point location, Size size)
+        : this(location.X, location.Y, size.Width, size.Height)
     {
-        X = location.X;
-        Y = location.Y;
-        Width = size.Width;
-        Height = size.Height;
     }
 
     /// <summary>
@@ -95,26 +66,6 @@ public struct Rect : IEquatable<Rect>
     }
 
     #region Operators
-
-    #region == / !=
-
-    /// <summary>
-    /// Compares two Rect objects. The result specifies whether the members of each object are equal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Rect lhs, Rect rhs) => lhs.Equals(rhs);
-
-    /// <summary>
-    /// Compares two Rect objects. The result specifies whether the members of each object are unequal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(Rect lhs, Rect rhs) => !lhs.Equals(rhs);
-
-    #endregion
 
     #region + / -
 
@@ -347,7 +298,7 @@ public struct Rect : IEquatable<Rect>
 
         if (x2 >= x1 && y2 >= y1)
             return new Rect(x1, y1, x2 - x1, y2 - y1);
-        return Empty;
+        return default;
     }
 
     /// <summary>
@@ -390,28 +341,6 @@ public struct Rect : IEquatable<Rect>
 
         return new Rect(x1, y1, x2 - x1, y2 - y1);
     }
-        
-    /// <inheritdoc />
-    public readonly bool Equals(Rect other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj) => obj is Rect other && Equals(other);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-        unchecked
-        {
-            var hashCode = X;
-            hashCode = (hashCode * 397) ^ Y;
-            hashCode = (hashCode * 397) ^ Width;
-            hashCode = (hashCode * 397) ^ Height;
-            return hashCode;
-        }
-    }
-
-    /// <inheritdoc />
-    public readonly override string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }

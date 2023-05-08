@@ -9,55 +9,45 @@ namespace OpenCvSharp5;
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
-public struct Rect2f : IEquatable<Rect2f>
+public record struct Rect2f(float X, float Y, float Width, float Height)
 {
-#pragma warning disable 1591
-    public float X;
-    public float Y;
-    public float Width;
-    public float Height;
-#pragma warning restore 1591
+    /// <summary>
+    /// The x-coordinate of the upper-left corner of the rectangle.
+    /// </summary>
+    public float X = X;
 
     /// <summary>
-    /// Represents a Rect2f structure with its properties left uninitialized. 
+    /// The y-coordinate of the upper-left corner of the rectangle.
     /// </summary>
-    public static readonly Rect2f Empty;
+    public float Y = Y;
 
     /// <summary>
-    /// Constructor
+    /// The width of the rectangle.
     /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
-    public Rect2f(float x, float y, float width, float height)
-    {
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
-    }
+    public float Width = Width;
 
     /// <summary>
-    /// Constructor
+    /// he height of the rectangle.
     /// </summary>
-    /// <param name="location"></param>
-    /// <param name="size"></param>
+    public float Height = Height;
+
+    /// <summary>
+    /// Initializes a new instance of the Rectangle class with the specified location and size.
+    /// </summary>
+    /// <param name="location">A Point that represents the upper-left corner of the rectangular region.</param>
+    /// <param name="size">A Size that represents the width and height of the rectangular region.</param>
     public Rect2f(Point2f location, Size2f size)
+        : this(location.X, location.Y, size.Width, size.Height)
     {
-        X = location.X;
-        Y = location.Y;
-        Width = size.Width;
-        Height = size.Height;
     }
 
     /// <summary>
-    /// 
+    /// Creates a Rectangle structure with the specified edge locations.
     /// </summary>
-    /// <param name="left"></param>
-    /// <param name="top"></param>
-    /// <param name="right"></param>
-    /// <param name="bottom"></param>
+    /// <param name="left">The x-coordinate of the upper-left corner of this Rectangle structure.</param>
+    /// <param name="top">The y-coordinate of the upper-left corner of this Rectangle structure.</param>
+    /// <param name="right">The x-coordinate of the lower-right corner of this Rectangle structure.</param>
+    /// <param name="bottom">The y-coordinate of the lower-right corner of this Rectangle structure.</param>
     // ReSharper disable once InconsistentNaming
     public static Rect2f FromLTRB(float left, float top, float right, float bottom)
     {
@@ -77,26 +67,6 @@ public struct Rect2f : IEquatable<Rect2f>
     }
 
     #region Operators
-
-    #region == / !=
-
-    /// <summary>
-    /// Compares two Rect2f objects. The result specifies whether the members of each object are equal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the members of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Rect2f lhs, Rect2f rhs) => lhs.Equals(rhs);
-
-    /// <summary>
-    /// Compares two Rect2f objects. The result specifies whether the members of each object are unequal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the members of left and right are unequal; otherwise, false.</returns>
-    public static bool operator !=(Rect2f lhs, Rect2f rhs) => !lhs.Equals(rhs);
-
-    #endregion
 
     #region + / -
 
@@ -329,7 +299,7 @@ public struct Rect2f : IEquatable<Rect2f>
 
         if (x2 >= x1 && y2 >= y1)
             return new Rect2f(x1, y1, x2 - x1, y2 - y1);
-        return Empty;
+        return default;
     }
 
     /// <summary>
@@ -372,32 +342,6 @@ public struct Rect2f : IEquatable<Rect2f>
 
         return new Rect2f(x1, y1, x2 - x1, y2 - y1);
     }
-        
-    /// <inheritdoc />
-    public readonly bool Equals(Rect2f other) => X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height);
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj) => obj is Rect2f other && Equals(other);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if NET48 || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = X.GetHashCode();
-                hashCode = (hashCode * 397) ^ Y.GetHashCode();
-                hashCode = (hashCode * 397) ^ Width.GetHashCode();
-                hashCode = (hashCode * 397) ^ Height.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(X, Y, Width, Height);
-#endif
-    }
-        
-    /// <inheritdoc />
-    public readonly override string ToString() => $"(x:{X} y:{Y} width:{Width} height:{Height})";
 
     #endregion
 }
