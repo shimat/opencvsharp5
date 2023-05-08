@@ -1,43 +1,31 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
 /// <summary>
 /// The class represents rotated (i.e. not up-right) rectangles on a plane.
 /// </summary>
+/// <param name="Center">the rectangle mass center</param>
+/// <param name="Size">width and height of the rectangle</param>
+/// <param name="Angle">the rotation angle. When the angle is 0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.</param>
 [StructLayout(LayoutKind.Sequential)]
-[SuppressMessage("Design", "CA1051: Do not declare visible instance fields")]
-public struct RotatedRect : IEquatable<RotatedRect>
+public record struct RotatedRect(Point2f Center, Size2f Size, float Angle)
 {
     /// <summary>
     /// the rectangle mass center
     /// </summary>
-    public Point2f Center;
+    public Point2f Center = Center;
 
     /// <summary>
     /// width and height of the rectangle
     /// </summary>
-    public Size2f Size;
+    public Size2f Size = Size;
 
     /// <summary>
     /// the rotation angle. When the angle is 0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.
     /// </summary>
-    public float Angle;
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="center"></param>
-    /// <param name="size"></param>
-    /// <param name="angle"></param>
-    public RotatedRect(Point2f center, Size2f size, float angle)
-    {
-        Center = center;
-        Size = size;
-        Angle = angle;
-    }
-
+    public float Angle = Angle;
+    
     /// <summary>
     /// returns 4 vertices of the rectangle
     /// </summary>
@@ -78,18 +66,4 @@ public struct RotatedRect : IEquatable<RotatedRect>
         r.Height -= r.Y - 1;
         return r;
     }
-
-#pragma warning disable CS1591
-
-    public bool Equals(RotatedRect other) => Center.Equals(other.Center) && Size.Equals(other.Size) && Angle.Equals(other.Angle);
-
-    public override bool Equals(object? obj) => obj is RotatedRect other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine(Center, Size, Angle);
-
-    public static bool operator ==(RotatedRect left, RotatedRect right) => left.Equals(right);
-
-    public static bool operator !=(RotatedRect left, RotatedRect right) => !left.Equals(right);
-
-#pragma warning restore CS1591
 }

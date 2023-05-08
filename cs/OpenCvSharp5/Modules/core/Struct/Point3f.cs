@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
@@ -9,35 +8,22 @@ namespace OpenCvSharp5;
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
-public struct Point3f : IEquatable<Point3f>
+public record struct Point3f(float X, float Y, float Z)
 {
     /// <summary>
     /// 
     /// </summary>
-    public float X;
+    public float X = X;
 
     /// <summary>
     /// 
     /// </summary>
-    public float Y;
+    public float Y = Y;
 
     /// <summary>
     /// 
     /// </summary>
-    public float Z;
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="z"></param>
-    public Point3f(float x, float y, float z)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
+    public float Z = Z;
 
     #region Cast
 
@@ -68,29 +54,7 @@ public struct Point3f : IEquatable<Point3f>
     #endregion
 
     #region Operators
-
-    #region == / !=
-
-    /// <summary>
-    /// Compares two CvPoint objects. The result specifies whether the values of the X and Y properties of the two CvPoint objects are equal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point3f lhs, Point3f rhs) => lhs.Equals(rhs);
-
-    /// <summary>
-    /// Compares two CvPoint2D32f objects. The result specifies whether the values of the X or Y properties of the two CvPoint2D32f objects are unequal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point3f lhs, Point3f rhs) => !lhs.Equals(rhs);
-
-    #endregion
-
-    #region + / -
-        
+      
     /// <summary>
     /// Unary plus operator
     /// </summary>
@@ -162,25 +126,6 @@ public struct Point3f : IEquatable<Point3f>
     /// <param name="scale"></param>
     /// <returns></returns>
     public static Point3f operator *(Point3f pt, double scale) => pt.Multiply(scale);
-
+    
     #endregion
-
-    #endregion
-
-    #region Override
-
-    /// <inheritdoc />
-    public readonly bool Equals(Point3f other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj) => obj is Point3f other && Equals(other);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode() => HashCode.Combine(X, Y, Z);
-
-    /// <inheritdoc />
-    public readonly override string ToString() => $"(x:{X} y:{Y} z:{Z})";
-
-    #endregion
-
 }

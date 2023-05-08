@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
@@ -8,32 +7,19 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-[SuppressMessage("Design", "CA1051: Do not declare visible instance fields")]
 // ReSharper disable once IdentifierTypo
-public readonly struct Rangef : IEquatable<Rangef>
+public readonly record struct Rangef(float Start, float End)
 {
     /// <summary>
     /// 
     /// </summary>
-    public readonly float Start;
+    public readonly float Start = Start;
 
     /// <summary>
     /// 
     /// </summary>
-    public readonly float End;
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    // ReSharper disable once IdentifierTypo
-    public Rangef(float start, float end)
-    {
-        Start = start;
-        End = end;
-    }
-
+    public readonly float End = End;
+    
     /// <summary>
     /// Convert to Range
     /// </summary>
@@ -51,16 +37,4 @@ public readonly struct Rangef : IEquatable<Rangef>
     /// Range(int.MinValue, int.MaxValue)
     /// </summary>
     public static Range All => new (int.MinValue, int.MaxValue);
-
-#pragma warning disable CS1591
-    public bool Equals(Rangef other) => Start.Equals(other.Start) && End.Equals(other.End);
-
-    public override bool Equals(object? obj) => obj is Rangef other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine(Start, End);
-
-    public static bool operator ==(Rangef left, Rangef right) => left.Equals(right);
-
-    public static bool operator !=(Rangef left, Rangef right) => !left.Equals(right);
-#pragma warning restore CS1591
 }

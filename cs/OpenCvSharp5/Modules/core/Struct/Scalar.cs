@@ -8,29 +8,29 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Scalar : IEquatable<Scalar>
+public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
 {
     #region Field
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val0;
+    public double Val0 = Val0;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val1;
+    public double Val1 = Val1;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val2;
+    public double Val2 = Val2;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val3;
+    public double Val3 = Val3;
 
     /// <summary>
     /// 
@@ -101,22 +101,7 @@ public struct Scalar : IEquatable<Scalar>
         : this(v0, v1, v2, 0)
     {
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="v0"></param>
-    /// <param name="v1"></param>
-    /// <param name="v2"></param>
-    /// <param name="v3"></param>
-    public Scalar(double v0, double v1, double v2, double v3)
-    {
-        Val0 = v0;
-        Val1 = v1;
-        Val2 = v2;
-        Val3 = v3;
-    }
-
+    
     /// <summary>
     /// 
     /// </summary>
@@ -197,57 +182,7 @@ public struct Scalar : IEquatable<Scalar>
 #pragma warning restore 1591
 
     #endregion
-
-    #region Override
-
-    /// <inheritdoc />
-    public readonly bool Equals(Scalar other) => Val0.Equals(other.Val0) && Val1.Equals(other.Val1) && Val2.Equals(other.Val2) && Val3.Equals(other.Val3);
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object? obj) => obj is Scalar other && Equals(other);
-
-    /// <inheritdoc />
-    public readonly override int GetHashCode()
-    {
-#if NET48 || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = Val0.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val1.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val2.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val3.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(Val0, Val1, Val2, Val3);
-#endif
-    }
-        
-    /// <inheritdoc />
-    public readonly override string ToString() => $"[{Val0}, {Val1}, {Val2}, {Val3}]";
-
-    #endregion
-
-    #region Operators
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="s1"></param>
-    /// <param name="s2"></param>
-    /// <returns></returns>
-    public static bool operator ==(Scalar s1, Scalar s2) => s1.Equals(s2);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="s1"></param>
-    /// <param name="s2"></param>
-    /// <returns></returns>
-    public static bool operator !=(Scalar s1, Scalar s2) => !s1.Equals(s2);
-
-    #endregion
-
+    
     #region Methods
 
     /// <summary>

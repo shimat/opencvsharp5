@@ -9,22 +9,8 @@
 /// <summary>
 /// Matrix data type (depth and number of channels)
 /// </summary>
-public readonly struct MatType : IEquatable<MatType>, IEquatable<int>
+public readonly record struct MatType(int Value) : IEquatable<int>
 {
-    /// <summary>
-    /// Entity value
-    /// </summary>
-    public int Value { get; }
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="value"></param>
-    public MatType(int value)
-    {
-        Value = value;
-    }
-
     /// <summary> 
     /// </summary>
     /// <param name="self"></param>
@@ -62,30 +48,13 @@ public readonly struct MatType : IEquatable<MatType>, IEquatable<int>
     /// 
     /// </summary>
     public int Channels => (Value >> CV_CN_SHIFT) + 1;
-
-    public bool Equals(MatType other) => Value == other.Value;
-
+    
     public bool Equals(int other) => Value == other;
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-            return false;
-        if (obj.GetType() != typeof (MatType))
-            return false;
-        return obj is MatType mt && Equals(mt);
-    }
-
-    public static bool operator ==(MatType self, MatType other) => self.Equals(other);
-
-    public static bool operator !=(MatType self, MatType other) => !self.Equals(other);
-
+    
     public static bool operator ==(MatType self, int other) => self.Equals(other);
 
     public static bool operator !=(MatType self, int other) => !self.Equals(other);
-
-    public override int GetHashCode() => Value.GetHashCode();
-
+    
     /// <inheritdoc />
     public override string ToString()
     {
