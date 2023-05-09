@@ -9,7 +9,7 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public class OpenCVException : Exception
+public partial class OpenCVException : Exception
 {
     /// <summary>
     /// The numeric code for error status
@@ -39,7 +39,7 @@ public class OpenCVException : Exception
     /// <summary>
     /// The user data
     /// </summary>
-    public IntPtr UserData { get; }
+    public nint UserData { get; }
 
     /// <summary>
     /// Constructor
@@ -50,8 +50,8 @@ public class OpenCVException : Exception
     /// <param name="fileName">The source file name where error is encountered</param>
     /// <param name="line">The line number in the source where error is encountered</param>
     /// <param name="userData"></param>
-    public OpenCVException(ErrorCode status, string funcName, string errMsg, string fileName, int line, IntPtr userData = default)
-        : base(BuildMessage(status, funcName, errMsg, fileName, line))
+    public OpenCVException(ErrorCode status, string funcName, string errMsg, string fileName, int line, nint userData = default)
+        : base(BuildMessage(status, funcName, errMsg, ref fileName, line))
     {
         Status = status;
         FuncName = funcName;
@@ -69,7 +69,7 @@ public class OpenCVException : Exception
         FileName = info.GetString(nameof(FileName)) ?? "";
         ErrMsg = info.GetString(nameof(ErrMsg)) ?? "";
         Line = info.GetInt32(nameof(Line));
-        UserData = new IntPtr(info.GetInt64(nameof(UserData)));
+        UserData = new nint(info.GetInt64(nameof(UserData)));
     }
 
     /// <inheritdoc />
@@ -116,10 +116,13 @@ public class OpenCVException : Exception
         Line = 0;
         UserData = default;
     }
+    
+    [GeneratedRegex(@".+(?=opencv)")]
+    private static partial Regex ShortenFileNameRegex();
 
-    private static string BuildMessage(ErrorCode status, string funcName, string errMsg, string fileName, int line)
+    private static string BuildMessage(ErrorCode status, string funcName, string errMsg, ref string fileName, int line)
     {
-        fileName = Regex.Replace(fileName, @".*(?=opencv)", "");
+        fileName = ShortenFileNameRegex().Replace(fileName, "");
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             fileName = fileName.Replace("\\", "/");
         return $"{errMsg} (FuncName={funcName}, FileName={fileName}, Line={line}, Status={status})";
