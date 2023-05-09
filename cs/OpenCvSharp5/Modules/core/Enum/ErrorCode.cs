@@ -12,7 +12,7 @@ public enum ErrorCode
     // ReSharper disable InconsistentNaming
 
     /// <summary>
-    /// everithing is ok [CV_StsOk]
+    /// everything is ok [CV_StsOk]
     /// </summary>
     StsOk = 0,
 
@@ -168,7 +168,7 @@ public enum ErrorCode
     StsKernelStructContentErr = -30,
 
     /// <summary>
-    /// incorrect filter ofset value [CV_StsFilterOffsetErr]
+    /// incorrect filter offset value [CV_StsFilterOffsetErr]
     /// </summary>
     StsFilterOffsetErr = -31,
 
