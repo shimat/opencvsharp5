@@ -1,36 +1,22 @@
 ﻿using System.Runtime.InteropServices;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
-/// <summary>
-/// 
+/// <summary> 
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Point2d : IEquatable<Point2d>
+public record struct Point2d(double X, double Y)
 {
     /// <summary>
     /// 
     /// </summary>
-    public double X;
+    public double X = X;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Y;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    public Point2d(double x, double y)
-    {
-        X = x;
-        Y = y;
-    }
+    public double Y = Y;
 
     #region Cast
 
@@ -44,51 +30,18 @@ public struct Point2d : IEquatable<Point2d>
     public static Point2d FromPoint(Point point) => new(point.X, point.Y);
 
     public static implicit operator Point2d(Point point) => new(point.X, point.Y);
-
+    
     // ReSharper disable once InconsistentNaming
-    public readonly Vec2d ToVec2d() => new(X, Y);
+    public static Point2d FromValueTuple((double, double) vec) => new(vec.Item1, vec.Item2);
 
-    public static implicit operator Vec2d(Point2d point) => new(point.X, point.Y);
-
-    // ReSharper disable once InconsistentNaming
-    public static Point2d FromVec2d(Vec2d vec) => new(vec.Item0, vec.Item1);
-
-    public static implicit operator Point2d(Vec2d vec) => new(vec.Item0, vec.Item1);
+    public static implicit operator Point2d((double, double) vec) => new(vec.Item1, vec.Item2);
 
 #pragma warning restore 1591
 
     #endregion
 
     #region Operators
-
-    #region == / !=
-
-    /// <summary>
-    /// Compares two CvPoint objects. The result specifies whether the values of the X and Y properties of the two CvPoint objects are equal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the X and Y values of left and right are equal; otherwise, false.</returns>
-    public static bool operator ==(Point2d lhs, Point2d rhs)
-    {
-        return lhs.Equals(rhs);
-    }
-
-    /// <summary>
-    /// Compares two CvPoint2D32f objects. The result specifies whether the values of the X or Y properties of the two CvPoint2D32f objects are unequal.
-    /// </summary>
-    /// <param name="lhs">A Point to compare.</param>
-    /// <param name="rhs">A Point to compare.</param>
-    /// <returns>This operator returns true if the values of either the X properties or the Y properties of left and right differ; otherwise, false.</returns>
-    public static bool operator !=(Point2d lhs, Point2d rhs)
-    {
-        return !lhs.Equals(rhs);
-    }
-
-    #endregion
-
-    #region + / -
-
+    
     /// <summary>
     /// Unary plus operator
     /// </summary>
@@ -159,44 +112,7 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="scale"></param>
     /// <returns></returns>
     public static Point2d operator *(Point2d pt, double scale) => pt.Multiply(scale);
-
-    #endregion
-
-    #endregion
-
-    #region Override
-
-    /// <inheritdoc />
-    public readonly bool Equals(Point2d other)
-    {
-        return X.Equals(other.X) && Y.Equals(other.Y);
-    }
-        
-    /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Point2d other && Equals(other);
-    }
-        
-    /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if DOTNET_FRAMEWORK || NETSTANDARD2_0
-            unchecked
-            {
-                return (X.GetHashCode() * 397) ^ Y.GetHashCode();
-            }
-#else
-        return HashCode.Combine(X, Y);
-#endif
-    }
-
-    /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"(x:{X} y:{Y})";
-    }
-
+    
     #endregion
 
     #region Methods
@@ -207,20 +123,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double Distance(Point2d p1, Point2d p2)
-    {
-        return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
-    }
+    public static double Distance(Point2d p1, Point2d p2) => Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
 
     /// <summary>
     /// Returns the distance between the specified two points
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double DistanceTo(Point2d p)
-    {
-        return Distance(this, p);
-    }
+    public readonly double DistanceTo(Point2d p) => Distance(this, p);
 
     /// <summary>
     /// Calculates the dot product of two 2D vectors.
@@ -228,20 +138,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double DotProduct(Point2d p1, Point2d p2)
-    {
-        return p1.X*p2.X + p1.Y*p2.Y;
-    }
+    public static double DotProduct(Point2d p1, Point2d p2) => p1.X*p2.X + p1.Y*p2.Y;
 
     /// <summary>
     /// Calculates the dot product of two 2D vectors.
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double DotProduct(Point2d p)
-    {
-        return DotProduct(this, p);
-    }
+    public readonly double DotProduct(Point2d p) => DotProduct(this, p);
 
     /// <summary>
     /// Calculates the cross product of two 2D vectors.
@@ -249,20 +153,14 @@ public struct Point2d : IEquatable<Point2d>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double CrossProduct(Point2d p1, Point2d p2)
-    {
-        return p1.X*p2.Y - p2.X*p1.Y;
-    }
+    public static double CrossProduct(Point2d p1, Point2d p2) => p1.X*p2.Y - p2.X*p1.Y;
 
     /// <summary>
     /// Calculates the cross product of two 2D vectors.
     /// </summary>
     /// <param name="p"></param>
     /// <returns></returns>
-    public readonly double CrossProduct(Point2d p)
-    {
-        return CrossProduct(this, p);
-    }
+    public readonly double CrossProduct(Point2d p) => CrossProduct(this, p);
 
     #endregion
 }

@@ -15,4 +15,8 @@
     <InternalsVIsibleTo Include="$(AssemblyName).Benchmark" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="OpenCvSharp5.props" Pack="true" PackagePath="build\net7.0\OpenCvSharp5.props" />
+  </ItemGroup>
+
 </Project>

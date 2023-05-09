@@ -1,33 +1,35 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace OpenCvSharp5;
 
-namespace OpenCvSharp5;
 #pragma warning disable CA1051
 
 /// <summary>
 /// Struct for matching: query descriptor index, train descriptor index, train image index and distance between descriptors.
 /// </summary>
-[SuppressMessage("Microsoft.Design", "CA1815: Override equals and operator equals on value types")]
-public struct DMatch
+/// <param name="QueryIdx"> query descriptor index</param>
+/// <param name="TrainIdx">train descriptor index</param>
+/// <param name="ImgIdx">train image index</param>
+/// <param name="Distance"></param>
+public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, float Distance)
 {
     /// <summary>
     /// query descriptor index
     /// </summary>
-    public int QueryIdx; 
+    public readonly int QueryIdx = QueryIdx; 
 
     /// <summary>
     /// train descriptor index
     /// </summary>
-    public int TrainIdx; 
-
+    public readonly int TrainIdx = TrainIdx; 
+    
     /// <summary>
     /// train image index
     /// </summary>
-    public int ImgIdx; 
-        
+    public readonly int ImgIdx = ImgIdx; 
+
     /// <summary>
     /// 
     /// </summary>
-    public float Distance;
+    public readonly float Distance = Distance;
 
     /// <summary>
     /// 
@@ -45,22 +47,7 @@ public struct DMatch
         this(queryIdx, trainIdx, -1, distance)
     {
     }
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="queryIdx"></param>
-    /// <param name="trainIdx"></param>
-    /// <param name="imgIdx"></param>
-    /// <param name="distance"></param>
-    public DMatch(int queryIdx, int trainIdx, int imgIdx, float distance)
-    {
-        QueryIdx = queryIdx;
-        TrainIdx = trainIdx;
-        ImgIdx = imgIdx;
-        Distance = distance;
-    }
-
+    
     /// <summary>
     /// Compares by distance (less is better)
     /// </summary>
@@ -94,12 +81,7 @@ public struct DMatch
     public static explicit operator DMatch(Vec4f v) => FromVec4f(v);
 
     // ReSharper disable once InconsistentNaming
-    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item0, (int)v.Item1, (int)v.Item2, v.Item3);
+    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item1, (int)v.Item2, (int)v.Item3, v.Item4);
 
 #pragma warning restore 1591
-
-    /// <inheritdoc />
-    public override readonly string ToString() =>
-        // ReSharper disable once UseStringInterpolation
-        $"DMatch (QueryIdx:{QueryIdx}, TrainIdx:{TrainIdx}, ImgIdx:{ImgIdx}, Distance:{Distance})";
 }

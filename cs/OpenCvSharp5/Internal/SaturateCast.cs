@@ -9,6 +9,7 @@ internal static class SaturateCast
     public static byte ToByte(int v) => (byte)((uint)v <= byte.MaxValue ? v : v > 0 ? byte.MaxValue : 0);
     public static byte ToByte(short v) => ToByte((int)v);
     public static byte ToByte(uint v) => (byte)Math.Min(v, byte.MaxValue);
+    public static byte ToByte(Half v) { var iv = (int)Half.Round(v); return ToByte(iv); }
     public static byte ToByte(float v) { var iv = (int)Math.Round(v); return ToByte(iv); }
     public static byte ToByte(double v) { var iv = (long)Math.Round(v); return ToByte(iv); }
     public static byte ToByte(long v) => (byte)((ulong)v <= byte.MaxValue ? v : v > 0 ? byte.MaxValue : 0);
@@ -36,6 +37,7 @@ internal static class SaturateCast
     public static short ToInt16(ushort v) => (short)Math.Min(v, short.MaxValue);
     public static short ToInt16(int v) => (short)((uint)(v - short.MinValue) <= ushort.MaxValue ? v : v > 0 ? short.MaxValue : short.MinValue);
     public static short ToInt16(uint v) => (short)Math.Min(v, short.MaxValue);
+    public static short ToInt16(Half v) { var iv = (int)Half.Round(v); return ToInt16(iv); }
     public static short ToInt16(float v)  { var iv = (int)Math.Round(v); return ToInt16(iv); }
     public static short ToInt16(double v) { var iv = (int)Math.Round(v); return ToInt16(iv); }
     public static short ToInt16(long v) => (short)((ulong)(v - short.MinValue) <= ushort.MaxValue ? v : v > 0 ? short.MaxValue : short.MinValue);
@@ -63,4 +65,15 @@ internal static class SaturateCast
     public static ulong ToUInt64(long v) => (ulong)Math.Max(v, 0);
 
     public static long ToInt64(ulong v) => (long)Math.Min(v, long.MaxValue);
+
+    public static Half ToHalf(byte v) => (Half)(float)v;
+    public static Half ToHalf(sbyte v) => (Half)(float)v;
+    public static Half ToHalf(short v) => (Half)(float)v;
+    public static Half ToHalf(ushort v) => (Half)(float)v;
+    public static Half ToHalf(uint v) => (Half)(float)v;
+    public static Half ToHalf(int v) => (Half)(float)v;
+    public static Half ToHalf(ulong v) => (Half)(float)v;
+    public static Half ToHalf(long v) => (Half)(float)v;
+    public static Half ToHalf(float v) => (Half)v;
+    public static Half ToHalf(double v) => (Half)v;
 }

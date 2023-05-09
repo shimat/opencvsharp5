@@ -414,15 +414,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     public unsafe byte* DataPointer => (byte*)Data;
 
-    InputArrayHandle IInputArray.ToInputArrayHandle()
-    {
-        throw new NotImplementedException();
-    }
+    InputArrayHandle IInputArray.ToInputArrayHandle() => throw new NotImplementedException();
 
-    OutputArrayHandle IOutputArray.ToOutputArrayHandle()
-    {
-        throw new NotImplementedException();
-    }
+    OutputArrayHandle IOutputArray.ToOutputArrayHandle() => throw new NotImplementedException();
 
     InputOutputArrayHandle IInputOutputArray.ToInputOutputArrayHandle()
     {

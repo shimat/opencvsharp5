@@ -1,6 +1,11 @@
 function BuildForWindows($platform) {
 
     echo "### platform = $platform"
+    
+    if ( (Get-ChildItem -path "opencv").Count -eq 0 ){
+        Write-Host "Initialize opencv submodule in advance. (`git submodule update --init`)"
+        exit 1
+    }
 
     if ($platform -eq "x64") {
         $msbuildPlatform = "x64"

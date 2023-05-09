@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
-#pragma warning disable CA1051
-
 namespace OpenCvSharp5;
 
 /// <summary>
@@ -10,38 +8,37 @@ namespace OpenCvSharp5;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct Scalar : IEquatable<Scalar>
+public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
 {
     #region Field
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val0;
+    public double Val0 = Val0;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val1;
+    public double Val1 = Val1;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val2;
+    public double Val2 = Val2;
 
     /// <summary>
     /// 
     /// </summary>
-    public double Val3;
+    public double Val3 = Val3;
 
     /// <summary>
     /// 
     /// </summary>
     public double this[int i]
     {
-        get
-        {
-            return i switch
+        get =>
+            i switch
             {
                 0 => Val0,
                 1 => Val1,
@@ -49,7 +46,6 @@ public struct Scalar : IEquatable<Scalar>
                 3 => Val3,
                 _ => throw new ArgumentOutOfRangeException(nameof(i)),
             };
-        }
         set
         {
             switch (i)
@@ -105,32 +101,14 @@ public struct Scalar : IEquatable<Scalar>
         : this(v0, v1, v2, 0)
     {
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="v0"></param>
-    /// <param name="v1"></param>
-    /// <param name="v2"></param>
-    /// <param name="v3"></param>
-    public Scalar(double v0, double v1, double v2, double v3)
-    {
-        Val0 = v0;
-        Val1 = v1;
-        Val2 = v2;
-        Val3 = v3;
-    }
-
+    
     /// <summary>
     /// 
     /// </summary>
     /// <param name="r"></param>
     /// <param name="g"></param>
     /// <param name="b"></param>
-    public static Scalar FromRgb(int r, int g, int b)
-    {
-        return new(b, g, r);
-    }
+    public static Scalar FromRgb(int r, int g, int b) => new(b, g, r);
 
     /// <summary>
     /// Gets random color
@@ -168,13 +146,13 @@ public struct Scalar : IEquatable<Scalar>
     // ReSharper disable InconsistentNaming
     public static Scalar FromDouble(double val) => new(val);
     public static Scalar FromDMatch(DMatch d) => new(d.QueryIdx, d.TrainIdx, d.ImgIdx, d.Distance);
-    public static Scalar FromVec3b(Vec3b v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec3f(Vec3f v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4f(Vec4f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6f(Vec6f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec3d(Vec3d v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4d(Vec4d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6d(Vec6d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec3b(Vec3b v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec3f(Vec3f v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4f(Vec4f v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec6f(Vec6f v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec3d(Vec3d v) => new(v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4d(Vec4d v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
+    public static Scalar FromVec6d(Vec6d v) => new(v.Item1, v.Item2, v.Item3, v.Item4);
     public static Scalar FromPoint(Point p) => new(p.X, p.Y);
     public static Scalar FromPoint2f(Point2f p) => new(p.X, p.Y);
     public static Scalar FromPoint2d(Point2d p) => new(p.X, p.Y);
@@ -204,72 +182,7 @@ public struct Scalar : IEquatable<Scalar>
 #pragma warning restore 1591
 
     #endregion
-
-    #region Override
-
-    /// <inheritdoc />
-    public readonly bool Equals(Scalar other)
-    {
-        return Val0.Equals(other.Val0) && Val1.Equals(other.Val1) && Val2.Equals(other.Val2) && Val3.Equals(other.Val3);
-    }
-        
-    /// <inheritdoc />
-    public override readonly bool Equals(object? obj)
-    {
-        return obj is Scalar other && Equals(other);
-    }
-        
-    /// <inheritdoc />
-    public override readonly int GetHashCode()
-    {
-#if NET48 || NETSTANDARD2_0
-            unchecked
-            {
-                var hashCode = Val0.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val1.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val2.GetHashCode();
-                hashCode = (hashCode * 397) ^ Val3.GetHashCode();
-                return hashCode;
-            }
-#else
-        return HashCode.Combine(Val0, Val1, Val2, Val3);
-#endif
-    }
-        
-    /// <inheritdoc />
-    public override readonly string ToString()
-    {
-        return $"[{Val0}, {Val1}, {Val2}, {Val3}]";
-    }
-
-    #endregion
-
-    #region Operators
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="s1"></param>
-    /// <param name="s2"></param>
-    /// <returns></returns>
-    public static bool operator ==(Scalar s1, Scalar s2)
-    {
-        return s1.Equals(s2);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="s1"></param>
-    /// <param name="s2"></param>
-    /// <returns></returns>
-    public static bool operator !=(Scalar s1, Scalar s2)
-    {
-        return !s1.Equals(s2);
-    }
-
-    #endregion
-
+    
     #region Methods
 
     /// <summary>
@@ -277,10 +190,7 @@ public struct Scalar : IEquatable<Scalar>
     /// </summary>
     /// <param name="v"></param>
     /// <returns></returns>
-    public static Scalar All(double v)
-    {
-        return new(v, v, v, v);
-    }
+    public static Scalar All(double v) => new(v, v, v, v);
 
     /// <summary>
     /// 
@@ -288,50 +198,37 @@ public struct Scalar : IEquatable<Scalar>
     /// <param name="it"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public readonly Scalar Mul(Scalar it, double scale)
-    {
-        return new(Val0*it.Val0*scale, Val1*it.Val1*scale,
+    public readonly Scalar Mul(Scalar it, double scale) =>
+        new(Val0*it.Val0*scale, Val1*it.Val1*scale,
             Val2*it.Val2*scale, Val3*it.Val3*scale);
-    }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="it"></param>
     /// <returns></returns>
-    public readonly Scalar Mul(Scalar it)
-    {
-        return Mul(it, 1);
-    }
+    public readonly Scalar Mul(Scalar it) => Mul(it, 1);
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public readonly Scalar Conj()
-    {
-        return new(Val0, -Val1, -Val2, -Val3);
-    }
+    public readonly Scalar Conj() => new(Val0, -Val1, -Val2, -Val3);
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public readonly bool IsReal()
-    {
+    public readonly bool IsReal() =>
         // ReSharper disable CompareOfFloatsByEqualityOperator
-        return Val1 == 0 && Val2 == 0 && Val3 == 0;
-    }
+        Val1 == 0 && Val2 == 0 && Val3 == 0;
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     // ReSharper disable once InconsistentNaming
-    public readonly Vec3b ToVec3b()
-    {
-        return new((byte)Val0, (byte)Val1, (byte)Val2);
-    }
+    public readonly Vec3b ToVec3b() => new((byte)Val0, (byte)Val1, (byte)Val2);
 
     #endregion
 
