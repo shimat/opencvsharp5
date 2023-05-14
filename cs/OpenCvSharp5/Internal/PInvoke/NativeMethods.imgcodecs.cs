@@ -38,17 +38,17 @@ internal static partial class NativeMethods
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imdecode_Mat(
-        IntPtr buf, int flags, out IntPtr returnValue);
+        MatHandle buf, int flags, out MatHandle returnValue);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static unsafe partial ExceptionStatus imgcodecs_imdecode_vector(
-        byte* buf, int bufLength, int flags, out IntPtr returnValue);
+        byte* buf, int bufLength, int flags, out MatHandle returnValue);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imdecode_InputArray(
-        IntPtr buf, int flags, out IntPtr returnValue);
+        InputArrayHandle buf, int flags, out MatHandle returnValue);
 
     // Do not consider that "ext" may not be ASCII characters
     [LibraryImport(LibraryName)]

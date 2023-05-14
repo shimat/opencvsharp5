@@ -13,6 +13,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     private volatile int disposeSignaled;
 
     /// <inheritdoc />
+    public MatHandle Handle => handle;
+    /// <inheritdoc />
     public bool IsDisposed => handle.IsClosed || handle.IsInvalid;
 
     SafeHandle ISafeHandleHolder.Handle => handle;

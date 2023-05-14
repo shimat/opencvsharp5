@@ -1,4 +1,5 @@
 ﻿using OpenCvSharp5.Internal;
+using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5;
 
@@ -143,7 +144,8 @@ static partial class Cv2
         buf.ThrowIfDisposed();
 
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imdecode_Mat(buf.CvPtr, (int)flags, out var ret));
+            NativeMethods.imgcodecs_imdecode_Mat(buf.Handle, (int)flags, out var ret));
+        
         GC.KeepAlive(buf);
         return new Mat(ret);
     }
@@ -154,14 +156,16 @@ static partial class Cv2
     /// <param name="buf">The input array of vector of bytes.</param>
     /// <param name="flags">The same flags as in imread</param>
     /// <returns></returns>
-    public static Mat ImDecode(InputArray buf, ImreadModes flags)
+    public static Mat ImDecode(IInputArray buf, ImreadModes flags)
     {
         if (buf is null)
             throw new ArgumentNullException(nameof(buf));
-        buf.ThrowIfDisposed();
+
+        using var imgHandle = buf.ToInputArrayHandle();
 
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imdecode_InputArray(buf.CvPtr, (int)flags, out var ret));
+            NativeMethods.imgcodecs_imdecode_InputArray(imgHandle, (int)flags, out var ret));
+        
         GC.KeepAlive(buf);
         return new Mat(ret);
     }
@@ -210,7 +214,7 @@ static partial class Cv2
     /// <param name="img">The image to be written</param>
     /// <param name="buf">Output buffer resized to fit the compressed image.</param>
     /// <param name="prms">Format-specific parameters.</param>
-    public static bool ImEncode(string ext, InputArray img, out byte[] buf, int[]? prms = null)
+    public static bool ImEncode(string ext, IInputArray img, out byte[] buf, int[]? prms = null)
     {
         if (string.IsNullOrEmpty(ext))
             throw new ArgumentNullException(nameof(ext));
@@ -218,11 +222,10 @@ static partial class Cv2
             throw new ArgumentNullException(nameof(img));
         if (prms is null)
             prms = Array.Empty<int>();
-        img.ThrowIfDisposed();
 
         using var bufVec = new VectorOfByte();
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imencode_vector(ext, img.CvPtr, bufVec.CvPtr, prms, prms.Length, out var ret));
+            NativeMethods.imgcodecs_imencode_vector(ext, img.CvPtr, bufVec.Handle, prms, prms.Length, out var ret));
         GC.KeepAlive(img);
         buf = bufVec.ToArray();
         return ret != 0;
@@ -235,7 +238,7 @@ static partial class Cv2
     /// <param name="img">The image to be written</param>
     /// <param name="buf">Output buffer resized to fit the compressed image.</param>
     /// <param name="prms">Format-specific parameters.</param>
-    public static void ImEncode(string ext, InputArray img, out byte[] buf, params ImageEncodingParam[] prms)
+    public static void ImEncode(string ext, IInputArray img, out byte[] buf, params ImageEncodingParam[] prms)
     {
         if (prms is null)
             throw new ArgumentNullException(nameof(prms));
