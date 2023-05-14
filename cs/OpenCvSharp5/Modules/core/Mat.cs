@@ -20,6 +20,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     #region Init & Disposal
 
     /// <summary>
+    /// </summary>
+    public Mat(MatHandle handle)
+    {
+        this.handle = handle;
+    }
+
+    /// <summary>
     /// These are various constructors that form a matrix. As noted in the AutomaticAllocation, often
     /// the default constructor is enough, and the proper matrix will be allocated by an OpenCV function.
     /// The constructed matrix can further be assigned to another matrix or matrix expression or can be
@@ -427,13 +434,18 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 }
 
-internal class MatHandle : SafeHandle
+/// <summary>
+/// </summary>
+public class MatHandle : SafeHandle
 {
-    internal MatHandle()
+    /// <summary>
+    /// </summary>
+    public MatHandle()
         : base(invalidHandleValue: IntPtr.Zero, ownsHandle: true)
     {
     }
 
+    /// <inheritdoc />
     protected override bool ReleaseHandle()
     {
         NativeMethods.HandleException(
@@ -441,5 +453,6 @@ internal class MatHandle : SafeHandle
         return true;
     }
 
+    /// <inheritdoc />
     public override bool IsInvalid => handle == IntPtr.Zero;
 }

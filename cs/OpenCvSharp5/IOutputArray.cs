@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace OpenCvSharp5.Internal;
+namespace OpenCvSharp5;
 
 /// <summary>
 /// This is the proxy interface for passing writable input arrays into OpenCV functions.
