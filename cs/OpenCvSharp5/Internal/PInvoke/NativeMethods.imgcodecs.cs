@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5.Internal;
 
@@ -17,21 +18,21 @@ internal static partial class NativeMethods
     [LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imreadmulti(
-        string fileName, IntPtr mats, int flags, out int returnValue);
+        string fileName, VectorOfMatHandle mats, int flags, out int returnValue);
 
     // imwrite
 
     [LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imwrite(
-        string fileName, IntPtr img, int[] @params, int paramsLength, out int returnValue);
+        string fileName, MatHandle img, int[] @params, int paramsLength, out int returnValue);
 
     // imwrite_multi
 
     [LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imwrite_multi(
-        string fileName, IntPtr img, int[] @params, int paramsLength, out int returnValue);
+        string fileName, VectorOfMatHandle img, int[] @params, int paramsLength, out int returnValue);
 
     // 
 
@@ -54,7 +55,7 @@ internal static partial class NativeMethods
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_imencode_vector(
-        [MarshalAs(UnmanagedType.LPStr)] string ext, IntPtr img, IntPtr buf, int[] @params, int paramsLength, out int returnValue);
+        [MarshalAs(UnmanagedType.LPStr)] string ext, InputArrayHandle img, VectorOfByteHandle buf, int[] @params, int paramsLength, out int returnValue);
 
     // haveImageReader
 

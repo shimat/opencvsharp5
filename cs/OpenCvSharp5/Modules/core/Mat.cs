@@ -14,10 +14,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
     /// <inheritdoc />
     public MatHandle Handle => handle;
+    SafeHandle ISafeHandleHolder.Handle => handle;
     /// <inheritdoc />
     public bool IsDisposed => handle.IsClosed || handle.IsInvalid;
-
-    SafeHandle ISafeHandleHolder.Handle => handle;
 
     #region Init & Disposal
 

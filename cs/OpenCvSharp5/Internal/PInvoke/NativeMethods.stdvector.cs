@@ -250,19 +250,19 @@ static partial class NativeMethods
     #endregion
     #region cv::Mat
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_Mat_new1();
+    public static extern VectorOfMatHandle vector_Mat_new1();
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_Mat_new2(uint size);
+    public static extern VectorOfMatHandle vector_Mat_new2(uint size);
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_Mat_new3(IntPtr[] data, uint dataLength);
+    public static extern VectorOfMatHandle vector_Mat_new3(MatHandle[] data, uint dataLength);
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern nuint vector_Mat_getSize(IntPtr vector);
+    public static extern nuint vector_Mat_getSize(VectorOfMatHandle vector);
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_Mat_getPointer(IntPtr vector);
+    public static extern IntPtr vector_Mat_getPointer(VectorOfMatHandle vector);
     [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void vector_Mat_delete(IntPtr vector);
     [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_Mat_assignToArray(IntPtr vector, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] arr);
+    public static extern void vector_Mat_assignToArray(VectorOfMatHandle vector, [MarshalAs(UnmanagedType.LPArray)] MatHandle[] arr);
     #endregion
 
     #region vector<uchar>

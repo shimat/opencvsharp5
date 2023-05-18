@@ -36,7 +36,7 @@ static partial class Cv2
 
         using var matsVec = new VectorOfMat();
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imreadmulti(filename, matsVec.CvPtr, (int)flags, out var ret));
+            NativeMethods.imgcodecs_imreadmulti(filename, matsVec.Handle, (int)flags, out var ret));
         mats = matsVec.ToArray();
         return ret != 0;
     }
@@ -58,7 +58,7 @@ static partial class Cv2
             prms = Array.Empty<int>();
 
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imwrite(fileName, img.CvPtr, prms, prms.Length, out var ret));
+            NativeMethods.imgcodecs_imwrite(fileName, img.Handle, prms, prms.Length, out var ret));
         GC.KeepAlive(img);
         return ret != 0;
     }
@@ -103,7 +103,7 @@ static partial class Cv2
 
         using var imgVec = new VectorOfMat(img);
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imwrite_multi(fileName, imgVec.CvPtr, prms, prms.Length, out var ret));
+            NativeMethods.imgcodecs_imwrite_multi(fileName, imgVec.Handle, prms, prms.Length, out var ret));
         GC.KeepAlive(img);
         return ret != 0;
     }
@@ -224,8 +224,9 @@ static partial class Cv2
             prms = Array.Empty<int>();
 
         using var bufVec = new VectorOfByte();
+        using var imgHandle = img.ToInputArrayHandle();
         NativeMethods.HandleException(
-            NativeMethods.imgcodecs_imencode_vector(ext, img.CvPtr, bufVec.Handle, prms, prms.Length, out var ret));
+            NativeMethods.imgcodecs_imencode_vector(ext, imgHandle, bufVec.Handle, prms, prms.Length, out var ret));
         GC.KeepAlive(img);
         buf = bufVec.ToArray();
         return ret != 0;
