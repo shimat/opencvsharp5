@@ -151,3 +151,10 @@ CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *
 }
 
 #pragma endregion
+
+CVAPI(ExceptionStatus) core_Mat_empty(const cv::Mat* obj, int *result)
+{
+    BEGIN_WRAP;
+    *result = obj->empty() ? 1 : 0;
+    END_WRAP;
+}

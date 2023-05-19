@@ -11,8 +11,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     private readonly MatHandle handle;
     private GCHandle dataHandle;
     private volatile int disposeSignaled;
-
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// </summary>
     public MatHandle Handle => handle;
     SafeHandle ISafeHandleHolder.Handle => handle;
     /// <inheritdoc />
@@ -421,6 +422,22 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// unsafe pointer to the data
     /// </summary>
     public unsafe byte* DataPointer => (byte*)Data;
+
+    /// <summary>
+    /// Returns true if the array has no elements.
+    /// </summary>
+    /// <returns></returns>
+    public bool Empty()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_empty(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret != 0;
+    }
 
     InputArrayHandle IInputArray.ToInputArrayHandle() => throw new NotImplementedException();
 

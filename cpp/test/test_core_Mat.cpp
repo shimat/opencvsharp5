@@ -229,3 +229,26 @@ TEST(test_core_Mat, step) {
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(step0, 7);
 }
+
+
+TEST(test_core_Mat, empty) {
+    int empty;
+
+	cv::Mat m1;
+    ASSERT_EQ(
+        core_Mat_empty(&m1, &empty),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(empty, 1);
+    
+    m1.create(10, 10, CV_8UC1);
+    ASSERT_EQ(
+        core_Mat_empty(&m1, &empty),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(empty, 0);
+
+    const cv::Mat m2(10, 10, CV_8UC1, cv::Scalar::all(1));
+    ASSERT_EQ(
+        core_Mat_empty(&m2, &empty),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(empty, 0);
+}

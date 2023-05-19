@@ -97,4 +97,8 @@ internal static partial class NativeMethods
     public static unsafe partial ExceptionStatus core_Mat_stepAt(MatHandle obj, int i, out nint result);
 
     #endregion
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_empty(MatHandle mat, out int returnValue);
 }
