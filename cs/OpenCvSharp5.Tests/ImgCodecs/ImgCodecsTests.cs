@@ -488,15 +488,8 @@ public class ImgCodecsTests
             bitmap.SaveAsPng(tempFileName);
         }
 
-#if NET48
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
-        File.Move(tempFileName, path);
-#else
-            File.Move(tempFileName, path, true);
-#endif
+        File.Move(tempFileName, path, true);
+
         Assert.True(File.Exists(path), $"File '{path}' not found");
     }
 
