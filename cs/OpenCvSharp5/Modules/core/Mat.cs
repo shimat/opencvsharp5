@@ -27,6 +27,19 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     {
         this.handle = handle;
     }
+    
+    /// <summary>
+    /// Loads an image from a file. (cv::imread)
+    /// </summary>
+    /// <param name="fileName">Name of file to be loaded.</param>
+    /// <param name="flags">Specifies color type of the loaded image</param>
+    public Mat(string fileName, ImreadModes flags = ImreadModes.Color)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(fileName);
+
+        NativeMethods.HandleException(
+            NativeMethods.imgcodecs_imread(fileName, (int) flags, out handle));
+    }
 
     /// <summary>
     /// These are various constructors that form a matrix. As noted in the AutomaticAllocation, often
@@ -101,8 +114,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// or MatType. CV_8UC(n), ..., CV_64FC(n) to create multi-channel matrices.</param>
     public Mat(IEnumerable<int> sizes, MatType type)
     {
-        if (sizes is null)
-            throw new ArgumentNullException(nameof(sizes));
+        ArgumentNullException.ThrowIfNull(sizes);
 
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         NativeMethods.HandleException(
@@ -119,8 +131,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// To set all the matrix elements to the particular value after the construction, use SetTo(Scalar s) method .</param>
     public Mat(IEnumerable<int> sizes, MatType type, Scalar s)
     {
-        if (sizes is null)
-            throw new ArgumentNullException(nameof(sizes));
+        ArgumentNullException.ThrowIfNull(sizes);
+
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         NativeMethods.HandleException(
             NativeMethods.core_Mat_new5(sizesArray.Length, sizesArray, type, s, out handle));
@@ -134,8 +146,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// you also modify the corresponding elements of m . If you want to have an independent copy of the sub-array, use Mat::clone() .</param>
     protected Mat(Mat m)
     {
-        if (m is null)
-            throw new ArgumentNullException(nameof(m));
+        ArgumentNullException.ThrowIfNull(m);
+
         m.ThrowIfDisposed();
 
         NativeMethods.HandleException(
@@ -216,10 +228,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// If not specified, the matrix is assumed to be continuous.</param>
     public Mat(IEnumerable<int> sizes, MatType type, IntPtr data, IEnumerable<nint>? steps = null)
     {
-        if (sizes is null)
-            throw new ArgumentNullException(nameof(sizes));
-        if (data == IntPtr.Zero)
-            throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(sizes);
+        ArgumentNullException.ThrowIfNull(data);
 
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         var stepsArray = steps?.ToArray();
@@ -241,10 +251,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// If not specified, the matrix is assumed to be continuous.</param>
     public Mat(IEnumerable<int> sizes, MatType type, Array data, IEnumerable<nint>? steps = null)
     {
-        if (sizes is null)
-            throw new ArgumentNullException(nameof(sizes));
-        if (data is null)
-            throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(sizes);
+        ArgumentNullException.ThrowIfNull(data);
 
         dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
@@ -269,8 +277,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="colRange">Range of the m columns to take. Use Range.All to take all the columns.</param>
     public Mat(Mat m, Range rowRange, Range? colRange = null)
     {
-        if (m is null)
-            throw new ArgumentNullException(nameof(m));
+        ArgumentNullException.ThrowIfNull(m);
         m.ThrowIfDisposed();
 
         colRange ??= Range.All;
@@ -288,8 +295,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="roi">Region of interest.</param>
     public Mat(Mat m, Rect roi)
     {
-        if (m is null)
-            throw new ArgumentNullException(nameof(m));
+        ArgumentNullException.ThrowIfNull(m);
         m.ThrowIfDisposed();
 
         NativeMethods.HandleException(
@@ -308,10 +314,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="ranges">Array of selected ranges of m along each dimensionality.</param>
     public Mat(Mat m, params Range[] ranges)
     {
-        if (m is null)
-            throw new ArgumentNullException(nameof(m));
-        if (ranges is null)
-            throw new ArgumentNullException(nameof(ranges));
+        ArgumentNullException.ThrowIfNull(m);
+        ArgumentNullException.ThrowIfNull(ranges);
         if (ranges.Length == 0)
             throw new ArgumentException("empty ranges", nameof(ranges));
         m.ThrowIfDisposed();

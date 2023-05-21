@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Tiff;
 
 namespace OpenCvSharp5.Tests.ImgCodecs;
 
@@ -69,14 +69,13 @@ public class ImgCodecsTests
             return;
         }
 
-        const string fileName = "_data/image/imread_にほんご日本語.png";
+        const string fileName = "Data/Images/imread_にほんご日本語.png";
 
         // Create test data
         {
-            using var bitmap = new Bitmap(10, 10, PixelFormat.Format24bppRgb);
-            using var graphics = Graphics.FromImage(bitmap);
-            graphics.Clear(Color.Red);
-            bitmap.Save(fileName, ImageFormat.Png);
+            using var bitmap = new Image<Bgr24>(10, 10);
+            bitmap.Mutate(i => i.Fill(Color.Red));
+            bitmap.SaveAsPng(fileName);
         }
 
         Assert.True(File.Exists(fileName), $"File '{fileName}' not found");
@@ -92,7 +91,7 @@ public class ImgCodecsTests
     [Fact]
     public void ImReadUnicodeFileName()
     {
-        const string fileName = "_data/image/imread♥♡😀😄.png";
+        const string fileName = "Data/Images/imread♥♡😀😄.png";
 
         CreateDummyImageFile(fileName);
 
@@ -123,7 +122,7 @@ public class ImgCodecsTests
     [InlineData(".tif")]
     public void ImWrite(string ext)
     {
-        string fileName = $"test_imwrite{ext}";
+        var fileName = $"test_imwrite{ext}";
 
         using (var mat = new Mat(10, 20, MatType.CV_8UC3, Scalar.Blue))
         {
@@ -148,7 +147,7 @@ public class ImgCodecsTests
             return;
         }
 
-        const string fileName = "_data/image/imwrite_にほんご日本語.png";
+        const string fileName = "Data/Images/imwrite_にほんご日本語.png";
 
         using (var mat = new Mat(10, 20, MatType.CV_8UC3, Scalar.Blue))
         {
@@ -168,7 +167,7 @@ public class ImgCodecsTests
     [Fact]
     public void ImWriteUnicodeFileName()
     {
-        const string fileName = "_data/image/imwrite♥♡😀😄.png";
+        const string fileName = "Data/Images/imwrite♥♡😀😄.png";
 
         // Check whether the path is valid
         // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -195,7 +194,7 @@ public class ImgCodecsTests
         Assert.True(file.Exists, $"File '{fileName}' not found");
         Assert.True(file.Length > 0, $"File size of '{fileName}' == 0");
 
-        const string asciiFileName = "_data/image/imwrite_unicode_test.png";
+        const string asciiFileName = "Data/Images/imwrite_unicode_test.png";
         File.Move(fileName, asciiFileName);
 
         var image = Image.Identify(asciiFileName);
@@ -212,7 +211,7 @@ public class ImgCodecsTests
     [InlineData("baz.bmp")]
     public void HaveImageReader(string fileName)
     {
-        var path = Path.Combine("_data", "image", "haveImageReader_" + fileName);
+        var path = Path.Combine("Data", "Images", "haveImageReader_" + fileName);
 
         try
         {
@@ -251,7 +250,7 @@ public class ImgCodecsTests
             return;
         }
 
-        var path = Path.Combine("_data", "image", "haveImageReader_にほんご日本語.png");
+        var path = Path.Combine("Data", "Images", "haveImageReader_にほんご日本語.png");
 
         try
         {
@@ -275,7 +274,7 @@ public class ImgCodecsTests
     [Fact]
     public void HaveImageReaderUnicode()
     {
-        var path = Path.Combine("_data", "image", "haveImageReader_♥♡😀😄.png");
+        var path = Path.Combine("Data", "Images", "haveImageReader_♥♡😀😄.png");
 
         try
         {
@@ -367,35 +366,40 @@ public class ImgCodecsTests
     [InlineData(".bmp")]
     public void ImEncode(string ext)
     {
-        using var mat = Image("lenna.png", ImreadModes.Grayscale);
+        using var mat = new Mat("Data/Images/lenna.png", ImreadModes.Grayscale);
         Assert.False(mat.Empty());
 
         Cv2.ImEncode(ext, mat, out var imageData);
         Assert.NotNull(imageData);
 
-        // Can System.Drawing.Bitmap decode the imageData?
-        using var stream = new MemoryStream(imageData);
-        using var bitmap = new Bitmap(stream);
-        Assert.Equal(mat.Rows, bitmap.Height);
-        Assert.Equal(mat.Cols, bitmap.Width);
+        // Can ImageSharp decode the imageData?
+        var info = Image.Identify(imageData);
+        Assert.Equal(mat.Rows, info.Height);
+        Assert.Equal(mat.Cols, info.Width);
     }
 
     [Theory]
-    [InlineData("Png")]
-    [InlineData("Jpeg")]
-    [InlineData("Tiff")]
-    [InlineData("Bmp")]
-    public void ImDecode(string imageFormatName)
+    [InlineData(".png")]
+    [InlineData(".jpg")]
+    [InlineData(".tif")]
+    [InlineData(".bmp")]
+    public void ImDecode(string ext)
     {
-        var imageFormatProperty =
-            typeof(ImageFormat).GetProperty(imageFormatName, BindingFlags.Public | BindingFlags.Static);
-        Assert.NotNull(imageFormatProperty);
-        var imageFormat = imageFormatProperty!.GetValue(null) as ImageFormat;
-        Assert.NotNull(imageFormat);
-
-        using var bitmap = new Bitmap("_data/image/mandrill.png");
+        static IImageEncoder GetEncoder(string ext)
+        {
+            return ext switch
+            {
+                ".png" => new PngEncoder(),
+                ".jpg" => new JpegEncoder(),
+                ".tif" => new TiffEncoder(),
+                ".bmp" => new BmpEncoder(),
+                _ => throw new ArgumentOutOfRangeException(nameof(ext))
+            };
+        }
+        
+        using var bitmap = Image.Load("Data/Images/mandrill.png");
         using var stream = new MemoryStream();
-        bitmap.Save(stream, imageFormat!);
+        bitmap.Save(stream, GetEncoder(ext));
         var imageData = stream.ToArray();
         Assert.NotNull(imageData);
 
@@ -405,13 +409,13 @@ public class ImgCodecsTests
         Assert.Equal(bitmap.Width, mat.Cols);
         Assert.Equal(bitmap.Height, mat.Rows);
 
-        ShowImagesWhenDebugMode(mat);
+        //ShowImagesWhenDebugMode(mat);
     }
 
     [Fact]
     public void ImDecodeSpan()
     {
-        var imageBytes = File.ReadAllBytes("_data/image/mandrill.png");
+        var imageBytes = File.ReadAllBytes("Data/Images/mandrill.png");
         Assert.NotEmpty(imageBytes);
 
         // whole range
@@ -420,7 +424,7 @@ public class ImgCodecsTests
             using var mat = Cv2.ImDecode(span, ImreadModes.Color);
             Assert.NotNull(mat);
             Assert.False(mat.Empty());
-            ShowImagesWhenDebugMode(mat);
+            //ShowImagesWhenDebugMode(mat);
         }
 
         // slice
@@ -428,15 +432,12 @@ public class ImgCodecsTests
             var dummyBytes = Enumerable.Repeat((byte)123, 100).ToArray();
             var imageBytesWithDummy = dummyBytes.Concat(imageBytes).Concat(dummyBytes).ToArray();
 
-#if NET48
-            var span = imageBytesWithDummy.AsSpan(100, imageBytes.Length);
-#else
-                var span = imageBytesWithDummy.AsSpan()[100..^100];
-#endif
+            var span = imageBytesWithDummy.AsSpan()[100..^100];
+
             using var mat = Cv2.ImDecode(span, ImreadModes.Color);
             Assert.NotNull(mat);
             Assert.False(mat.Empty());
-            ShowImagesWhenDebugMode(mat);
+            //ShowImagesWhenDebugMode(mat);
         }
     }
 
@@ -452,14 +453,14 @@ public class ImgCodecsTests
         Mat[]? readPages = null;
         try
         {
-            pages = files.Select(f => Image(f)).ToArray();
+            pages = files.Select(f => new Mat(f)).ToArray();
 
             Assert.True(Cv2.ImWrite("multi.tiff", pages), "imwrite failed");
             Assert.True(Cv2.ImReadMulti("multi.tiff", out readPages), "imreadmulti failed");
             Assert.NotEmpty(readPages);
             Assert.Equal(pages.Length, readPages.Length);
 
-            for (int i = 0; i < pages.Length; i++)
+            for (var i = 0; i < pages.Length; i++)
             {
                 ImageEquals(pages[i], readPages[i]);
             }
@@ -482,11 +483,9 @@ public class ImgCodecsTests
 
         var tempFileName = Path.GetTempFileName();
         {
-            using var bitmap = new Bitmap(10, 10, PixelFormat.Format24bppRgb);
-            using var graphics = Graphics.FromImage(bitmap);
-            graphics.Clear(Color.Red);
-            // GDI+ does not support Unicode file name
-            bitmap.Save(tempFileName, ImageFormat.Png);
+            using var bitmap = new Image<Bgr24>(10, 10);
+            bitmap.Mutate(i => i.Fill(Color.Red));
+            bitmap.SaveAsPng(tempFileName);
         }
 
 #if NET48
