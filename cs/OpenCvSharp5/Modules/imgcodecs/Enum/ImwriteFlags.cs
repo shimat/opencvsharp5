@@ -3,6 +3,7 @@
 /// <summary>
 /// The format type IDs for cv::imwrite and cv::inencode
 /// </summary>
+#pragma warning disable CA1711
 public enum ImwriteFlags
 {
     /// <summary>

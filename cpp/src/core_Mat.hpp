@@ -152,9 +152,41 @@ CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *
 
 #pragma endregion
 
+#pragma region Methods
+
+CVAPI(ExceptionStatus) core_Mat_type(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->type();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_depth(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->depth();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_channels(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->channels();
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_empty(const cv::Mat* obj, int *result)
 {
     BEGIN_WRAP;
     *result = obj->empty() ? 1 : 0;
     END_WRAP;
 }
+
+CVAPI(ExceptionStatus) core_Mat_total(const cv::Mat* obj, size_t* result)
+{
+    BEGIN_WRAP;
+    *result = obj->total();
+    END_WRAP;
+}
+
+#pragma endregion

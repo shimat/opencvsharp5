@@ -31,3 +31,21 @@ CVAPI(ExceptionStatus) core_getVersionString(std::string *buffer)
     buffer->assign(cv::getVersionString());
     END_WRAP;
 }
+
+
+
+
+CVAPI(ExceptionStatus) core_compare(
+    cv::_InputArray *src1, cv::_InputArray* src2, cv::_OutputArray* dst, int cmpop)
+{
+    BEGIN_WRAP;
+    cv::compare(*src1, *src2, *dst, cmpop);
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_countNonZero(cv::_InputArray* src, int* result)
+{
+    BEGIN_WRAP;
+    *result = cv::countNonZero(*src);
+    END_WRAP;
+}

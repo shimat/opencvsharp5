@@ -428,9 +428,61 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     public unsafe byte* DataPointer => (byte*)Data;
 
     /// <summary>
-    /// Returns true if the array has no elements.
+    /// returns element type, similar to CV_MAT_TYPE(cvmat->type)
     /// </summary>
     /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public int Type()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_type(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+    /// <summary>
+    /// returns element type, similar to CV_MAT_DEPTH(cvmat->type)
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public int Depth()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_depth(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+    /// <summary>
+    /// returns element type, similar to CV_MAT_CN(cvmat->type)
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public int Channels()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_channels(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+    /// <summary>
+    /// returns true if matrix data is NULL
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
     public bool Empty()
     {
         if (disposeSignaled != 0)
@@ -442,8 +494,33 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         return ret != 0;
     }
+ 
+    /// <summary>
+    /// returns the total number of matrix elements
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public nint Total()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
 
-    InputArrayHandle IInputArray.ToInputArrayHandle() => throw new NotImplementedException();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_total(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+
+
+    InputArrayHandle IInputArray.ToInputArrayHandle()
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_InputArray_new_byMat(handle, out var resultHandle));
+        GC.KeepAlive(this);
+        return resultHandle;
+    }
 
     OutputArrayHandle IOutputArray.ToOutputArrayHandle() => throw new NotImplementedException();
 

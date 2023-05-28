@@ -462,7 +462,7 @@ public class ImgCodecsTests
 
             for (var i = 0; i < pages.Length; i++)
             {
-                ImageEquals(pages[i], readPages[i]);
+                TestHelper.ImageEquals(pages[i], readPages[i]);
             }
 
         }

@@ -230,16 +230,77 @@ TEST(test_core_Mat, step) {
     ASSERT_EQ(step0, 7);
 }
 
+#pragma region Methods
+
+TEST(test_core_Mat, type) {
+    int t;
+
+    cv::Mat m1;
+    ASSERT_EQ(
+        core_Mat_type(&m1, &t),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(t, 0);
+
+    m1.create(10, 10, CV_8UC3);
+    ASSERT_EQ(
+        core_Mat_type(&m1, &t),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(t, CV_8UC3);
+
+    const cv::Mat m2(10, 10, CV_32SC4);
+    ASSERT_EQ(
+        core_Mat_type(&m2, &t),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(t, CV_32SC4);
+}
+
+TEST(test_core_Mat, depth) {
+    int d;
+
+    cv::Mat m1;
+    ASSERT_EQ(
+        core_Mat_depth(&m1, &d),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(d, 0);
+
+    m1.create(10, 10, CV_8UC1);
+    ASSERT_EQ(
+        core_Mat_depth(&m1, &d),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(d, CV_8U);
+
+    const cv::Mat m2(10, 10, CV_32FC3);
+    ASSERT_EQ(
+        core_Mat_depth(&m2, &d),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(d, CV_32F);
+}
+
+TEST(test_core_Mat, channels) {
+    int ch;
+
+    cv::Mat m1(10, 10, CV_8UC1);
+    ASSERT_EQ(
+        core_Mat_channels(&m1, &ch),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(ch, 1);
+
+    const cv::Mat m2(10, 10, CV_8UC3);
+    ASSERT_EQ(
+        core_Mat_channels(&m2, &ch),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(ch, 3);
+}
 
 TEST(test_core_Mat, empty) {
     int empty;
 
-	cv::Mat m1;
+    cv::Mat m1;
     ASSERT_EQ(
         core_Mat_empty(&m1, &empty),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(empty, 1);
-    
+
     m1.create(10, 10, CV_8UC1);
     ASSERT_EQ(
         core_Mat_empty(&m1, &empty),
@@ -252,3 +313,21 @@ TEST(test_core_Mat, empty) {
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(empty, 0);
 }
+
+TEST(test_core_Mat, total) {
+    size_t total;
+
+    const cv::Mat m1 = cv::Mat::zeros(10, 10, CV_8UC1);
+    ASSERT_EQ(
+        core_Mat_total(&m1, &total),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(total, 100);
+
+    const cv::Mat m2 = cv::Mat::ones(3, 4, CV_8UC1);
+    ASSERT_EQ(
+        core_Mat_total(&m2, &total),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(total, 12);
+}
+
+#pragma endregion

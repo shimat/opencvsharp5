@@ -1,4 +1,6 @@
-﻿using OpenCvSharp5.Internal;
+﻿using System.Data.SqlTypes;
+using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
@@ -47,5 +49,36 @@ public static partial class Cv2
         NativeMethods.HandleException(
             NativeMethods.core_getVersionString(stdString));
         return stdString.ToString();
+    }
+
+    /// <summary>
+    /// Performs the per-element comparison of two arrays or an array and scalar value.
+    /// </summary>
+    /// <param name="src1">first input array or a scalar; when it is an array, it must have a single channel.</param>
+    /// <param name="src2">second input array or a scalar; when it is an array, it must have a single channel.</param>
+    /// <param name="dst">output array of type ref CV_8U that has the same size and the same number of channels as the input arrays.</param>
+    /// <param name="cmpop">a flag, that specifies correspondence between the arrays (cv::CmpTypes)</param>
+    public static void Compare(IInputArray src1, IInputArray src2, IOutputArray dst, CmpTypes cmpop)
+    {
+        using var src1Handle = src1.ToInputArrayHandle();
+        using var src2Handle = src2.ToInputArrayHandle();
+        using var dstHandle = dst.ToOutputArrayHandle();
+
+        NativeMethods.HandleException(
+            NativeMethods.core_compare(src1Handle, src2Handle, dstHandle, (int)cmpop));
+    }
+
+    /// <summary>
+    /// Counts non-zero array elements.
+    /// </summary>
+    /// <param name="src">single-channel array.</param>
+    /// <returns></returns>
+    public static int CountNonZero(IInputArray src)
+    {
+        using var srcHandle = src.ToInputArrayHandle();
+
+        NativeMethods.HandleException(
+            NativeMethods.core_countNonZero(srcHandle, out var result));
+        return result;
     }
 }
