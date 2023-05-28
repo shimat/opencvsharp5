@@ -49,3 +49,11 @@ CVAPI(ExceptionStatus) core_countNonZero(cv::_InputArray* src, int* result)
     *result = cv::countNonZero(*src);
     END_WRAP;
 }
+
+CVAPI(ExceptionStatus) core_split(
+    cv::Mat* src, cv::Mat** mvbegin)
+{
+    BEGIN_WRAP;
+    cv::split(*src, *mvbegin);
+    END_WRAP;
+}
