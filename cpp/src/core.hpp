@@ -36,14 +36,14 @@ CVAPI(ExceptionStatus) core_getVersionString(std::string *buffer)
 
 
 CVAPI(ExceptionStatus) core_compare(
-    cv::_InputArray *src1, cv::_InputArray* src2, cv::_OutputArray* dst, int cmpop)
+	const cv::_InputArray *src1, const cv::_InputArray* src2, const cv::_OutputArray* dst, const int cmpop)
 {
     BEGIN_WRAP;
     cv::compare(*src1, *src2, *dst, cmpop);
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_countNonZero(cv::_InputArray* src, int* result)
+CVAPI(ExceptionStatus) core_countNonZero(const cv::_InputArray* src, int* result)
 {
     BEGIN_WRAP;
     *result = cv::countNonZero(*src);
@@ -51,9 +51,9 @@ CVAPI(ExceptionStatus) core_countNonZero(cv::_InputArray* src, int* result)
 }
 
 CVAPI(ExceptionStatus) core_split(
-    cv::Mat* src, cv::Mat** mvbegin)
+	const cv::Mat* src, std::vector<cv::Mat> *mv)
 {
     BEGIN_WRAP;
-    cv::split(*src, *mvbegin);
+    cv::split(*src, *mv);
     END_WRAP;
 }

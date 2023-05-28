@@ -71,13 +71,10 @@ TEST(test_core, countNonZero) {
 }
 
 TEST(test_core, split1) {
-    int pixels;
-
     cv::Mat src(1, 1, CV_8UC3, cv::Scalar(1, 2, 3));
-    cv::Mat dst[3];
-    cv::Mat* dst_ptr[3] = { &dst[0], &dst[1], &dst[2] };
+    std::vector<cv::Mat> dst;
     ASSERT_EQ(
-        core_split(&src, (cv::Mat**)&dst_ptr),
+        core_split(&src, &dst),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(dst[0].at<uchar>(0), 1);
     ASSERT_EQ(dst[1].at<uchar>(0), 2);

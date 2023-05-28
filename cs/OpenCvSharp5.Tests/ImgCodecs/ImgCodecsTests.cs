@@ -238,13 +238,14 @@ public class ImgCodecsTests
     }
 
     // TODO
-    [Fact(Skip = "AccessViolationException")]
+    //[Fact(Skip = "AccessViolationException")]
     //[PlatformSpecificFact("Windows")]
+    [Fact]
     public void HaveImageReaderJapanese()
     {
         testOutputHelper.WriteLine($"CurrentCulture: {Thread.CurrentThread.CurrentCulture.Name}");
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
-            Thread.CurrentThread.CurrentCulture.Name != "ja-JP")
+            Thread.CurrentThread.CurrentCulture.Name != "ja-JP" && false)
         {
             testOutputHelper.WriteLine($"Skip {nameof(ImWriteJapaneseFileName)}");
             return;
@@ -280,7 +281,8 @@ public class ImgCodecsTests
         {
             CreateDummyImageFile(path);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (false)
             {
                 // TODO
                 // Cannot marshal: Encountered unmappable character.

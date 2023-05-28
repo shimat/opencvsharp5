@@ -390,7 +390,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <summary>
     /// pointer to the data
     /// </summary>
-    public IntPtr Data => NativeMethods.core_Mat_data(handle);
+    public nint Data => NativeMethods.core_Mat_data(handle);
 
     /// <summary>
     /// Returns a matrix size.
@@ -432,7 +432,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
-    public int Type()
+    public MatType Type()
     {
         if (disposeSignaled != 0)
             throw new ObjectDisposedException(GetType().Name);
@@ -512,19 +512,26 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return ret;
     }
 
-
-
-    InputArrayHandle IInputArray.ToInputArrayHandle()
+    /// <inheritdoc />
+    public InputArrayHandle ToInputArrayHandle()
     {
         NativeMethods.HandleException(
             NativeMethods.core_InputArray_new_byMat(handle, out var resultHandle));
         GC.KeepAlive(this);
         return resultHandle;
     }
-
-    OutputArrayHandle IOutputArray.ToOutputArrayHandle() => throw new NotImplementedException();
-
-    InputOutputArrayHandle IInputOutputArray.ToInputOutputArrayHandle()
+    
+    /// <inheritdoc />
+    public OutputArrayHandle ToOutputArrayHandle()
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_OutputArray_new_byMat(handle, out var resultHandle));
+        GC.KeepAlive(this);
+        return resultHandle;
+    }
+    
+    /// <inheritdoc />
+    public InputOutputArrayHandle ToInputOutputArrayHandle()
     {
         NativeMethods.HandleException(
             NativeMethods.core_InputOutputArray_new_byMat(handle, out var resultHandle));

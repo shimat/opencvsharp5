@@ -2,7 +2,7 @@
 
 public static class TestHelper
 {
-    public static void ImageEquals(Mat img1, Mat img2)
+    public static void ImageEquals(Mat? img1, Mat? img2)
     {
         if (img1 is null && img2 is null)
             return;
@@ -21,7 +21,7 @@ public static class TestHelper
         }
         else
         {
-            var channels = Cv2.Split(comparison);
+            Cv2.Split(comparison, out var channels);
             try
             {
                 foreach (var channel in channels)

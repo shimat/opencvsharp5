@@ -44,7 +44,7 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
             throw new ArgumentNullException(nameof(mats));
 
         var matsArray = mats.ToArray();
-        var matPointers = matsArray.Select(x => x.Handle).ToArray();
+        var matPointers = matsArray.Select(x => x.Handle.DangerousGetHandle()).ToArray();
 
         handle = NativeMethods.vector_Mat_new3(
             matPointers,
@@ -98,28 +98,12 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
             return (int)res;
         }
     }
-
-    /// <summary>
-    /// &amp;vector[0]
-    /// </summary>
-    public IntPtr ElemPtr
-    {
-        get
-        {
-            var res = NativeMethods.vector_Mat_getPointer(handle);
-            GC.KeepAlive(this);
-            return res;
-        }
-    }
-
+    
     /// <summary>
     /// Converts std::vector to managed array
     /// </summary>
     /// <returns></returns>
-    public Mat[] ToArray()
-    {
-        return ToArray<Mat>();
-    }
+    public Mat[] ToArray() => ToArray<Mat>();
 
     /// <summary>
     /// Converts std::vector to managed array
@@ -133,18 +117,41 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
             return Array.Empty<T>();
 
         var dst = new T[size];
-        var dstPtr = new MatHandle[size];
+        var dstPtr = new nint[size];
         for (var i = 0; i < size; i++)
         {
             var m = new T();
             dst[i] = m;
-            dstPtr[i] = m.Handle;
+            dstPtr[i] = m.Handle.DangerousGetHandle();
         }
         NativeMethods.vector_Mat_assignToArray(handle, dstPtr);
         GC.KeepAlive(this);
 
         return dst;
     }
+    /*
+    /// <summary>
+    /// Converts std::vector to managed array
+    /// </summary>
+    /// <returns></returns>
+    public T[] ToArray_<T>()
+        where T : Mat, new()
+    {
+        var size = Size;
+        if (size == 0)
+            return Array.Empty<T>();
+
+        var dst = new T[size];
+        for (var i = 0; i < size; i++)
+        {
+            var m = new T();
+            dst[i] = m;
+            NativeMethods.vector_Mat_copyOneElement(handle, i, m.Handle);
+        }
+        GC.KeepAlive(this);
+
+        return dst;
+    }*/
 }
 
 

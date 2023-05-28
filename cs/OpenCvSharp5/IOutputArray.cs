@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
 
@@ -28,7 +29,12 @@ public class OutputArrayHandle : SafeHandle
     }
 
     /// <inheritdoc />
-    protected override bool ReleaseHandle() => throw new NotImplementedException();
+    protected override bool ReleaseHandle() 
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_OutputArray_delete(handle));
+        return true;
+    }
 
     /// <inheritdoc />
     public override bool IsInvalid => handle == IntPtr.Zero;

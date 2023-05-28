@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlTypes;
 using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
+using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5;
 
@@ -60,6 +61,10 @@ public static partial class Cv2
     /// <param name="cmpop">a flag, that specifies correspondence between the arrays (cv::CmpTypes)</param>
     public static void Compare(IInputArray src1, IInputArray src2, IOutputArray dst, CmpTypes cmpop)
     {
+        ThrowIfNull(src1);
+        ThrowIfNull(src2);
+        ThrowIfNull(dst);
+
         using var src1Handle = src1.ToInputArrayHandle();
         using var src2Handle = src2.ToInputArrayHandle();
         using var dstHandle = dst.ToOutputArrayHandle();
@@ -75,10 +80,47 @@ public static partial class Cv2
     /// <returns></returns>
     public static int CountNonZero(IInputArray src)
     {
+        ThrowIfNull(src);
+
         using var srcHandle = src.ToInputArrayHandle();
 
         NativeMethods.HandleException(
             NativeMethods.core_countNonZero(srcHandle, out var result));
         return result;
+    }
+
+    /* @brief 
+
+The function cv::split splits a multi-channel array into separate single-channel arrays:
+\f[\texttt{mv} [c](I) =  \texttt{src} (I)_c\f]
+If you need to extract a single channel or do some other sophisticated channel permutation, use
+mixChannels .
+
+The following example demonstrates how to split a 3-channel matrix into 3 single channel matrices.
+@snippet snippets/core_split.cpp example
+
+@param src input multi-channel array.
+@param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are
+reallocated, if needed.
+@sa merge, mixChannels, cvtColor
+*/
+    /// <summary>
+    /// Divides a multi-channel array into several single-channel arrays.
+    /// </summary>
+    /// <param name="src">The source multi-channel array</param>
+    /// <param name="mv">output array; the number of arrays must match src.channels();
+    /// the arrays themselves are reallocated, if needed.</param>
+    public static void Split(Mat src, out Mat[] mv)
+    {
+        ThrowIfNull(src);
+        src.ThrowIfDisposed();
+        
+        using var vec = new VectorOfMat();
+
+        NativeMethods.HandleException(
+            NativeMethods.core_split(src.Handle, vec.Handle));
+        mv = vec.ToArray();
+
+        GC.KeepAlive(src);
     }
 }

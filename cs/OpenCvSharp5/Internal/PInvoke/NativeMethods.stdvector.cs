@@ -5,7 +5,7 @@ using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5.Internal;
 
-static partial class NativeMethods
+internal static partial class NativeMethods
 {
     #region uchar
     [LibraryImport(LibraryName)]
@@ -249,33 +249,45 @@ static partial class NativeMethods
     public static extern void vector_DMatch_delete(IntPtr vector);
     #endregion
     #region cv::Mat
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern VectorOfMatHandle vector_Mat_new1();
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern VectorOfMatHandle vector_Mat_new2(uint size);
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern VectorOfMatHandle vector_Mat_new3(MatHandle[] data, uint dataLength);
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern nuint vector_Mat_getSize(VectorOfMatHandle vector);
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_Mat_getPointer(VectorOfMatHandle vector);
-    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_Mat_delete(IntPtr vector);
-    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_Mat_assignToArray(VectorOfMatHandle vector, [MarshalAs(UnmanagedType.LPArray)] MatHandle[] arr);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial VectorOfMatHandle vector_Mat_new1();
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial VectorOfMatHandle vector_Mat_new2(uint size);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial VectorOfMatHandle vector_Mat_new3(nint[] data, uint dataLength);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial nuint vector_Mat_getSize(VectorOfMatHandle vector);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial void vector_Mat_delete(IntPtr vector);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial void vector_Mat_assignToArray(VectorOfMatHandle vector, nint[] arr);
+    //[LibraryImport(LibraryName)]
+    //[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    //public static partial void vector_Mat_copyOneElement(VectorOfMatHandle vector, int index, MatHandle dst);
     #endregion
 
     #region vector<uchar>
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern IntPtr vector_vector_uchar_new1();
-    [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern nuint vector_vector_uchar_getSize1(IntPtr vector);
-    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_vector_uchar_getSize2(IntPtr vector, [In, Out] nuint[] size);
-    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_vector_uchar_copy(IntPtr vec, IntPtr[] dst);
-    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-    public static extern void vector_vector_uchar_delete(IntPtr vector);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial IntPtr vector_vector_uchar_new1();
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial nuint vector_vector_uchar_getSize1(IntPtr vector);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial void vector_vector_uchar_getSize2(IntPtr vector, nuint[] size);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial void vector_vector_uchar_copy(IntPtr vec, IntPtr[] dst);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial void vector_vector_uchar_delete(IntPtr vector);
     #endregion
     #region vector<int>
     [Pure, DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]

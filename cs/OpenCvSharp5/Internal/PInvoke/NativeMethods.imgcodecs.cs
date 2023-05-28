@@ -66,8 +66,8 @@ internal static partial class NativeMethods
 
     // haveImageWriter
 
-    [LibraryImport(LibraryName)]
+    [LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus imgcodecs_haveImageWriter(
-        [MarshalAs(UnmanagedType.LPStr)] string fileName, out int returnValue);
+        string fileName, out int returnValue);
 }
