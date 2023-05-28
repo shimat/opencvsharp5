@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Bmp;
@@ -252,6 +253,23 @@ public class ImgCodecsTests
         }
 
         var path = Path.Combine("Data", "Images", "haveImageReader_にほんご日本語.png");
+
+        unsafe
+        {
+            var marshaller = new System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn();               
+            var stackPtr = stackalloc byte[System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.BufferSize];
+            var stack = new Span<byte>(stackPtr, System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.BufferSize);
+            marshaller.FromManaged("haveImageReader_にほんご日本語.png", stack);
+            var dst = marshaller.ToUnmanaged();
+            var bytes = new List<byte>();
+            for (int i = 0; dst[i] != 0; i++)
+            {
+                bytes.Add(dst[i]);
+            }
+
+            var s = string.Join(",", bytes);
+            GC.KeepAlive(null);
+        }
 
         try
         {

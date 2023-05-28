@@ -7,6 +7,8 @@
     <AnalysisMode>Recommended</AnalysisMode>
 
     <IsPackable>false</IsPackable>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
