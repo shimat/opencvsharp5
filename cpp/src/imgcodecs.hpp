@@ -46,6 +46,7 @@ CVAPI(ExceptionStatus) imgcodecs_imcount(
     END_WRAP;
 }
 
+
 CVAPI(ExceptionStatus) imgcodecs_imwrite(
     const char* filename,
     const cv::Mat* img, 
@@ -59,7 +60,8 @@ CVAPI(ExceptionStatus) imgcodecs_imwrite(
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) imgcodecs_imwrite_multi(
+
+CVAPI(ExceptionStatus) imgcodecs_imwritemulti(
     const char* filename,
     const std::vector<cv::Mat>* img, 
     int* params, int paramsLength, 
@@ -68,9 +70,10 @@ CVAPI(ExceptionStatus) imgcodecs_imwrite_multi(
     BEGIN_WRAP;
     std::vector<int> paramsVec;
     paramsVec.assign(params, params + paramsLength);
-    *returnValue = cv::imwrite(filename, *img, paramsVec) ? 1 : 0;
+    *returnValue = cv::imwritemulti(filename, *img, paramsVec) ? 1 : 0;
     END_WRAP;
 }
+
 
 CVAPI(ExceptionStatus) imgcodecs_imdecode_Mat(
 	const cv::Mat* buf, 
@@ -82,18 +85,8 @@ CVAPI(ExceptionStatus) imgcodecs_imdecode_Mat(
     *returnValue = new cv::Mat(ret);
     END_WRAP;
 }
-CVAPI(ExceptionStatus) imgcodecs_imdecode_vector(
-    uchar* buf, 
-    int bufLength, 
-    int flags, cv::Mat** returnValue)
-{
-    BEGIN_WRAP;
-    //const std::vector<uchar> bufVec(buf, buf + bufLength);
-    const cv::Mat bufMat(1, bufLength, CV_8UC1, buf, cv::Mat::AUTO_STEP);
-    const auto ret = cv::imdecode(bufMat, flags);
-    *returnValue = new cv::Mat(ret);
-    END_WRAP;
-}
+
+
 CVAPI(ExceptionStatus) imgcodecs_imdecode_InputArray(
 	const cv::_InputArray* buf, 
     int flags, 
@@ -104,6 +97,44 @@ CVAPI(ExceptionStatus) imgcodecs_imdecode_InputArray(
     *returnValue = new cv::Mat(ret);
     END_WRAP;
 }
+CVAPI(ExceptionStatus) imgcodecs_imdecode_bytes(
+    uchar* buf, 
+    int bufLength, 
+    int flags, cv::Mat** returnValue)
+{
+    BEGIN_WRAP;
+    const cv::Mat bufMat(1, bufLength, CV_8UC1, buf, cv::Mat::AUTO_STEP);
+    const auto ret = cv::imdecode(bufMat, flags);
+    *returnValue = new cv::Mat(ret);
+    END_WRAP;
+}
+
+
+CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_InputArray(
+	const cv::_InputArray* buf, 
+    int flags, 
+    std::vector<cv::Mat> mats,
+    int *returnValue)
+{
+    BEGIN_WRAP;
+    const auto ret = cv::imdecodemulti(*buf, flags, mats);
+    *returnValue = ret ? 1 : 0;
+    END_WRAP;	
+}
+CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_bytes(
+    uchar* buf, 
+    int bufLength, 
+    int flags, 
+    std::vector<cv::Mat> mats,
+    int *returnValue)
+{
+    BEGIN_WRAP;
+    const cv::Mat bufMat(1, bufLength, CV_8UC1, buf, cv::Mat::AUTO_STEP);
+    const auto ret = cv::imdecodemulti(bufMat, flags, mats);
+    *returnValue = ret ? 1 : 0;
+    END_WRAP;	
+}
+
 
 CVAPI(ExceptionStatus) imgcodecs_imencode_vector(
     const char* ext, const cv::_InputArray* img,
@@ -117,7 +148,6 @@ CVAPI(ExceptionStatus) imgcodecs_imencode_vector(
     *returnValue = cv::imencode(ext, *img, *buf, paramsVec) ? 1 : 0;
     END_WRAP;
 }
-
 
 
 CVAPI(ExceptionStatus) imgcodecs_haveImageReader(const char* filename, int* returnValue)

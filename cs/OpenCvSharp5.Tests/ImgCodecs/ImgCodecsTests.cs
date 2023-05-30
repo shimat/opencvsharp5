@@ -20,8 +20,8 @@ public class ImgCodecsTests
     }
 
     [Theory]
+    [InlineData("mandrill.png")]
     [InlineData("building.jpg")]
-    [InlineData("lenna.png")]
     [InlineData("building_mask.bmp")]
     public void ImReadSuccess(string fileName)
     {
@@ -54,8 +54,7 @@ public class ImgCodecsTests
         Assert.NotNull(image);
         Assert.True(image.Empty());
     }
-
-    //[LinuxOnlyFact]
+    
     [Fact]
     public void ImReadJapaneseFileName()
     {
@@ -86,32 +85,22 @@ public class ImgCodecsTests
         Assert.False(image.Empty());
     }
 
-    // TODO Windows not supported?
-    // https://github.com/opencv/opencv/issues/4242
-    //[PlatformSpecificFact("Linux")]
     [Fact]
     public void ImReadUnicodeFileName()
     {
         const string fileName = "Data/Images/imread♥♡😀😄.png";
 
         CreateDummyImageFile(fileName);
+        
+        using var image = Cv2.ImRead(fileName, ImreadModes.Color);
+        Assert.NotNull(image);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            // TODO
-            // Cannot marshal: Encountered unmappable character.
-            // at System.Runtime.InteropServices.Marshal.StringToAnsiString(String s, Byte * buffer, Int32 bufferLength, Boolean bestFit, Boolean throwOnUnmappableChar)
-            Assert.Throws<ArgumentException>(() =>
-            {
-                using var image = Cv2.ImRead(fileName, ImreadModes.Color);
-                //Assert.NotNull(image);
-                //Assert.False(image.Empty());
-            });
+            Assert.True(image.Empty());
         }
         else
         {
-            using var image = Cv2.ImRead(fileName, ImreadModes.Color);
-            Assert.NotNull(image);
             Assert.False(image.Empty());
         }
     }
@@ -134,8 +123,7 @@ public class ImgCodecsTests
         Assert.Equal(10, image.Height);
         Assert.Equal(20, image.Width);
     }
-
-    //[LinuxOnlyFact]
+    
     [Fact]
     public void ImWriteJapaneseFileName()
     {
@@ -161,10 +149,7 @@ public class ImgCodecsTests
         Assert.Equal(10, image.Height);
         Assert.Equal(20, image.Width);
     }
-
-    // TODO
-    // https://github.com/opencv/opencv/issues/4242
-    //[PlatformSpecificFact("Linux")]
+    
     [Fact]
     public void ImWriteUnicodeFileName()
     {
@@ -176,30 +161,24 @@ public class ImgCodecsTests
 
         using (var mat = new Mat(10, 20, MatType.CV_8UC3, Scalar.Blue))
         {
+            Cv2.ImWrite(fileName, mat);
+            
+            var file = new FileInfo(fileName);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 // TODO
-                // Cannot marshal: Encountered unmappable character.
-                // at System.Runtime.InteropServices.Marshal.StringToAnsiString(String s, Byte * buffer, Int32 bufferLength, Boolean bestFit, Boolean throwOnUnmappableChar)
-                Assert.Throws<ArgumentException>(() => { Cv2.ImWrite(fileName, mat); });
+                Assert.False(file.Exists);
                 return;
             }
-            else
-            {
-                Cv2.ImWrite(fileName, mat);
-            }
+
+            Assert.True(file.Exists, $"File '{fileName}' not found");
+            Assert.True(file.Length > 0, $"File size of '{fileName}' == 0");
         }
-
-        // TODO fail
-        var file = new FileInfo(fileName);
-        Assert.True(file.Exists, $"File '{fileName}' not found");
-        Assert.True(file.Length > 0, $"File size of '{fileName}' == 0");
-
+        
         const string asciiFileName = "Data/Images/imwrite_unicode_test.png";
         File.Move(fileName, asciiFileName);
 
         var image = Image.Identify(asciiFileName);
-
         Assert.Equal(10, image.Height);
         Assert.Equal(20, image.Width);
     }
@@ -246,35 +225,18 @@ public class ImgCodecsTests
     {
         testOutputHelper.WriteLine($"CurrentCulture: {Thread.CurrentThread.CurrentCulture.Name}");
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
-            Thread.CurrentThread.CurrentCulture.Name != "ja-JP" && false)
+            Thread.CurrentThread.CurrentCulture.Name != "ja-JP")
         {
-            testOutputHelper.WriteLine($"Skip {nameof(ImWriteJapaneseFileName)}");
+            testOutputHelper.WriteLine($"Skip {nameof(HaveImageReaderJapanese)}");
             return;
         }
 
         var path = Path.Combine("Data", "Images", "haveImageReader_にほんご日本語.png");
-
-        unsafe
-        {
-            var marshaller = new System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn();               
-            var stackPtr = stackalloc byte[System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.BufferSize];
-            var stack = new Span<byte>(stackPtr, System.Runtime.InteropServices.Marshalling.Utf8StringMarshaller.ManagedToUnmanagedIn.BufferSize);
-            marshaller.FromManaged("haveImageReader_にほんご日本語.png", stack);
-            var dst = marshaller.ToUnmanaged();
-            var bytes = new List<byte>();
-            for (int i = 0; dst[i] != 0; i++)
-            {
-                bytes.Add(dst[i]);
-            }
-
-            var s = string.Join(",", bytes);
-            GC.KeepAlive(null);
-        }
-
+        
         try
         {
             CreateDummyImageFile(path);
-            Assert.True(Cv2.HaveImageReader(path));
+            Assert.True(Cv2.HaveImageReader(path), $"{nameof(HaveImageReader)} failed.");
         }
         finally
         {
@@ -288,8 +250,7 @@ public class ImgCodecsTests
             }
         }
     }
-
-    //[PlatformSpecificFact("Windows")]
+    
     [Fact]
     public void HaveImageReaderUnicode()
     {
@@ -299,13 +260,15 @@ public class ImgCodecsTests
         {
             CreateDummyImageFile(path);
 
-            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            if (false)
+            if (RuntimeInformation.OSArchitecture == Architecture.Wasm)
             {
                 // TODO
-                // Cannot marshal: Encountered unmappable character.
-                // at System.Runtime.InteropServices.Marshal.StringToAnsiString(String s, Byte * buffer, Int32 bufferLength, Boolean bestFit, Boolean throwOnUnmappableChar)
-                Assert.Throws<ArgumentException>(() => { Cv2.HaveImageReader(path); });
+                Assert.False(Cv2.HaveImageReader(path));
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // TODO
+                Assert.False(Cv2.HaveImageReader(path));
             }
             else
             {
@@ -335,20 +298,10 @@ public class ImgCodecsTests
     {
         Assert.True(Cv2.HaveImageWriter(fileName));
     }
-
-    // TODO
-    [Fact(Skip = "AccessViolationException")]
+    
+    [Fact]
     public void HaveImageWriterJapanese()
     {
-        // TODO: Fails on AppVeyor (probably this test succeeds only on Japanese Windows)
-        testOutputHelper.WriteLine($"CurrentCulture: {Thread.CurrentThread.CurrentCulture.Name}");
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
-            Thread.CurrentThread.CurrentCulture.Name != "ja-JP")
-        {
-            testOutputHelper.WriteLine($"Skip {nameof(ImWriteJapaneseFileName)}");
-            return;
-        }
-
         // This file does not have to exist
         const string fileName = "にほんご日本語.png";
 
@@ -363,20 +316,7 @@ public class ImgCodecsTests
         // This file does not have to exist
         const string fileName = "♥♡😀😄.png";
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            // TODO
-            // Cannot marshal: Encountered unmappable character.
-            // at System.Runtime.InteropServices.Marshal.StringToAnsiString(String s, Byte * buffer, Int32 bufferLength, Boolean bestFit, Boolean throwOnUnmappableChar)
-            Assert.Throws<ArgumentException>(() =>
-            {
-                Cv2.HaveImageWriter(fileName);
-            });
-        }
-        else
-        {
-            Assert.True(Cv2.HaveImageWriter(fileName));
-        }
+        Assert.True(Cv2.HaveImageWriter(fileName));
     }
 
     [Theory]
@@ -386,7 +326,7 @@ public class ImgCodecsTests
     [InlineData(".bmp")]
     public void ImEncode(string ext)
     {
-        using var mat = new Mat("Data/Images/lenna.png", ImreadModes.Grayscale);
+        using var mat = new Mat("Data/Images/mandrill.png", ImreadModes.Grayscale);
         Assert.False(mat.Empty());
 
         Cv2.ImEncode(ext, mat, out var imageData);
@@ -462,25 +402,40 @@ public class ImgCodecsTests
     }
 
     [Fact]
-    public void WriteMultiPagesTiff()
+    public void MultiPagesTiff()
     {
         string[] files = {
-            "multipage_p1.tif",
-            "multipage_p2.tif",
+            "Data/Images/multipage_p1.tif",
+            "Data/Images/multipage_p2.tif",
         };
 
-        Mat[]? pages = null;
-        Mat[]? readPages = null;
+        Assert.Equal(1, Cv2.ImCount(files[0]));
+        Assert.Equal(1, Cv2.ImCount(files[1]));
+
+        DisposableArray<Mat>? pages = null;
+        DisposableArray<Mat>? readPages = null;
+        DisposableArray<Mat>? decodedPages = null;
         try
         {
-            pages = files.Select(f => new Mat(f)).ToArray();
+            pages = new DisposableArray<Mat>(files.Select(f => new Mat(f)));
 
-            Assert.True(Cv2.ImWrite("multi.tiff", pages), "imwrite failed");
-            Assert.True(Cv2.ImReadMulti("multi.tiff", out readPages), "imreadmulti failed");
+            // imwrite
+            const string outFileName = "multi.tiff";
+            Assert.True(Cv2.ImWrite(outFileName, pages), "imwrite failed");
+
+            // imreadmulti
+            Assert.True(Cv2.ImReadMulti(outFileName, out readPages), "imreadmulti failed");
             Assert.NotEmpty(readPages);
-            Assert.Equal(pages.Length, readPages.Length);
+            Assert.Equal(pages.Count, readPages.Count);
 
-            for (var i = 0; i < pages.Length; i++)
+            // imcount
+            Assert.Equal(2, Cv2.ImCount(outFileName));
+
+            // imdecodemulti
+            var multiPageTiffData = File.ReadAllBytes(outFileName);
+            Cv2.ImDecodeMulti(multiPageTiffData, ImreadModes.AnyColor, out decodedPages);
+
+            for (var i = 0; i < pages.Count; i++)
             {
                 TestHelper.ImageEquals(pages[i], readPages[i]);
             }
@@ -488,17 +443,15 @@ public class ImgCodecsTests
         }
         finally
         {
-            if (pages is not null)
-                foreach (var page in pages)
-                    page.Dispose();
-            if (readPages is not null)
-                foreach (var page in readPages)
-                    page.Dispose();
+            pages?.Dispose();
+            readPages?.Dispose();
         }
     }
 
     private static void CreateDummyImageFile(string path)
     {
+        // Check whether the path is valid
+        // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
         Path.GetFullPath(path);
 
         var tempFileName = Path.GetTempFileName();

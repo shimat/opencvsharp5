@@ -20,6 +20,24 @@ CVAPI(ExceptionStatus) core_InputArray_delete(const cv::_InputArray* obj)
 
 #pragma endregion
 
+#pragma region OutputArray
+
+CVAPI(ExceptionStatus) core_OutputArray_new_byMat(cv::Mat* mat, cv::_OutputArray** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::_InputOutputArray(*mat);
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_OutputArray_delete(const cv::_OutputArray* obj)
+{
+    BEGIN_WRAP;
+    delete obj;
+    END_WRAP;
+}
+
+#pragma endregion
+
 #pragma region InputOutputArray
 
 CVAPI(ExceptionStatus) core_InputOutputArray_new_byMat(cv::Mat* mat, cv::_InputOutputArray** returnValue)

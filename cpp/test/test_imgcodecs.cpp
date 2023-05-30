@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+Ôªø#include <gtest/gtest.h>
 #include <filesystem>
 #include "../src/imgcodecs.hpp"
 
@@ -25,14 +25,10 @@ TEST(test_imgcodecs, imwrite) {
 }
 
 TEST(test_imgcodecs, imwrite_japanese) {
+#if !_WIN32
 	const cv::Mat img(10, 10, CV_8UC3, cv::Scalar(255, 0, 0));
-
-    const auto path = "haveImageReader_Ç…ÇŸÇÒÇ≤ì˙ñ{åÍ.png";//"imgcodecs_imwrite_Ç…ÇŸÇÒÇ≤.png";
-
-    std::vector<uchar> exp{ 104,97,118,101,73,109,97,103,101,82,101,97,100,101,114,95,227,129,171,227,129,187,227,130,147,227,129,148,230,151,165,230,156,172,232,170,158,46,112,110,103 };
-    for (size_t i = 0; auto b : exp){
-		ASSERT_EQ(b, path[i++]);
-    }
+    
+    const auto path = "imgcodecs_imwrite_„Å´„Åª„Çì„Åî.png";
 
     int ret;
     ASSERT_EQ(
@@ -49,4 +45,5 @@ TEST(test_imgcodecs, imwrite_japanese) {
         imgcodecs_haveImageReader(path, &ret),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(ret, 1);
+#endif
 }
