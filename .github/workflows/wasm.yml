@@ -78,6 +78,7 @@ jobs:
             -D WITH_EIGEN=OFF \
             -D WITH_ITT=OFF \
             -D WITH_JPEG=OFF \
+            -D WITH_OPENJPEG=OFF \
             -D WITH_TIFF=OFF \
             -D WITH_PNG=OFF \
             -D WITH_IPP=OFF \
