@@ -65,7 +65,7 @@ CVAPI(ExceptionStatus) core_Mat_new8(int ndims, const int* sizes, int type, void
 
 inline cv::Range cpp(CvSlice s)
 {
-	return {s.start_index, s.end_index};
+    return {s.start_index, s.end_index};
 }
 
 CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, CvSlice rowRange, CvSlice colRange, cv::Mat **returnValue)

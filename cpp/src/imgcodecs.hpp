@@ -76,7 +76,7 @@ CVAPI(ExceptionStatus) imgcodecs_imwritemulti(
 
 
 CVAPI(ExceptionStatus) imgcodecs_imdecode_Mat(
-	const cv::Mat* buf, 
+    const cv::Mat* buf, 
     int flags, 
     cv::Mat** returnValue)
 {
@@ -88,7 +88,7 @@ CVAPI(ExceptionStatus) imgcodecs_imdecode_Mat(
 
 
 CVAPI(ExceptionStatus) imgcodecs_imdecode_InputArray(
-	const cv::_InputArray* buf, 
+    const cv::_InputArray* buf, 
     int flags, 
     cv::Mat** returnValue)
 {
@@ -111,7 +111,7 @@ CVAPI(ExceptionStatus) imgcodecs_imdecode_bytes(
 
 
 CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_InputArray(
-	const cv::_InputArray* buf, 
+    const cv::_InputArray* buf, 
     int flags, 
     std::vector<cv::Mat> mats,
     int *returnValue)
@@ -119,7 +119,7 @@ CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_InputArray(
     BEGIN_WRAP;
     const auto ret = cv::imdecodemulti(*buf, flags, mats);
     *returnValue = ret ? 1 : 0;
-    END_WRAP;	
+    END_WRAP;
 }
 CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_bytes(
     uchar* buf, 
@@ -132,7 +132,7 @@ CVAPI(ExceptionStatus) imgcodecs_imdecodemulti_bytes(
     const cv::Mat bufMat(1, bufLength, CV_8UC1, buf, cv::Mat::AUTO_STEP);
     const auto ret = cv::imdecodemulti(bufMat, flags, mats);
     *returnValue = ret ? 1 : 0;
-    END_WRAP;	
+    END_WRAP;
 }
 
 
