@@ -11,7 +11,7 @@ env:
   OPENCV_VERSION: "5.x"
   EM_VERSION: 3.1.32
   EM_CACHE_FOLDER: "emsdk-cache"
-  OPENCV_CACHE_VERSION: 2
+  OPENCV_CACHE_VERSION: 3
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
@@ -80,6 +80,8 @@ jobs:
             -D WITH_ITT=OFF \
             -D WITH_JPEG=OFF \
             -D WITH_OPENJPEG=OFF \
+            -D WITH_JASPER=OFF \
+            -D WITH_OPENEXR=OFF \            
             -D WITH_TIFF=OFF \
             -D WITH_PNG=OFF \
             -D WITH_IPP=OFF \
