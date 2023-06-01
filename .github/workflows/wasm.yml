@@ -81,7 +81,7 @@ jobs:
             -D WITH_JPEG=OFF \
             -D WITH_OPENJPEG=OFF \
             -D WITH_JASPER=OFF \
-            -D WITH_OPENEXR=OFF \            
+            -D WITH_OPENEXR=OFF \
             -D WITH_TIFF=OFF \
             -D WITH_PNG=OFF \
             -D WITH_IPP=OFF \
