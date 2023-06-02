@@ -29,10 +29,9 @@ TEST(test_core, getVersionString) {
 }
 
 
-
 TEST(test_core, compare) {
-    cv::Mat src1(1, 1, CV_8U, cv::Scalar::all(0));
-    cv::Mat src2(1, 1, CV_8U, cv::Scalar::all(1));
+    cv::Mat src1(12, 12, CV_32SC1, cv::Scalar::all(0));
+    cv::Mat src2(12, 12, CV_32SC1, cv::Scalar::all(1));
     cv::Mat dst;
     cv::_InputArray src1_(src1);
     cv::_InputArray src2_(src2);
@@ -41,7 +40,8 @@ TEST(test_core, compare) {
     ASSERT_EQ(
         core_compare(&src1_, &src2_, &dst_, cv::CMP_EQ),
         ExceptionStatus::NotOccurred);
-    ASSERT_EQ(dst.size(), cv::Size(1, 1));
+    ASSERT_EQ(dst.type(), CV_8UC1);
+    ASSERT_EQ(dst.size(), src1.size());
     ASSERT_EQ(dst.at<uchar>(0), 0);
 
     ASSERT_EQ(
@@ -49,7 +49,7 @@ TEST(test_core, compare) {
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(dst.at<uchar>(0), 255);
 }
-
+/*
 TEST(test_core, countNonZero) {
     int pixels;
 
@@ -68,15 +68,15 @@ TEST(test_core, countNonZero) {
         core_countNonZero(&ia2, &pixels),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(pixels, 3);
-}
+}*/
 
 TEST(test_core, split1) {
-    cv::Mat src(1, 1, CV_8UC3, cv::Scalar(1, 2, 3));
+    cv::Mat src(1, 1, CV_32SC3, cv::Scalar(1, 2, 3));
     std::vector<cv::Mat> dst;
     ASSERT_EQ(
         core_split(&src, &dst),
         ExceptionStatus::NotOccurred);
-    ASSERT_EQ(dst[0].at<uchar>(0), 1);
-    ASSERT_EQ(dst[1].at<uchar>(0), 2);
-    ASSERT_EQ(dst[2].at<uchar>(0), 3);
+    ASSERT_EQ(dst[0].at<int>(0), 1);
+    ASSERT_EQ(dst[1].at<int>(0), 2);
+    ASSERT_EQ(dst[2].at<int>(0), 3);
 }

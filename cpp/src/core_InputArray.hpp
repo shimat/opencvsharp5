@@ -25,7 +25,7 @@ CVAPI(ExceptionStatus) core_InputArray_delete(const cv::_InputArray* obj)
 CVAPI(ExceptionStatus) core_OutputArray_new_byMat(cv::Mat* mat, cv::_OutputArray** returnValue)
 {
     BEGIN_WRAP;
-    *returnValue = new cv::_InputOutputArray(*mat);
+    *returnValue = new cv::_OutputArray(*mat);
     END_WRAP;
 }
 
