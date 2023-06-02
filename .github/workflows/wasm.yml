@@ -11,7 +11,7 @@ env:
   OPENCV_VERSION: "5.x"
   EM_VERSION: 3.1.32
   EM_CACHE_FOLDER: "emsdk-cache"
-  OPENCV_CACHE_VERSION: 3
+  OPENCV_CACHE_VERSION: 4
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
