@@ -84,6 +84,7 @@ jobs:
             -D WITH_OPENEXR=OFF \
             -D WITH_TIFF=OFF \
             -D WITH_PNG=OFF \
+            -D WITH_WEBP=OFF \
             -D WITH_IPP=OFF \
             -D WITH_LAPACK=OFF \
             -D CV_ENABLE_INTRINSICS=OFF \
