@@ -88,22 +88,7 @@ public static partial class Cv2
             NativeMethods.core_countNonZero(srcHandle, out var result));
         return result;
     }
-
-    /* @brief 
-
-The function cv::split splits a multi-channel array into separate single-channel arrays:
-\f[\texttt{mv} [c](I) =  \texttt{src} (I)_c\f]
-If you need to extract a single channel or do some other sophisticated channel permutation, use
-mixChannels .
-
-The following example demonstrates how to split a 3-channel matrix into 3 single channel matrices.
-@snippet snippets/core_split.cpp example
-
-@param src input multi-channel array.
-@param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are
-reallocated, if needed.
-@sa merge, mixChannels, cvtColor
-*/
+    
     /// <summary>
     /// Divides a multi-channel array into several single-channel arrays.
     /// </summary>
