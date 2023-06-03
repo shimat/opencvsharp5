@@ -93,9 +93,8 @@ public static partial class Cv2
     /// Divides a multi-channel array into several single-channel arrays.
     /// </summary>
     /// <param name="src">The source multi-channel array</param>
-    /// <param name="mv">output array; the number of arrays must match src.channels();
-    /// the arrays themselves are reallocated, if needed.</param>
-    public static void Split(Mat src, out Mat[] mv)
+    /// <returns></returns>
+    public static DisposableArray<Mat> Split(Mat src)
     {
         ThrowIfNull(src);
         src.ThrowIfDisposed();
@@ -104,8 +103,8 @@ public static partial class Cv2
 
         NativeMethods.HandleException(
             NativeMethods.core_split(src.Handle, vec.Handle));
-        mv = vec.ToArray();
 
         GC.KeepAlive(src);
+        return new DisposableArray<Mat>(vec.ToArray());
     }
 }
