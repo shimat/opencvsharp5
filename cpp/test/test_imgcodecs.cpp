@@ -2,7 +2,7 @@
 #include <filesystem>
 #include "../src/imgcodecs.hpp"
 
-TEST(test_imgcodecs, imwrite) {
+TEST(ImgCodecsTest, imwrite) {
 	const cv::Mat img(10, 10, CV_8UC3, cv::Scalar(0, 0, 255));
 
     const auto path = "imgcodecs_imwrite.png";
@@ -24,7 +24,7 @@ TEST(test_imgcodecs, imwrite) {
     ASSERT_EQ(ret, 1);
 }
 
-TEST(test_imgcodecs, imwrite_japanese) {
+TEST(ImgCodecsTest, imwriteJapanese) {
 #if !_WIN32
 	const cv::Mat img(10, 10, CV_8UC3, cv::Scalar(255, 0, 0));
     

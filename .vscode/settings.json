@@ -5,6 +5,9 @@
         "string": "cpp",
         "vector": "cpp",
         "system_error": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "any": "cpp",
+        "string_view": "cpp",
+        "type_traits": "cpp"
     }
 }

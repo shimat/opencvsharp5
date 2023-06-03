@@ -2,7 +2,7 @@
 #include "../src/core_Mat.hpp"
 #include <array>
 
-TEST(test_core_Mat, newdelete_1) {
+TEST(CoreTestMat, Newdelete1) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -14,7 +14,7 @@ TEST(test_core_Mat, newdelete_1) {
     ASSERT_EQ(obj->empty(), true);
 }
 
-TEST(test_core_Mat, _newdelete_2) {
+TEST(CoreTestMat, newdelete2) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -28,7 +28,7 @@ TEST(test_core_Mat, _newdelete_2) {
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(test_core_Mat, _newdelete_3) {
+TEST(CoreTestMat, newdelete3) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -44,7 +44,7 @@ TEST(test_core_Mat, _newdelete_3) {
     ASSERT_EQ(obj->at<cv::Vec4b>(2, 3), cv::Vec4b(1, 2, 3, 4));
 }
 
-TEST(test_core_Mat, _newdelete_4) {
+TEST(CoreTestMat, newdelete4) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -63,7 +63,7 @@ TEST(test_core_Mat, _newdelete_4) {
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(test_core_Mat, _newdelete_5) {
+TEST(CoreTestMat, newdelete5) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -84,7 +84,7 @@ TEST(test_core_Mat, _newdelete_5) {
     ASSERT_EQ(obj->at<cv::Vec4i>(1, 2, 3), cv::Vec4i(1111, 2222, 3333, 4444));
 }
 
-TEST(test_core_Mat, _newdelete_6) {
+TEST(CoreTestMat, newdelete6) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -100,7 +100,7 @@ TEST(test_core_Mat, _newdelete_6) {
     ASSERT_EQ(obj->data, org.data);
 }
 
-TEST(test_core_Mat, _newdelete_7) {
+TEST(CoreTestMat, newdelete7) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -120,7 +120,7 @@ TEST(test_core_Mat, _newdelete_7) {
     ASSERT_EQ(obj->at<uchar>(1, 2), 255);
 }
 
-TEST(test_core_Mat, _newdelete_8) {
+TEST(CoreTestMat, newdelete8) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -147,7 +147,7 @@ TEST(test_core_Mat, _newdelete_8) {
     ASSERT_EQ(obj->at<uchar>(1, 2, 3), 128);
 }
 
-TEST(test_core_Mat, _newdelete_9) {
+TEST(CoreTestMat, newdelete9) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -170,7 +170,7 @@ TEST(test_core_Mat, _newdelete_9) {
     ASSERT_EQ(obj->at<float>(0, 0), 3.0f);
 }
 
-TEST(test_core_Mat, _newdelete_10) {
+TEST(CoreTestMat, newdelete10) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
     };
@@ -193,7 +193,7 @@ TEST(test_core_Mat, _newdelete_10) {
     ASSERT_EQ(obj->at<int>(0, 0), 3.0f);
 }
 
-TEST(test_core_Mat, size) {
+TEST(CoreTestMat, size) {
     const cv::Mat m(3, 4, CV_8UC1);
 
     ASSERT_EQ(core_Mat_rows(&m), 3);
@@ -212,13 +212,13 @@ TEST(test_core_Mat, size) {
     ASSERT_EQ(dim1, 4);
 }
 
-TEST(test_core_Mat, data) {
+TEST(CoreTestMat, data) {
     const cv::Mat m(3, 4, CV_8UC1);
     
     ASSERT_NE(core_Mat_data(&m), nullptr);
 }
 
-TEST(test_core_Mat, step) {
+TEST(CoreTests, step) {
     const cv::Mat m(3, 7, CV_8UC1);
     
     ASSERT_EQ(core_Mat_step(&m), 7);
@@ -232,7 +232,7 @@ TEST(test_core_Mat, step) {
 
 #pragma region Methods
 
-TEST(test_core_Mat, type) {
+TEST(CoreTestMat, type) {
     int t;
 
     cv::Mat m1;
@@ -254,7 +254,7 @@ TEST(test_core_Mat, type) {
     ASSERT_EQ(t, CV_32SC4);
 }
 
-TEST(test_core_Mat, depth) {
+TEST(CoreTestMat, depth) {
     int d;
 
     cv::Mat m1;
@@ -276,7 +276,7 @@ TEST(test_core_Mat, depth) {
     ASSERT_EQ(d, CV_32F);
 }
 
-TEST(test_core_Mat, channels) {
+TEST(CoreTestMat, channels) {
     int ch;
 
     cv::Mat m1(10, 10, CV_8UC1);
@@ -292,7 +292,7 @@ TEST(test_core_Mat, channels) {
     ASSERT_EQ(ch, 3);
 }
 
-TEST(test_core_Mat, empty) {
+TEST(CoreTestMat, empty) {
     int empty;
 
     cv::Mat m1;
@@ -314,7 +314,7 @@ TEST(test_core_Mat, empty) {
     ASSERT_EQ(empty, 0);
 }
 
-TEST(test_core_Mat, total) {
+TEST(CoreTestMat, total) {
     size_t total;
 
     const cv::Mat m1 = cv::Mat::zeros(10, 10, CV_8UC1);

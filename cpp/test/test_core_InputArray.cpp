@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/core_InputArray.hpp"
 
-TEST(test_core_InputOutputArray, newdelete_byMat)
+TEST(CoreTestInputOutputArray, newdeleteByMat)
 {
     auto deleter = [](const cv::_InputOutputArray* obj) {
         core_InputOutputArray_delete(obj);
