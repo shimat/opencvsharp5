@@ -50,12 +50,11 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
             matPointers,
             (uint)matPointers.Length);
 
-        GC.KeepAlive(matPointers);
-        GC.KeepAlive(mats); // todo: rsb - should probably generate Mat[] and then get CvPtrs
         foreach (var m in matsArray)
         {
             GC.KeepAlive(m);
         }
+        GC.KeepAlive(mats);
     }
 
     /// <summary>
@@ -117,18 +116,33 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
             return Array.Empty<T>();
 
         var dst = new T[size];
+        CopyToArray(dst);
+        return dst;
+    }
+
+    /// <summary>
+    /// Converts std::vector to managed array
+    /// </summary>
+    /// <returns></returns>
+    public void CopyToArray<T>(IReadOnlyList<T> dst)
+        where T : Mat, new()
+    {
+        var size = Size;
+        if (size != dst.Count)
+            throw new ArgumentException("this.Size != dst.Count");
+        if (size == 0)
+            return;
+
         var dstPtr = new nint[size];
         for (var i = 0; i < size; i++)
         {
-            var m = new T();
-            dst[i] = m;
-            dstPtr[i] = m.Handle.DangerousGetHandle();
+            dstPtr[i] = dst[i].Handle.DangerousGetHandle();
         }
+
         NativeMethods.vector_Mat_assignToArray(handle, dstPtr);
         GC.KeepAlive(this);
-
-        return dst;
     }
+
     /*
     /// <summary>
     /// Converts std::vector to managed array

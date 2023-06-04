@@ -57,22 +57,27 @@ public class CoreTests
     public void Split2()
     {
         using var src = new Mat(1, 1, MatType.CV_8UC3, new Scalar(1, 2, 3));
+
+        // 1st 
         using var dst = new DisposableArray<Mat>(new []
         {
             new Mat(), new Mat(), new Mat(), 
         });
-        var pointers = dst.Select(m => m.Data).ToArray();
         Cv2.Split(src, dst);
 
-        Assert.Equal(3, dst.Count);
-        
+        Assert.Equal(3, dst.Count);        
         Assert.All(dst, m =>
         {
             Assert.Equal(MatType.CV_8UC1, m.Type());
             Assert.Equal(src.Size(), m.Size());
         });
+
+        // 2nd 
+        var pointers = dst.Select(m => m.Data).ToArray();
+        Cv2.Split(src, dst);
         for (var i = 0; i < dst.Count; i++)
         {
+            // mat data is not reallocated
             Assert.Equal(pointers[i], dst[i].Data);
         }
 
