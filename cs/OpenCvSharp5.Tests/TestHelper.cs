@@ -21,20 +21,11 @@ public static class TestHelper
         }
         else
         {
-            Cv2.Split(comparison, out var channels);
-            try
+            using var channels = Cv2.Split(comparison);
+
+            foreach (var channel in channels)
             {
-                foreach (var channel in channels)
-                {
-                    Assert.Equal(0, Cv2.CountNonZero(channel));
-                }
-            }
-            finally
-            {
-                foreach (var channel in channels)
-                {
-                    channel.Dispose();
-                }
+                Assert.Equal(0, Cv2.CountNonZero(channel));
             }
         }
     }

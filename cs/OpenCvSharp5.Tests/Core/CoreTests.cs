@@ -34,7 +34,7 @@ public class CoreTests
     }
 
     [Fact]
-    public void Split()
+    public void Split1()
     {
         using var src = new Mat(1, 1, MatType.CV_8UC3, new Scalar(1, 2, 3));
         
@@ -47,6 +47,34 @@ public class CoreTests
             Assert.Equal(MatType.CV_8UC1, m.Type());
             Assert.Equal(src.Size(), m.Size());
         });
+
+        Assert.Equal(1, Marshal.ReadByte(dst[0].Data));
+        Assert.Equal(2, Marshal.ReadByte(dst[1].Data));
+        Assert.Equal(3, Marshal.ReadByte(dst[2].Data));
+    }
+
+    [Fact]
+    public void Split2()
+    {
+        using var src = new Mat(1, 1, MatType.CV_8UC3, new Scalar(1, 2, 3));
+        using var dst = new DisposableArray<Mat>(new []
+        {
+            new Mat(), new Mat(), new Mat(), 
+        });
+        var pointers = dst.Select(m => m.Data).ToArray();
+        Cv2.Split(src, dst);
+
+        Assert.Equal(3, dst.Count);
+        
+        Assert.All(dst, m =>
+        {
+            Assert.Equal(MatType.CV_8UC1, m.Type());
+            Assert.Equal(src.Size(), m.Size());
+        });
+        for (var i = 0; i < dst.Count; i++)
+        {
+            Assert.Equal(pointers[i], dst[i].Data);
+        }
 
         Assert.Equal(1, Marshal.ReadByte(dst[0].Data));
         Assert.Equal(2, Marshal.ReadByte(dst[1].Data));

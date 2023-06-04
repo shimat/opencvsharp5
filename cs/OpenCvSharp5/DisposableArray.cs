@@ -52,3 +52,13 @@ public sealed class DisposableArray<T> : IReadOnlyList<T>, IDisposable
     /// <param name="obj"></param>
     public static implicit operator T[](DisposableArray<T> obj) => obj.data;
 }
+
+/// <summary>
+/// </summary>
+public static class DisposableArrayExtensions
+{
+    /// <summary>
+    /// </summary>
+    public static DisposableArray<T> ToDisposableArray<T>(this IEnumerable<T> enumerable) where T : IDisposable =>
+        new(enumerable);
+}

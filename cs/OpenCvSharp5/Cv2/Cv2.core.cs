@@ -93,6 +93,8 @@ public static partial class Cv2
     /// Divides a multi-channel array into several single-channel arrays.
     /// </summary>
     /// <param name="src">The source multi-channel array</param>
+    /// <param name="mv">output array; the number of arrays must match src.channels();
+    /// the arrays themselves are reallocated, if needed.</param>
     /// <returns></returns>
     public static DisposableArray<Mat> Split(Mat src)
     {
@@ -106,5 +108,25 @@ public static partial class Cv2
 
         GC.KeepAlive(src);
         return new DisposableArray<Mat>(vec.ToArray());
+    }
+
+    /// <summary>
+    /// Divides a multi-channel array into several single-channel arrays.
+    /// </summary>
+    /// <param name="src">The source multi-channel array</param>
+    /// <param name="mv">output array; the number of arrays must match src.channels();
+    /// the arrays themselves are reallocated, if needed.</param>
+    /// <returns></returns>
+    public static void Split(Mat src, IReadOnlyCollection<Mat> mv)
+    {
+        ThrowIfNull(src);
+        src.ThrowIfDisposed();
+        
+        using var vec = new VectorOfMat(mv.ToArray());
+
+        NativeMethods.HandleException(
+            NativeMethods.core_split(src.Handle, vec.Handle));
+
+        GC.KeepAlive(src);
     }
 }
