@@ -115,7 +115,7 @@ public class VectorOfMat : IDisposable, IStdVector<Mat>, ISafeHandleHolder
         if (size == 0)
             return Array.Empty<T>();
 
-        var dst = new T[size];
+        var dst = Enumerable.Range(0, size).Select(_ => new T()).ToArray();
         CopyToArray(dst);
         return dst;
     }
