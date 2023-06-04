@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/imgproc.hpp"
 
-TEST(test_imgproc, rectangle1) {
+TEST(ImgProcTest, rectangle1) {
     cv::Mat img(3, 3, CV_8UC3, cv::Scalar::all(0));
     cv::Scalar color(255, 128, 64);
 

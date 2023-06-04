@@ -8,6 +8,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(VCPKG_BUILD_TYPE release)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
+
 add_compile_definitions(CVAPI_EXPORTS)
 
 message("### CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
@@ -70,7 +74,9 @@ add_executable(
     test/test_core.cpp
     test/test_core_Mat.cpp
     test/test_core_InputArray.cpp
-    test/test_imgproc.cpp)
+    test/test_imgproc.cpp
+    test/test_imgcodecs.cpp
+    )
 target_link_libraries(
     ${PROJECT_NAME}.Tests 
     gtest_main 

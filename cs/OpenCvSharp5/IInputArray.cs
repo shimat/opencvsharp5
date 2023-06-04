@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using OpenCvSharp5.Internal;
 
-namespace OpenCvSharp5.Internal;
+namespace OpenCvSharp5;
 
 /// <summary>
 /// This is the proxy interface for passing read-only input arrays into OpenCV functions.
@@ -28,7 +29,12 @@ public class InputArrayHandle : SafeHandle
     }
 
     /// <inheritdoc />
-    protected override bool ReleaseHandle() => throw new NotImplementedException();
+    protected override bool ReleaseHandle() 
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_InputArray_delete(handle));
+        return true;
+    }
 
     /// <inheritdoc />
     public override bool IsInvalid => handle == IntPtr.Zero;

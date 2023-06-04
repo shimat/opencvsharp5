@@ -1,4 +1,7 @@
-﻿global using Vec2b = OpenCvSharp5.Vec2<byte>;
+﻿global using static System.ArgumentException;
+global using static System.ArgumentNullException;
+
+global using Vec2b = OpenCvSharp5.Vec2<byte>;
 global using Vec2s = OpenCvSharp5.Vec2<short>;
 global using Vec2w = OpenCvSharp5.Vec2<ushort>;
 global using Vec2i = OpenCvSharp5.Vec2<int>;

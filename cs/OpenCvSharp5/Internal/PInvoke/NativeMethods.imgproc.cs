@@ -5,9 +5,9 @@ namespace OpenCvSharp5.Internal;
 
 internal static partial class NativeMethods
 {
-    [DllImport(LibraryName)]
+    [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static extern ExceptionStatus imgproc_rectangle1(
+    public static partial ExceptionStatus imgproc_rectangle1(
         InputOutputArrayHandle img,
         Point pt1,
         Point pt2,
@@ -16,9 +16,9 @@ internal static partial class NativeMethods
         LineTypes lineType,
         int shift);
 
-    [DllImport(LibraryName)]
+    [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static extern ExceptionStatus imgproc_rectangle2(
+    public static partial ExceptionStatus imgproc_rectangle2(
         InputOutputArrayHandle img, 
         Rect rec, 
         in Scalar color, 

@@ -11,7 +11,7 @@ env:
   OPENCV_VERSION: "5.x"
   EM_VERSION: 3.1.32
   EM_CACHE_FOLDER: "emsdk-cache"
-  OPENCV_CACHE_VERSION: 1
+  OPENCV_CACHE_VERSION: 4
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
@@ -46,7 +46,8 @@ jobs:
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{ runner.os }}
-      - uses: mymindstorm/setup-emsdk@v11
+          
+      - uses: mymindstorm/setup-emsdk@v12
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -78,8 +79,12 @@ jobs:
             -D WITH_EIGEN=OFF \
             -D WITH_ITT=OFF \
             -D WITH_JPEG=OFF \
+            -D WITH_OPENJPEG=OFF \
+            -D WITH_JASPER=OFF \
+            -D WITH_OPENEXR=OFF \
             -D WITH_TIFF=OFF \
             -D WITH_PNG=OFF \
+            -D WITH_WEBP=OFF \
             -D WITH_IPP=OFF \
             -D WITH_LAPACK=OFF \
             -D CV_ENABLE_INTRINSICS=OFF \

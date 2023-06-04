@@ -65,7 +65,7 @@ CVAPI(ExceptionStatus) core_Mat_new8(int ndims, const int* sizes, int type, void
 
 inline cv::Range cpp(CvSlice s)
 {
-	return {s.start_index, s.end_index};
+    return {s.start_index, s.end_index};
 }
 
 CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, CvSlice rowRange, CvSlice colRange, cv::Mat **returnValue)
@@ -147,6 +147,45 @@ CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *
 {
     BEGIN_WRAP;
     *result = obj->step[i];
+    END_WRAP;
+}
+
+#pragma endregion
+
+#pragma region Methods
+
+CVAPI(ExceptionStatus) core_Mat_type(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->type();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_depth(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->depth();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_channels(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = obj->channels();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_empty(const cv::Mat* obj, int *result)
+{
+    BEGIN_WRAP;
+    *result = obj->empty() ? 1 : 0;
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_total(const cv::Mat* obj, size_t* result)
+{
+    BEGIN_WRAP;
+    *result = obj->total();
     END_WRAP;
 }
 
