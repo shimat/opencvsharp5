@@ -363,6 +363,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
     #endregion
     
+    #region Fields
+
     /// <summary>
     /// includes several bit-fields:
     /// - the magic signature
@@ -391,6 +393,47 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// pointer to the data
     /// </summary>
     public nint Data => NativeMethods.core_Mat_data(handle);
+
+    /// <summary>
+    /// unsafe pointer to the data
+    /// </summary>
+    public unsafe byte* DataPointer => (byte*)Data;
+
+    #endregion
+    
+    /// <summary>
+    /// Creates a matrix header for the specified matrix row.
+    /// </summary>
+    /// <param name="y">A 0-based row index.</param>
+    /// <returns></returns>
+    public Mat Row(int y)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_row(handle, y, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+    
+    /// <summary>
+    /// Creates a matrix header for the specified matrix column.
+    /// </summary>
+    /// <param name="x">A 0-based column index.</param>
+    /// <returns></returns>
+    public Mat Col(int x)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_col(handle, x, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
 
     /// <summary>
     /// Returns a matrix size.
@@ -422,10 +465,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return result;
     }
 
-    /// <summary>
-    /// unsafe pointer to the data
-    /// </summary>
-    public unsafe byte* DataPointer => (byte*)Data;
 
     /// <summary>
     /// returns element type, similar to CV_MAT_TYPE(cvmat->type)

@@ -154,6 +154,20 @@ CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *
 
 #pragma region Methods
 
+CVAPI(ExceptionStatus) core_Mat_row(const cv::Mat *obj, int y, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->row(y));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_col(const cv::Mat *obj, int x, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->col(x));
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_type(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;
