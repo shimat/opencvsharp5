@@ -434,6 +434,87 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return new Mat(matPtr);
     }
+    
+    /// <summary>
+    /// Creates a matrix header for the specified row span.
+    ///
+    /// The method makes a new header for the specified row span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="startRow">An inclusive 0-based start index of the row span.</param>
+    /// <param name="endRow">An exclusive 0-based ending index of the row span.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat RowRange(int startRow, int endRow)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_rowRange1(handle, startRow, endRow, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+    
+    /// <summary>
+    /// Creates a matrix header for the specified row span.
+    ///
+    /// The method makes a new header for the specified row span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="r">Range structure containing both the start and the end indices.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat RowRange(Range r)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_rowRange2(handle, r, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+    
+    /// <summary>
+    /// Creates a matrix header for the specified column span.
+    ///
+    /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="startCol">An inclusive 0-based start index of the column span.</param>
+    /// <param name="endCol">An exclusive 0-based ending index of the column span.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat ColRange(int startCol, int endCol)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_colRange1(handle, startCol, endCol, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary> 
+    /// Creates a matrix header for the specified column span.
+    ///
+    /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="r">Range structure containing both the start and the end indices.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat ColRange(Range r)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_colRange2(handle, r, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
 
     /// <summary>
     /// Returns a matrix size.
