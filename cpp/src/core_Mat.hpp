@@ -168,6 +168,34 @@ CVAPI(ExceptionStatus) core_Mat_col(const cv::Mat *obj, int x, cv::Mat **returnV
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_Mat_rowRange1(const cv::Mat *obj, int startrow, int endrow, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->rowRange(startrow, endrow));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_rowRange2(const cv::Mat *obj, cv::Range r, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->rowRange(r));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_colRange1(const cv::Mat *obj, int startcol, int endcol, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->colRange(startcol, endcol));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_colRange2(const cv::Mat *obj, cv::Range r, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->colRange(r));
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_type(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;
