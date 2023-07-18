@@ -28,14 +28,14 @@ CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int typ
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new4(int ndims, int* sizes, int type, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new4(const int ndims, int* sizes, const int type, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(ndims, sizes, type);
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new5(int ndims, int* sizes, int type, CvScalar s, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new5(const int ndims, int* sizes, const int type, CvScalar s, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(ndims, sizes, type, static_cast<cv::Scalar>(s));
@@ -49,14 +49,14 @@ CVAPI(ExceptionStatus) core_Mat_new6(cv::Mat *mat, cv::Mat **returnValue)
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new7(int rows, int cols, int type, void* data, size_t step, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new7(const int rows, const int cols, const int type, void* data, const size_t step, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(rows, cols, type, data, step);
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new8(int ndims, const int* sizes, int type, void* data, const size_t* steps, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new8(const int ndims, const int* sizes, const int type, void* data, const size_t* steps, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(ndims, sizes, type, data, steps);
@@ -68,14 +68,14 @@ inline cv::Range cpp(CvSlice s)
     return {s.start_index, s.end_index};
 }
 
-CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, CvSlice rowRange, CvSlice colRange, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, const CvSlice rowRange, const CvSlice colRange, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(*mat, cpp(rowRange), cpp(colRange));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new10(cv::Mat *mat, CvRect roi, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new10(cv::Mat *mat, const CvRect roi, cv::Mat **returnValue)
 {
     BEGIN_WRAP
     *returnValue = new cv::Mat(*mat, static_cast<cv::Rect>(roi));
@@ -154,45 +154,115 @@ CVAPI(ExceptionStatus) core_Mat_stepAt(const cv::Mat *obj, const int i, size_t *
 
 #pragma region Methods
 
-CVAPI(ExceptionStatus) core_Mat_row(const cv::Mat *obj, int y, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_row(const cv::Mat *obj, const int y, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->row(y));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_col(const cv::Mat *obj, int x, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_col(const cv::Mat *obj, const int x, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->col(x));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_rowRange1(const cv::Mat *obj, int startrow, int endrow, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_rowRange1(const cv::Mat *obj, const int startRow, const int endRow, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
-    *returnValue = new cv::Mat(obj->rowRange(startrow, endrow));
+    *returnValue = new cv::Mat(obj->rowRange(startRow, endRow));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_rowRange2(const cv::Mat *obj, cv::Range r, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_rowRange2(const cv::Mat *obj, const cv::Range r, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->rowRange(r));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_colRange1(const cv::Mat *obj, int startcol, int endcol, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_colRange1(const cv::Mat *obj, const int startCol, const int endCol, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
-    *returnValue = new cv::Mat(obj->colRange(startcol, endcol));
+    *returnValue = new cv::Mat(obj->colRange(startCol, endCol));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_colRange2(const cv::Mat *obj, cv::Range r, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_colRange2(const cv::Mat *obj, const cv::Range r, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->colRange(r));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_diag(const cv::Mat *obj, const int d, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->diag(d));
+    END_WRAP;	
+}
+
+CVAPI(ExceptionStatus) core_Mat_clone(const cv::Mat *obj, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->clone());
+    END_WRAP;	
+}
+
+CVAPI(ExceptionStatus) core_Mat_copyTo1(const cv::Mat *obj, const cv::_OutputArray *m)
+{
+    BEGIN_WRAP;
+    obj->copyTo(*m);
+    END_WRAP;	
+}
+
+CVAPI(ExceptionStatus) core_Mat_copyTo2(const cv::Mat *obj, const cv::_OutputArray *m, const cv::_InputArray *mask)
+{
+    BEGIN_WRAP;
+    obj->copyTo(*m, *mask);
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_convertTo(const cv::Mat *obj, cv::_OutputArray *m, const int rtype, const double alpha, const double beta)
+{
+    BEGIN_WRAP;
+    obj->convertTo(*m, rtype, alpha, beta);
+    END_WRAP;	
+}
+
+CVAPI(ExceptionStatus) core_Mat_assignTo(const cv::Mat *obj, cv::Mat *m, int type)
+{
+    BEGIN_WRAP;
+    obj->assignTo(*m, type);
+    END_WRAP;
+}
+    
+CVAPI(ExceptionStatus) core_Mat_setTo(cv::Mat *obj, const cv::_InputArray *value, cv::_InputArray *mask)
+{
+    BEGIN_WRAP;
+    obj->setTo(*value, entity(mask));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_setZero(cv::Mat *obj)
+{
+    BEGIN_WRAP;
+    obj->setZero();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_reshape1(const cv::Mat *obj, int cn, int rows, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->reshape(cn, rows));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, int cn, int newndims, const int* newsz, cv::Mat **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::Mat(obj->reshape(cn, newndims, newsz));
     END_WRAP;
 }
 

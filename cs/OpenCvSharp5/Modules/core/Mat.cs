@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
@@ -514,6 +517,247 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         GC.KeepAlive(this);
         return new Mat(matPtr);
+    }
+
+    
+    /// <summary>
+    /// Extracts a diagonal from a matrix.
+    ///
+    /// The method makes a new header for the specified matrix diagonal. The new matrix is represented as a
+    /// single-column matrix. Similarly to Mat::row and Mat::col, this is an O(1) operation.
+    /// </summary>
+    /// <param name="d">index of the diagonal, with the following values:
+    /// - d=0 is the main diagonal.
+    /// - d&lt;0 is a diagonal from the lower half. For example, d=-1 means the diagonal is set
+    /// immediately below the main one.
+    /// - `d&gt;0` is a diagonal from the upper half. For example, d=1 means the diagonal is set
+    /// immediately above the main one.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat Diag(int d = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_diag(handle, d, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+    
+    /// <summary>
+    /// creates a diagonal matrix.
+    ///
+    /// The method creates a square diagonal matrix from specified main diagonal.
+    /// </summary>
+    /// <param name="d">One-dimensional matrix that represents the main diagonal.</param>
+    /// <returns></returns>
+    public static Mat Diag(Mat d) => d.Diag();
+    
+    /// <summary>
+    /// Creates a full copy of the array and the underlying data.
+    ///
+    /// The method creates a full copy of the array. The original step[] is not taken into account. So, the
+    /// array copy is a continuous array occupying total()*elemSize() bytes.
+    /// </summary>
+    /// <returns></returns>
+    public Mat Clone()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_clone(handle, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Copies the matrix to another one.
+    /// </summary>
+    /// <param name="m"></param>
+    public void CopyTo(IOutputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_copyTo1(handle, mHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// Copies the matrix to another one.
+    /// </summary>
+    /// <param name="m">Destination matrix. If it does not have a proper size or type before the operation, it is reallocated.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels.</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void CopyTo(IOutputArray m, IInputArray mask)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        using var maskHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_copyTo2(handle, mHandle, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+        GC.KeepAlive(mask);
+    }
+    
+    /// <summary>
+    /// Converts an array to another data type with optional scaling.
+    ///
+    /// 
+    /// </summary>
+    /// <param name="m">output matrix; if it does not have a proper size or type before the operation, it is reallocated.</param>
+    /// <param name="rtype">desired output matrix type or, rather, the depth since the number of channels are the
+    /// same as the input has; if rtype is negative, the output matrix will have the same type as the input.</param>
+    /// <param name="alpha">optional scale factor.</param>
+    /// <param name="beta">optional delta added to the scaled values.</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void ConvertTo(IOutputArray m, MatType rtype, double alpha = 1, double beta = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_convertTo(handle, mHandle, rtype, alpha, beta));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// Provides a functional form of convertTo.
+    ///
+    /// This is an internally used method called by the @ref MatrixExpressions engine.
+    /// </summary>
+    /// <param name="m">Destination array.</param>
+    /// <param name="type">Desired destination array depth (or -1 if it should be the same as the source type).</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void AssignTo(Mat m, MatType? type = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        int typeValue = type.GetValueOrDefault(-1);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_assignTo(handle, m.handle, typeValue));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// Sets all or some of the array elements to the specified value.
+    ///
+    /// This is an advanced variant of the Mat::operator=(const Scalar&amp; s) operator.
+    /// </summary>
+    /// <param name="value">Assigned scalar converted to the actual array type.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix 
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat SetTo(IInputArray value, IInputArray? mask = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(value);
+
+        using var valueHandle = value.ToInputArrayHandle();
+        using var maskHandle = mask?.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setTo(handle, valueHandle, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(value);
+        GC.KeepAlive(mask);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets all the array elements to 0.
+    /// </summary>
+    /// <returns></returns>
+    public Mat SetZero()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setZero(handle));
+
+        GC.KeepAlive(this);
+        return this;
+    }
+
+    /// <summary>
+    /// Changes the shape and/or the number of channels of a 2D matrix without copying the data.
+    ///
+    /// The method makes a new matrix header for \*this elements. The new matrix may have a different size
+    /// and/or different number of channels. Any combination is possible if:
+    /// -   No extra elements are included into the new matrix and no elements are excluded. Consequently,
+    /// the product rows\*cols\*channels() must stay the same after the transformation.
+    /// -   No data is copied. That is, this is an O(1) operation. Consequently, if you change the number of
+    /// rows, or the operation changes the indices of elements row in some other way, the matrix must be
+    /// continuous. See Mat::isContinuous .
+    /// </summary>
+    /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
+    /// <param name="rows">New number of rows. If the parameter is 0, the number of rows remains the same.</param>
+    /// <returns></returns>
+    public Mat Reshape(int cn, int rows = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_reshape1(handle, cn, rows, out var outMatHandle));
+
+        GC.KeepAlive(this);
+        return new Mat(outMatHandle);
+    }
+
+    /// <summary>
+    /// Changes the shape and/or the number of channels of a 2D matrix without copying the data.
+    ///
+    /// The method makes a new matrix header for \*this elements. The new matrix may have a different size
+    /// and/or different number of channels. Any combination is possible if:
+    /// -   No extra elements are included into the new matrix and no elements are excluded. Consequently,
+    /// the product rows\*cols\*channels() must stay the same after the transformation.
+    /// -   No data is copied. That is, this is an O(1) operation. Consequently, if you change the number of
+    /// rows, or the operation changes the indices of elements row in some other way, the matrix must be
+    /// continuous. See Mat::isContinuous .
+    /// </summary>
+    /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
+    /// <param name="newShape"></param>
+    /// <returns></returns>
+    public Mat Reshape(int cn, IReadOnlyCollection<int> newShape)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(newShape);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_reshape2(
+                handle, cn, newShape.Count, newShape.ToArray(), out var outMatHandle));
+
+        GC.KeepAlive(this);
+        return new Mat(outMatHandle);
     }
 
     /// <summary>
