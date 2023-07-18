@@ -16,7 +16,7 @@ public readonly record struct MatType(int Value) : IEquatable<int>
     /// <param name="self"></param>
     /// <returns></returns>
     public static implicit operator int(MatType self) => self.Value;
-    
+
     /// <summary> 
     /// </summary>
     /// <returns></returns>
