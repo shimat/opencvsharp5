@@ -63,6 +63,7 @@ public class MatTests
         Assert.Equal(3, diag.Rows);
         Assert.Equal(1, diag.Cols);
         Assert.Equal(MatType.CV_8UC1, diag.Type());
+        Assert.Equal(4, diag.Step());
 
         Assert.Equal("""
             [  1;

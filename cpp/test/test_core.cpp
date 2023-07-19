@@ -28,6 +28,16 @@ TEST(CoreTest, getVersionString) {
     ASSERT_FALSE(buf.empty());
 }
 
+TEST(CoreTest, format) {
+	const cv::Mat mat = cv::Mat::eye(2, 3, CV_8UC1);
+	const cv::_InputArray src(mat);
+    std::string buf;
+    ASSERT_EQ(
+        core_format(&src, cv::Formatter::FormatType::FMT_DEFAULT, &buf),
+        ExceptionStatus::NotOccurred);
+
+    ASSERT_FALSE(buf.empty());
+}
 
 TEST(CoreTest, compare) {
     cv::Mat src1(12, 12, CV_32SC1, cv::Scalar::all(0));

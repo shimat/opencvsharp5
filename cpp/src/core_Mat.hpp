@@ -224,7 +224,7 @@ CVAPI(ExceptionStatus) core_Mat_copyTo2(const cv::Mat *obj, const cv::_OutputArr
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_convertTo(const cv::Mat *obj, cv::_OutputArray *m, const int rtype, const double alpha, const double beta)
+CVAPI(ExceptionStatus) core_Mat_convertTo(const cv::Mat *obj, const cv::_OutputArray *m, const int rtype, const double alpha, const double beta)
 {
     BEGIN_WRAP;
     obj->convertTo(*m, rtype, alpha, beta);

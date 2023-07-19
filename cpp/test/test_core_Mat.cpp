@@ -2,6 +2,8 @@
 #include "../src/core_Mat.hpp"
 #include <array>
 
+#pragma region Constructors
+
 TEST(CoreTestMat, Newdelete1) {
     auto deleter = [](const cv::Mat *obj) {
         core_Mat_delete(obj);
@@ -193,6 +195,10 @@ TEST(CoreTestMat, newdelete10) {
     ASSERT_EQ(obj->at<int>(0, 0), 3.0f);
 }
 
+#pragma endregion
+
+#pragma region Fields
+
 TEST(CoreTestMat, size) {
     const cv::Mat m(3, 4, CV_8UC1);
 
@@ -229,6 +235,8 @@ TEST(CoreTests, step) {
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(step0, 7);
 }
+
+#pragma endregion
 
 #pragma region Methods
 
@@ -328,6 +336,90 @@ TEST(CoreTestMat, total) {
         core_Mat_total(&m2, &total),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(total, 12);
+}
+
+TEST(CoreTestMat, diag) {
+    auto deleter = [](const cv::Mat *obj) {
+        core_Mat_delete(obj);
+    };
+
+	const cv::Mat src = (cv::Mat_<uchar>(3,3) <<
+                    1,2,3,
+                    4,5,6,
+                    7,8,9);
+    cv::Mat *dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_diag(&src, 0, &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(dst);
+    
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(1, 3));
+    ASSERT_EQ(dst->at<uchar>(0), 1);
+    ASSERT_EQ(dst->at<uchar>(1), 5);
+    ASSERT_EQ(dst->at<uchar>(2), 9);
+}
+
+TEST(CoreTestMat, clone) {
+    auto deleter = [](const cv::Mat *obj) {
+        core_Mat_delete(obj);
+    };
+
+	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+                    1,2,
+                    3,4);
+    cv::Mat *dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_clone(&src, &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(dst);
+    
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+    ASSERT_EQ(dst->at<uchar>(0, 0), 1);
+    ASSERT_EQ(dst->at<uchar>(0, 1), 2);
+    ASSERT_EQ(dst->at<uchar>(1, 0), 3);
+    ASSERT_EQ(dst->at<uchar>(1, 1), 4);
+}
+
+TEST(CoreTestMat, copyTo) {
+	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+                    1,2,
+                    3,4);
+    cv::Mat dst;
+	const cv::_OutputArray dst_(dst);
+
+    ASSERT_EQ(
+        core_Mat_copyTo1(&src, &dst_),
+        ExceptionStatus::NotOccurred);
+    
+    ASSERT_EQ(dst.type(), CV_8UC1);
+    ASSERT_EQ(dst.size(), cv::Size(2, 2));
+    ASSERT_EQ(dst.at<uchar>(0, 0), 1);
+    ASSERT_EQ(dst.at<uchar>(0, 1), 2);
+    ASSERT_EQ(dst.at<uchar>(1, 0), 3);
+    ASSERT_EQ(dst.at<uchar>(1, 1), 4);
+}
+
+TEST(CoreTestMat, convertTo) {
+	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+                    32, 64,
+                    96, 128);
+    cv::Mat dst;
+	const cv::_OutputArray dst_(dst);
+
+    ASSERT_EQ(
+        core_Mat_convertTo(&src, &dst_, CV_32FC1, 1./255, 1),
+        ExceptionStatus::NotOccurred);
+    
+    ASSERT_EQ(dst.type(), CV_32FC1);
+    ASSERT_EQ(dst.size(), cv::Size(2, 2));
+    ASSERT_FLOAT_EQ(dst.at<float>(0, 0), 32.0f/255 + 1);
+    ASSERT_FLOAT_EQ(dst.at<float>(0, 1), 64.0f/255 + 1);
+    ASSERT_FLOAT_EQ(dst.at<float>(1, 0), 96.0f/255 + 1);
+    ASSERT_FLOAT_EQ(dst.at<float>(1, 1), 128.0f/255 + 1);
 }
 
 #pragma endregion
