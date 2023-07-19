@@ -53,6 +53,28 @@ public static partial class Cv2
     }
 
     /// <summary>
+    /// Returns a text string formatted using the printf-like expression.
+    /// 
+    /// The function acts like sprintf but forms and returns an STL string. It can be used to form an error 
+    /// message in the Exception constructor.
+    /// </summary>
+    /// <param name="mtx"></param>
+    /// <param name="format">printf-compatible formatting specifiers.</param>
+    /// <returns></returns>
+    public static string Format(IInputArray mtx, FormatType format = FormatType.Default)
+    {
+        ThrowIfNull(mtx);
+
+        using var buf = StdString.Create();
+        using var mtxHandle = mtx.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_format(mtxHandle, (int)format, buf));
+
+        GC.KeepAlive(mtx);
+        return buf.ToString();
+    }
+
+    /// <summary>
     /// Performs the per-element comparison of two arrays or an array and scalar value.
     /// </summary>
     /// <param name="src1">first input array or a scalar; when it is an array, it must have a single channel.</param>

@@ -51,19 +51,24 @@ public class MatTests
     [Fact]
     public void Diag()
     {
-        using var mat = new Mat(3, 3, MatType.CV_8UC1, new byte[,]
+        var matData = new byte[]
         {
-            {1, 2, 3}, 
-            {4, 5, 6}, 
-            {7, 8, 9}
-        });
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+        using var mat = new Mat(3, 3, MatType.CV_8UC1, matData);
+
         using var diag = mat.Diag();
         Assert.Equal(3, diag.Rows);
         Assert.Equal(1, diag.Cols);
+        Assert.Equal(MatType.CV_8UC1, diag.Type());
 
-        Assert.Equal(1, Marshal.ReadByte(diag.Data, 0));
-        Assert.Equal(5, Marshal.ReadByte(diag.Data, 1));
-        Assert.Equal(9, Marshal.ReadByte(diag.Data, 2));
+        Assert.Equal("""
+            [  1;
+               5;
+               9]
+            """.Replace("\r\n", "\n"), Cv2.Format(diag, FormatType.Default));
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -403,12 +404,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     public unsafe byte* DataPointer => (byte*)Data;
 
     #endregion
-    
+
     /// <summary>
     /// Creates a matrix header for the specified matrix row.
     /// </summary>
     /// <param name="y">A 0-based row index.</param>
     /// <returns></returns>
+    [Pure]
     public Mat Row(int y)
     {
         if (disposeSignaled != 0)
@@ -420,12 +422,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return new Mat(matPtr);
     }
-    
+
     /// <summary>
     /// Creates a matrix header for the specified matrix column.
     /// </summary>
     /// <param name="x">A 0-based column index.</param>
     /// <returns></returns>
+    [Pure]
     public Mat Col(int x)
     {
         if (disposeSignaled != 0)
@@ -437,7 +440,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return new Mat(matPtr);
     }
-    
+
     /// <summary>
     /// Creates a matrix header for the specified row span.
     ///
@@ -447,6 +450,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="endRow">An exclusive 0-based ending index of the row span.</param>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public Mat RowRange(int startRow, int endRow)
     {
         if (disposeSignaled != 0)
@@ -458,7 +462,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return new Mat(matPtr);
     }
-    
+
     /// <summary>
     /// Creates a matrix header for the specified row span.
     ///
@@ -467,6 +471,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="r">Range structure containing both the start and the end indices.</param>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public Mat RowRange(Range r)
     {
         if (disposeSignaled != 0)
@@ -478,7 +483,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return new Mat(matPtr);
     }
-    
+
     /// <summary>
     /// Creates a matrix header for the specified column span.
     ///
@@ -488,6 +493,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="endCol">An exclusive 0-based ending index of the column span.</param>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public Mat ColRange(int startCol, int endCol)
     {
         if (disposeSignaled != 0)
@@ -507,6 +513,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="r">Range structure containing both the start and the end indices.</param>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public Mat ColRange(Range r)
     {
         if (disposeSignaled != 0)
@@ -519,7 +526,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return new Mat(matPtr);
     }
 
-    
+
     /// <summary>
     /// Extracts a diagonal from a matrix.
     ///
@@ -534,6 +541,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// immediately above the main one.</param>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public Mat Diag(int d = 0)
     {
         if (disposeSignaled != 0)
@@ -554,7 +562,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="d">One-dimensional matrix that represents the main diagonal.</param>
     /// <returns></returns>
     public static Mat Diag(Mat d) => d.Diag();
-    
+
     /// <summary>
     /// Creates a full copy of the array and the underlying data.
     ///
@@ -562,6 +570,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// array copy is a continuous array occupying total()*elemSize() bytes.
     /// </summary>
     /// <returns></returns>
+    [Pure]
     public Mat Clone()
     {
         if (disposeSignaled != 0)
@@ -578,6 +587,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// Copies the matrix to another one.
     /// </summary>
     /// <param name="m"></param>
+    [Pure]
     public void CopyTo(IOutputArray m)
     {
         if (disposeSignaled != 0)
@@ -591,7 +601,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         GC.KeepAlive(m);
     }
-    
+
     /// <summary>
     /// Copies the matrix to another one.
     /// </summary>
@@ -599,6 +609,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix
     /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels.</param>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public void CopyTo(IOutputArray m, IInputArray mask)
     {
         if (disposeSignaled != 0)
@@ -614,7 +625,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(m);
         GC.KeepAlive(mask);
     }
-    
+
     /// <summary>
     /// Converts an array to another data type with optional scaling.
     ///
@@ -626,6 +637,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="alpha">optional scale factor.</param>
     /// <param name="beta">optional delta added to the scaled values.</param>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public void ConvertTo(IOutputArray m, MatType rtype, double alpha = 1, double beta = 0)
     {
         if (disposeSignaled != 0)
@@ -720,6 +732,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
     /// <param name="rows">New number of rows. If the parameter is 0, the number of rows remains the same.</param>
     /// <returns></returns>
+    [Pure]
     public Mat Reshape(int cn, int rows = 0)
     {
         if (disposeSignaled != 0)
@@ -746,6 +759,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
     /// <param name="newShape"></param>
     /// <returns></returns>
+    [Pure]
     public Mat Reshape(int cn, IReadOnlyCollection<int> newShape)
     {
         if (disposeSignaled != 0)
@@ -763,11 +777,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <summary>
     /// Returns a matrix size.
     /// </summary>
+    [Pure]
     public Size Size() => NativeMethods.core_Mat_size(handle);
 
     /// <summary>
     /// Returns a matrix size.
     /// </summary>
+    [Pure]
     public int Size(int dim)
     {
         NativeMethods.HandleException(
@@ -778,11 +794,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
+    [Pure]
     public nint Step() => NativeMethods.core_Mat_step(handle);
 
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
+    [Pure]
     public nint Step(int dim)
     {
         NativeMethods.HandleException(
@@ -796,6 +814,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public MatType Type()
     {
         if (disposeSignaled != 0)
@@ -813,6 +832,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public int Depth()
     {
         if (disposeSignaled != 0)
@@ -830,6 +850,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public int Channels()
     {
         if (disposeSignaled != 0)
@@ -847,6 +868,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public bool Empty()
     {
         if (disposeSignaled != 0)
@@ -858,12 +880,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         return ret != 0;
     }
- 
+
     /// <summary>
     /// returns the total number of matrix elements
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public nint Total()
     {
         if (disposeSignaled != 0)
@@ -877,6 +900,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <inheritdoc />
+    [Pure]
     public InputArrayHandle ToInputArrayHandle()
     {
         NativeMethods.HandleException(
@@ -884,8 +908,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
-    
+
     /// <inheritdoc />
+    [Pure]
     public OutputArrayHandle ToOutputArrayHandle()
     {
         NativeMethods.HandleException(
@@ -893,8 +918,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
-    
+
     /// <inheritdoc />
+    [Pure]
     public InputOutputArrayHandle ToInputOutputArrayHandle()
     {
         NativeMethods.HandleException(
