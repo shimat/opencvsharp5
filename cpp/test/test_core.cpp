@@ -29,8 +29,8 @@ TEST(CoreTest, getVersionString) {
 }
 
 TEST(CoreTest, format) {
-	const cv::Mat mat = cv::Mat::eye(2, 3, CV_8UC1);
-	const cv::_InputArray src(mat);
+    const cv::Mat mat = cv::Mat::eye(2, 3, CV_8UC1);
+    const cv::_InputArray src(mat);
     std::string buf;
     ASSERT_EQ(
         core_format(&src, cv::Formatter::FormatType::FMT_DEFAULT, &buf),

@@ -53,7 +53,7 @@ TEST(CoreTestMat, newdelete4) {
     
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
-	ASSERT_EQ(core_Mat_new4(3, sizes, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new4(3, sizes, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
@@ -72,7 +72,7 @@ TEST(CoreTestMat, newdelete5) {
     
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
-	ASSERT_EQ(core_Mat_new5(3, sizes, CV_32SC4, cvScalar(1111, 2222, 3333, 4444), &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new5(3, sizes, CV_32SC4, cvScalar(1111, 2222, 3333, 4444), &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
@@ -93,7 +93,7 @@ TEST(CoreTestMat, newdelete6) {
 
     cv::Mat org(3, 4, CV_32FC1, cv::Scalar(3.14));
     cv::Mat* mat = nullptr;
-	ASSERT_EQ(core_Mat_new6(&org, &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new6(&org, &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 3);
@@ -111,7 +111,7 @@ TEST(CoreTestMat, newdelete7) {
     std::array<uchar, 200> data{};
     data.fill(255);
 
-	ASSERT_EQ(core_Mat_new7(2, 3, CV_8UC1, data.data(), 100, &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new7(2, 3, CV_8UC1, data.data(), 100, &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 2);
@@ -133,7 +133,7 @@ TEST(CoreTestMat, newdelete8) {
     const int sizes[3] = {2, 3, 4};
     const size_t steps[2] = {10, 20};
 
-	ASSERT_EQ(core_Mat_new8(3, sizes, CV_8UC1, data.data(), steps, &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new8(3, sizes, CV_8UC1, data.data(), steps, &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
@@ -157,11 +157,11 @@ TEST(CoreTestMat, newdelete9) {
     cv::Mat org(10, 10, CV_32FC1);
     org.forEach<float>([](float &pixel, const int *pos)
     {
-	    pixel = static_cast<float>(pos[0] + pos[1]);
+        pixel = static_cast<float>(pos[0] + pos[1]);
     });
 
     cv::Mat* mat = nullptr;
-	ASSERT_EQ(core_Mat_new9(&org, cvSlice(1, 3), cvSlice(2, 5), &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new9(&org, cvSlice(1, 3), cvSlice(2, 5), &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 2);
@@ -180,11 +180,11 @@ TEST(CoreTestMat, newdelete10) {
     cv::Mat org(10, 10, CV_32SC1);
     org.forEach<int>([](int &pixel, const int *pos)
     {
-	    pixel = pos[0] + pos[1];
+        pixel = pos[0] + pos[1];
     });
 
     cv::Mat* mat = nullptr;
-	ASSERT_EQ(core_Mat_new10(&org, cvRect(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
+    ASSERT_EQ(core_Mat_new10(&org, cvRect(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
     const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
     
     ASSERT_EQ(obj->rows, 4);
@@ -343,7 +343,7 @@ TEST(CoreTestMat, diag) {
         core_Mat_delete(obj);
     };
 
-	const cv::Mat src = (cv::Mat_<uchar>(3,3) <<
+    const cv::Mat src = (cv::Mat_<uchar>(3,3) <<
                     1,2,3,
                     4,5,6,
                     7,8,9);
@@ -366,7 +366,7 @@ TEST(CoreTestMat, clone) {
         core_Mat_delete(obj);
     };
 
-	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+    const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
                     1,2,
                     3,4);
     cv::Mat *dst = nullptr;
@@ -385,11 +385,11 @@ TEST(CoreTestMat, clone) {
 }
 
 TEST(CoreTestMat, copyTo) {
-	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+    const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
                     1,2,
                     3,4);
     cv::Mat dst;
-	const cv::_OutputArray dst_(dst);
+    const cv::_OutputArray dst_(dst);
 
     ASSERT_EQ(
         core_Mat_copyTo1(&src, &dst_),
@@ -404,11 +404,11 @@ TEST(CoreTestMat, copyTo) {
 }
 
 TEST(CoreTestMat, convertTo) {
-	const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+    const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
                     32, 64,
                     96, 128);
     cv::Mat dst;
-	const cv::_OutputArray dst_(dst);
+    const cv::_OutputArray dst_(dst);
 
     ASSERT_EQ(
         core_Mat_convertTo(&src, &dst_, CV_32FC1, 1./255, 1),

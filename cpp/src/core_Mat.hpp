@@ -200,21 +200,21 @@ CVAPI(ExceptionStatus) core_Mat_diag(const cv::Mat *obj, const int d, cv::Mat **
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->diag(d));
-    END_WRAP;	
+    END_WRAP;
 }
 
 CVAPI(ExceptionStatus) core_Mat_clone(const cv::Mat *obj, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->clone());
-    END_WRAP;	
+    END_WRAP;
 }
 
 CVAPI(ExceptionStatus) core_Mat_copyTo1(const cv::Mat *obj, const cv::_OutputArray *m)
 {
     BEGIN_WRAP;
     obj->copyTo(*m);
-    END_WRAP;	
+    END_WRAP;
 }
 
 CVAPI(ExceptionStatus) core_Mat_copyTo2(const cv::Mat *obj, const cv::_OutputArray *m, const cv::_InputArray *mask)
@@ -228,7 +228,7 @@ CVAPI(ExceptionStatus) core_Mat_convertTo(const cv::Mat *obj, const cv::_OutputA
 {
     BEGIN_WRAP;
     obj->convertTo(*m, rtype, alpha, beta);
-    END_WRAP;	
+    END_WRAP;
 }
 
 CVAPI(ExceptionStatus) core_Mat_assignTo(const cv::Mat *obj, cv::Mat *m, int type)

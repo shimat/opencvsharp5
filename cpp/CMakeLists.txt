@@ -62,7 +62,8 @@ enable_testing()
 FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        b796f7d44681514f58a683a3a71ff17c94edb0c1 # release-1.30.0
+    #GIT_TAG        b796f7d44681514f58a683a3a71ff17c94edb0c1 # release-1.13.0
+    GIT_TAG        58d77fa8070e8cec2dc1ed015d66b454c8d78850 # release-1.12.1
 )
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
