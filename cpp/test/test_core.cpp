@@ -59,12 +59,12 @@ TEST(CoreTest, compare) {
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(dst.at<uchar>(0), 255);
 }
-/*
+
 TEST(CoreTest, countNonZero) {
     int pixels;
 
     cv::Mat m = cv::Mat::zeros(10, 10, CV_8U);
-    cv::_InputArray ia1(m);
+    const cv::_InputArray ia1(m);
     ASSERT_EQ(
         core_countNonZero(&ia1, &pixels),
         ExceptionStatus::NotOccurred);
@@ -73,15 +73,15 @@ TEST(CoreTest, countNonZero) {
     m.at<uchar>(1, 1) = 1;
     m.at<uchar>(2, 3) = 2;
     m.at<uchar>(3, 3) = 3;
-    cv::_InputArray ia2(m);
+    const cv::_InputArray ia2(m);
     ASSERT_EQ(
         core_countNonZero(&ia2, &pixels),
         ExceptionStatus::NotOccurred);
     ASSERT_EQ(pixels, 3);
-}*/
-/*
+}
+
 TEST(CoreTest, split1) {
-    cv::Mat src(1, 1, CV_32SC3, cv::Scalar(1, 2, 3));
+    const cv::Mat src(1, 1, CV_32SC3, cv::Scalar(1, 2, 3));
     std::vector<cv::Mat> dst;
     ASSERT_EQ(
         core_split(&src, &dst),
@@ -89,4 +89,4 @@ TEST(CoreTest, split1) {
     ASSERT_EQ(dst[0].at<int>(0), 1);
     ASSERT_EQ(dst[1].at<int>(0), 2);
     ASSERT_EQ(dst[2].at<int>(0), 3);
-}*/
+}
