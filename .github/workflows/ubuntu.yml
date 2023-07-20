@@ -82,7 +82,7 @@ jobs:
 
       - name: Test OpenCvSharpExtern
         working-directory: ${{github.workspace}}/cpp/build
-        run: ctest --parallel 2 --extra-verbose --output-on-failure --interactive-debug-mode 0 --timeout 600
+        run: ctest --extra-verbose --output-on-failure --interactive-debug-mode 0 --timeout 60
 
       - name: Test Managed Library
         working-directory: ${{github.workspace}}/cs/

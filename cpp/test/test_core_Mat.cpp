@@ -4,40 +4,39 @@
 
 #pragma region Constructors
 
-TEST(CoreTestMat, Newdelete1) {
-    auto deleter = [](const cv::Mat *obj) {
+struct MatDeleter
+{
+    void operator()(const cv::Mat *obj) const
+    {
         core_Mat_delete(obj);
-    };
+    }
+};
 
+TEST(CoreTestMat, Newdelete1)
+{
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new1(&mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
 
     ASSERT_EQ(obj->empty(), true);
 }
 
-TEST(CoreTestMat, newdelete2) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, newdelete2)
+{
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new2(3, 4, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
 
     ASSERT_EQ(obj->rows, 3);
     ASSERT_EQ(obj->cols, 4);
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(CoreTestMat, newdelete3) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, newdelete3)
+{
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC4, cvScalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, 3);
     ASSERT_EQ(obj->cols, 4);
@@ -46,15 +45,12 @@ TEST(CoreTestMat, newdelete3) {
     ASSERT_EQ(obj->at<cv::Vec4b>(2, 3), cv::Vec4b(1, 2, 3, 4));
 }
 
-TEST(CoreTestMat, newdelete4) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-    
+TEST(CoreTestMat, newdelete4)
+{
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
     ASSERT_EQ(core_Mat_new4(3, sizes, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
     ASSERT_EQ(obj->cols, -1);
@@ -65,15 +61,12 @@ TEST(CoreTestMat, newdelete4) {
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(CoreTestMat, newdelete5) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-    
+TEST(CoreTestMat, newdelete5)
+{
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
     ASSERT_EQ(core_Mat_new5(3, sizes, CV_32SC4, cvScalar(1111, 2222, 3333, 4444), &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
     ASSERT_EQ(obj->cols, -1);
@@ -86,15 +79,12 @@ TEST(CoreTestMat, newdelete5) {
     ASSERT_EQ(obj->at<cv::Vec4i>(1, 2, 3), cv::Vec4i(1111, 2222, 3333, 4444));
 }
 
-TEST(CoreTestMat, newdelete6) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, newdelete6)
+{
     cv::Mat org(3, 4, CV_32FC1, cv::Scalar(3.14));
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new6(&org, &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, 3);
     ASSERT_EQ(obj->cols, 4);
@@ -102,17 +92,14 @@ TEST(CoreTestMat, newdelete6) {
     ASSERT_EQ(obj->data, org.data);
 }
 
-TEST(CoreTestMat, newdelete7) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-    
+TEST(CoreTestMat, newdelete7)
+{
     cv::Mat* mat = nullptr;
     std::array<uchar, 200> data{};
     data.fill(255);
 
     ASSERT_EQ(core_Mat_new7(2, 3, CV_8UC1, data.data(), 100, &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, 2);
     ASSERT_EQ(obj->cols, 3);
@@ -122,19 +109,16 @@ TEST(CoreTestMat, newdelete7) {
     ASSERT_EQ(obj->at<uchar>(1, 2), 255);
 }
 
-TEST(CoreTestMat, newdelete8) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-    
+TEST(CoreTestMat, newdelete8)
+{
     cv::Mat* mat = nullptr;
     std::array<uchar, 1000> data{};
     data.fill(128);
-    const int sizes[3] = {2, 3, 4};
-    const size_t steps[2] = {10, 20};
+    constexpr int sizes[3] = {2, 3, 4};
+    constexpr size_t steps[2] = {10, 20};
 
     ASSERT_EQ(core_Mat_new8(3, sizes, CV_8UC1, data.data(), steps, &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, -1);
     ASSERT_EQ(obj->cols, -1);
@@ -149,11 +133,8 @@ TEST(CoreTestMat, newdelete8) {
     ASSERT_EQ(obj->at<uchar>(1, 2, 3), 128);
 }
 
-TEST(CoreTestMat, newdelete9) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, newdelete9)
+{
     cv::Mat org(10, 10, CV_32FC1);
     org.forEach<float>([](float &pixel, const int *pos)
     {
@@ -162,7 +143,7 @@ TEST(CoreTestMat, newdelete9) {
 
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new9(&org, cvSlice(1, 3), cvSlice(2, 5), &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, 2);
     ASSERT_EQ(obj->cols, 3);
@@ -172,11 +153,8 @@ TEST(CoreTestMat, newdelete9) {
     ASSERT_EQ(obj->at<float>(0, 0), 3.0f);
 }
 
-TEST(CoreTestMat, newdelete10) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, newdelete10)
+{
     cv::Mat org(10, 10, CV_32SC1);
     org.forEach<int>([](int &pixel, const int *pos)
     {
@@ -185,7 +163,7 @@ TEST(CoreTestMat, newdelete10) {
 
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new10(&org, cvRect(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(mat);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(mat);
     
     ASSERT_EQ(obj->rows, 4);
     ASSERT_EQ(obj->cols, 3);
@@ -287,7 +265,7 @@ TEST(CoreTestMat, depth) {
 TEST(CoreTestMat, channels) {
     int ch;
 
-    cv::Mat m1(10, 10, CV_8UC1);
+    const cv::Mat m1(10, 10, CV_8UC1);
     ASSERT_EQ(
         core_Mat_channels(&m1, &ch),
         ExceptionStatus::NotOccurred);
@@ -338,11 +316,8 @@ TEST(CoreTestMat, total) {
     ASSERT_EQ(total, 12);
 }
 
-TEST(CoreTestMat, diag) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, diag)
+{
     const cv::Mat src = (cv::Mat_<uchar>(3,3) <<
                     1,2,3,
                     4,5,6,
@@ -352,7 +327,7 @@ TEST(CoreTestMat, diag) {
     ASSERT_EQ(
         core_Mat_diag(&src, 0, &dst),
         ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(dst);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(dst);
     
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(1, 3));
@@ -361,11 +336,8 @@ TEST(CoreTestMat, diag) {
     ASSERT_EQ(dst->at<uchar>(2), 9);
 }
 
-TEST(CoreTestMat, clone) {
-    auto deleter = [](const cv::Mat *obj) {
-        core_Mat_delete(obj);
-    };
-
+TEST(CoreTestMat, clone)
+{
     const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
                     1,2,
                     3,4);
@@ -374,7 +346,7 @@ TEST(CoreTestMat, clone) {
     ASSERT_EQ(
         core_Mat_clone(&src, &dst),
         ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, decltype(deleter)> obj(dst);
+    const std::unique_ptr<cv::Mat, MatDeleter> obj(dst);
     
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
