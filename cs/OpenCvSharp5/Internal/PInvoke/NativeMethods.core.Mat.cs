@@ -150,7 +150,11 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial ExceptionStatus core_Mat_setTo(MatHandle obj, InputArrayHandle value, InputArrayHandle? mask);
+    public static partial ExceptionStatus core_Mat_setTo1(MatHandle obj, InputArrayHandle value, InputArrayHandle? mask);
+    
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_setTo2(MatHandle obj, Scalar value, InputArrayHandle? mask);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]

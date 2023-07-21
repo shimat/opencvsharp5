@@ -237,11 +237,18 @@ CVAPI(ExceptionStatus) core_Mat_assignTo(const cv::Mat *obj, cv::Mat *m, int typ
     obj->assignTo(*m, type);
     END_WRAP;
 }
-    
-CVAPI(ExceptionStatus) core_Mat_setTo(cv::Mat *obj, const cv::_InputArray *value, cv::_InputArray *mask)
+
+CVAPI(ExceptionStatus) core_Mat_setTo1(cv::Mat *obj, const cv::_InputArray *value, cv::_InputArray *mask)
 {
     BEGIN_WRAP;
     obj->setTo(*value, entity(mask));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_setTo2(cv::Mat *obj, const CvScalar value, cv::_InputArray *mask)
+{
+    BEGIN_WRAP;
+    obj->setTo(static_cast<cv::Scalar>(value), entity(mask));
     END_WRAP;
 }
 
