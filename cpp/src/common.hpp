@@ -49,3 +49,8 @@ static cv::SparseMat entity(cv::SparseMat *obj)
 {
     return (obj != nullptr) ? *obj : cv::SparseMat();
 }
+
+inline cv::Range cpp(CvSlice s)
+{
+    return {s.start_index, s.end_index};
+}

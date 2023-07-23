@@ -77,7 +77,7 @@ add_executable(
     test/test_core_InputArray.cpp
     test/test_imgproc.cpp
     test/test_imgcodecs.cpp
-    )
+     "test/test_core_MatExpr.cpp")
 target_link_libraries(
     ${PROJECT_NAME}.Tests 
     gtest_main 

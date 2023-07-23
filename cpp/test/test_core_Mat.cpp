@@ -12,7 +12,7 @@ struct MatDeleter
     }
 };
 
-TEST(CoreTestMat, Newdelete1)
+TEST(CoreTestMat, newDelete1)
 {
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new1(&mat), ExceptionStatus::NotOccurred);
@@ -21,7 +21,7 @@ TEST(CoreTestMat, Newdelete1)
     ASSERT_EQ(obj->empty(), true);
 }
 
-TEST(CoreTestMat, newdelete2)
+TEST(CoreTestMat, newDelete2)
 {
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new2(3, 4, CV_8UC1, &mat), ExceptionStatus::NotOccurred);
@@ -32,7 +32,7 @@ TEST(CoreTestMat, newdelete2)
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(CoreTestMat, newdelete3)
+TEST(CoreTestMat, newDelete3)
 {
     cv::Mat* mat = nullptr;
     ASSERT_EQ(core_Mat_new3(3, 4, CV_8UC4, cvScalar(1, 2, 3, 4), &mat), ExceptionStatus::NotOccurred);
@@ -45,7 +45,7 @@ TEST(CoreTestMat, newdelete3)
     ASSERT_EQ(obj->at<cv::Vec4b>(2, 3), cv::Vec4b(1, 2, 3, 4));
 }
 
-TEST(CoreTestMat, newdelete4)
+TEST(CoreTestMat, newDelete4)
 {
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
@@ -61,7 +61,7 @@ TEST(CoreTestMat, newdelete4)
     ASSERT_EQ(obj->type(), CV_8UC1);
 }
 
-TEST(CoreTestMat, newdelete5)
+TEST(CoreTestMat, newDelete5)
 {
     cv::Mat* mat = nullptr;
     int sizes[3] = {2, 3, 4};
@@ -79,7 +79,7 @@ TEST(CoreTestMat, newdelete5)
     ASSERT_EQ(obj->at<cv::Vec4i>(1, 2, 3), cv::Vec4i(1111, 2222, 3333, 4444));
 }
 
-TEST(CoreTestMat, newdelete6)
+TEST(CoreTestMat, newDelete6)
 {
     cv::Mat org(3, 4, CV_32FC1, cv::Scalar(3.14));
     cv::Mat* mat = nullptr;
@@ -92,7 +92,7 @@ TEST(CoreTestMat, newdelete6)
     ASSERT_EQ(obj->data, org.data);
 }
 
-TEST(CoreTestMat, newdelete7)
+TEST(CoreTestMat, newDelete7)
 {
     cv::Mat* mat = nullptr;
     std::array<uchar, 200> data{};
@@ -109,7 +109,7 @@ TEST(CoreTestMat, newdelete7)
     ASSERT_EQ(obj->at<uchar>(1, 2), 255);
 }
 
-TEST(CoreTestMat, newdelete8)
+TEST(CoreTestMat, newDelete8)
 {
     cv::Mat* mat = nullptr;
     std::array<uchar, 1000> data{};
@@ -133,7 +133,7 @@ TEST(CoreTestMat, newdelete8)
     ASSERT_EQ(obj->at<uchar>(1, 2, 3), 128);
 }
 
-TEST(CoreTestMat, newdelete9)
+TEST(CoreTestMat, newDelete9)
 {
     cv::Mat org(10, 10, CV_32FC1);
     org.forEach<float>([](float &pixel, const int *pos)
@@ -153,7 +153,7 @@ TEST(CoreTestMat, newdelete9)
     ASSERT_EQ(obj->at<float>(0, 0), 3.0f);
 }
 
-TEST(CoreTestMat, newdelete10)
+TEST(CoreTestMat, newDelete10)
 {
     cv::Mat org(10, 10, CV_32SC1);
     org.forEach<int>([](int &pixel, const int *pos)

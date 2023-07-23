@@ -63,11 +63,6 @@ CVAPI(ExceptionStatus) core_Mat_new8(const int ndims, const int* sizes, const in
     END_WRAP;
 }
 
-inline cv::Range cpp(CvSlice s)
-{
-    return {s.start_index, s.end_index};
-}
-
 CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, const CvSlice rowRange, const CvSlice colRange, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
@@ -124,7 +119,6 @@ CVAPI(uchar*) core_Mat_data(const cv::Mat* obj)
 {
     return obj->data;
 }
-
 
 CVAPI(CvSize) core_Mat_size(const cv::Mat *obj)
 {
