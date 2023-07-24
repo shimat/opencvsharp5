@@ -693,7 +693,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         using var valueHandle = value.ToInputArrayHandle();
         using var maskHandle = mask?.ToInputArrayHandle();
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_setTo(handle, valueHandle, maskHandle));
+            NativeMethods.core_Mat_setTo1(handle, valueHandle, maskHandle));
 
         GC.KeepAlive(this);
         GC.KeepAlive(value);
@@ -702,6 +702,33 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return this;
     }
     
+    /// <summary>
+    /// Sets all or some of the array elements to the specified value.
+    ///
+    /// This is an advanced variant of the Mat::operator=(const Scalar&amp; s) operator.
+    /// </summary>
+    /// <param name="value">Assigned scalar converted to the actual array type.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix 
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat SetTo(Scalar value, IInputArray? mask = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(value);
+        
+        using var maskHandle = mask?.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setTo2(handle, value, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(value);
+        GC.KeepAlive(mask);
+
+        return this;
+    }
+
     /// <summary>
     /// Sets all the array elements to 0.
     /// </summary>
