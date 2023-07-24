@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
@@ -526,7 +523,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return new Mat(matPtr);
     }
 
-
     /// <summary>
     /// Extracts a diagonal from a matrix.
     ///
@@ -587,7 +583,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// Copies the matrix to another one.
     /// </summary>
     /// <param name="m"></param>
-    [Pure]
     public void CopyTo(IOutputArray m)
     {
         if (disposeSignaled != 0)
@@ -609,7 +604,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix
     /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels.</param>
     /// <exception cref="ObjectDisposedException"></exception>
-    [Pure]
     public void CopyTo(IOutputArray m, IInputArray mask)
     {
         if (disposeSignaled != 0)
@@ -637,7 +631,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="alpha">optional scale factor.</param>
     /// <param name="beta">optional delta added to the scaled values.</param>
     /// <exception cref="ObjectDisposedException"></exception>
-    [Pure]
     public void ConvertTo(IOutputArray m, MatType rtype, double alpha = 1, double beta = 0)
     {
         if (disposeSignaled != 0)
@@ -834,7 +827,6 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             NativeMethods.core_Mat_stepAt(handle, dim, out var result));
         return result;
     }
-
 
     /// <summary>
     /// returns element type, similar to CV_MAT_TYPE(cvmat->type)
