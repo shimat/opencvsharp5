@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using OpenCvSharp5.Internal;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace OpenCvSharp5;
 
@@ -829,6 +831,119 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         GC.KeepAlive(this);
         return new Mat(outMatHandle);
+    }
+    
+    /// <summary>
+    /// Transposes a matrix.
+    ///
+    /// The method performs matrix transposition by means of matrix expressions. It does not perform the
+    /// actual transposition but returns a temporary matrix transposition object that can be further used as
+    /// a part of more complex matrix expressions or can be assigned to a matrix:
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr T()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_t(handle, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Inverses a matrix.
+    ///
+    /// The method performs a matrix inversion by means of matrix expressions. This means that a temporary
+    /// matrix inversion object is returned by the method and can be used further as a part of more complex
+    /// matrix expressions or can be assigned to a matrix.
+    /// </summary>
+    /// <param name="method">Matrix inversion method.</param>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr Inv(DecompTypes method = DecompTypes.LU)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_inv(handle, method, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Performs an element-wise multiplication or division of the two matrices.
+    ///
+    /// The method returns a temporary object encoding per-element array multiplication, with optional
+    /// scale. Note that this is not a matrix multiplication that corresponds to a simpler "\*" operator.
+    /// </summary>
+    /// <param name="m">Another array of the same type and the same size as \*this, or a matrix expression.</param>
+    /// <param name="scale">Optional scale factor.</param>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr Mul(IInputArray m, double scale = 1)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_mul(handle, mHandle, scale, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Computes a cross-product of two 3-element vectors.
+    ///
+    /// The method computes a cross-product of two 3-element vectors. The vectors must be 3-element
+    /// floating-point vectors of the same shape and size. The result is another 3-element vector of the
+    /// same shape and type as operands.
+    /// </summary>
+    /// <param name="m">Another cross-product operand.</param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Cross(IInputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_cross(handle, mHandle, out var outMatHandle));
+        GC.KeepAlive(this);
+
+        return new Mat(outMatHandle);
+    }
+    
+    /// <summary>
+    /// Computes a dot-product of two vectors.
+    ///
+    /// The method computes a dot-product of two matrices. If the matrices are not single-column or
+    /// single-row vectors, the top-to-bottom left-to-right scan ordering is used to treat them as 1D
+    /// vectors. The vectors must have the same size and type. If the matrices have more than one channel,
+    /// the dot products from all the channels are summed together.
+    /// </summary>
+    /// <param name="m">another dot-product operand.</param>
+    /// <returns></returns>
+    [Pure]
+    public double Dot(IInputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_dot(handle, mHandle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
     }
 
     /// <summary>

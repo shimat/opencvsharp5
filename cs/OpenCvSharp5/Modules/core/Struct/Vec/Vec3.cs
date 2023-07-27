@@ -3,19 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
-/// <summary>
-/// 3-Tuple static method 
-/// </summary>
-public static class Vec3
-{
-    /// <summary>
-    /// returns a Vec with all elements set to v0
-    /// </summary>
-    /// <param name="v0"></param>
-    /// <returns></returns>
-    public static Vec3<T> All<T>(T v0)
-        where T : unmanaged, IBinaryNumber<T> => new(v0, v0, v0);
-}
+#pragma warning disable CA1000
 
 /// <summary>
 /// 3-Tuple
@@ -45,6 +33,13 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
     /// </summary>
     public T Item3 = Item3;
     
+    /// <summary>
+    /// returns a Vec with all elements set to v0
+    /// </summary>
+    /// <param name="v0"></param>
+    /// <returns></returns>
+    public static Vec3<T> All(T v0) => new(v0, v0, v0);
+
     /// <summary>
     /// Indexer
     /// </summary>

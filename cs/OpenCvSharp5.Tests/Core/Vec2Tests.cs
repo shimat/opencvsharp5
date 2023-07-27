@@ -25,7 +25,7 @@ public class Vec2Tests
 
         Assert.Equal("Vec2 { Item0 = 1, Item1 = 2 }", v.ToString());
 
-        Assert.Equal(new Vec2<byte>(111, 111), Vec2.All<byte>(111));
+        Assert.Equal(new Vec2<byte>(111, 111), Vec2<byte>.All(111));
 
         Assert.Equal(new Vec2<byte>(4, 6), new Vec2<byte>(1, 2) + new Vec2<byte>(3, 4));
         Assert.Equal(new Vec2<byte>(4, 6), checked(new Vec2<byte>(1, 2) + new Vec2<byte>(3, 4)));

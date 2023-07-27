@@ -267,6 +267,45 @@ CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, const int cn, const
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_Mat_t(const cv::Mat* obj, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(obj->t());
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_inv(
+    const cv::Mat* obj, const int method, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(obj->inv(method));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_mul(
+    const cv::Mat* obj, const cv::_InputArray *m, const double scale, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(obj->mul(*m, scale));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_cross(
+    const cv::Mat* obj, const cv::_InputArray *m, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(obj->cross(*m));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_dot(
+    const cv::Mat* obj, const cv::_InputArray *m, double *returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = obj->dot(*m);
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_isContinuous(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;

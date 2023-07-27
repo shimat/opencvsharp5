@@ -11,6 +11,13 @@ struct MatDeleter
         core_Mat_delete(obj);
     }
 };
+struct MatExprDeleter
+{
+    void operator()(const cv::MatExpr *obj) const
+    {
+        delete obj;
+    }
+};
 
 TEST(CoreTestMat, newDelete1)
 {
@@ -377,6 +384,77 @@ TEST(CoreTestMat, reshape)
     const std::unique_ptr<cv::Mat, MatDeleter> obj2(dst2);    
     ASSERT_EQ(dst2->type(), CV_8UC2);
     ASSERT_EQ(dst2->size(), cv::Size(1, 4));
+}
+
+TEST(CoreTestMat, t)
+{
+    const cv::Mat src = (cv::Mat_<uchar>(2,2) <<
+                    1, 2,
+                    3, 4);
+    cv::MatExpr *dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_t(&src, &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
+
+    
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+
+    const cv::Mat dstMat = *dst;
+    ASSERT_EQ(dstMat.at<uchar>(0, 0), 1);
+    ASSERT_EQ(dstMat.at<uchar>(0, 1), 3);
+    ASSERT_EQ(dstMat.at<uchar>(1, 0), 2);
+    ASSERT_EQ(dstMat.at<uchar>(1, 1), 4);
+}
+
+TEST(CoreTestMat, inv)
+{
+    const cv::Mat src = (cv::Mat_<double>(2,2) <<
+                    1, 2,
+                    3, 4);
+    cv::MatExpr *dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_inv(&src, cv::DECOMP_LU, &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
+
+    ASSERT_EQ(dst->type(), CV_64FC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+
+    const cv::Mat dstMat = *dst;
+    ASSERT_EQ(dstMat.at<double>(0, 0), -2);
+    ASSERT_EQ(dstMat.at<double>(0, 1), 1);
+    ASSERT_EQ(dstMat.at<double>(1, 0), 1.5);
+    ASSERT_EQ(dstMat.at<double>(1, 1), -0.5);
+}
+
+TEST(CoreTestMat, mul)
+{
+    const cv::Mat src1 = (cv::Mat_<double>(2,2) <<
+                    1, 2,
+                    3, 4);
+    const cv::Mat src2 = (cv::Mat_<double>(2,2) <<
+                    -1, -2,
+                    3, 4);
+    const cv::_InputArray src2_(src2);
+    cv::MatExpr *dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_mul(&src1, &src2_, 1, &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
+
+    ASSERT_EQ(dst->type(), CV_64FC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+
+    const cv::Mat dstMat = *dst;
+    ASSERT_EQ(dstMat.at<double>(0, 0), -1);
+    ASSERT_EQ(dstMat.at<double>(0, 1), -4);
+    ASSERT_EQ(dstMat.at<double>(1, 0), 9);
+    ASSERT_EQ(dstMat.at<double>(1, 1), 16);
 }
 
 TEST(CoreTestMat, isContinuous)
