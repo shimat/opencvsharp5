@@ -205,5 +205,26 @@ internal static partial class NativeMethods
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus core_Mat_total(MatHandle obj, out nint returnValue);
 
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_checkVector(
+        MatHandle obj, int elemChannels, int depth, int requireContinuous, out int result);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial IntPtr core_Mat_ptr1(MatHandle obj, int i0);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial IntPtr core_Mat_ptr2(MatHandle obj, int row, int col);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial IntPtr core_Mat_ptr3(MatHandle obj, int i0, int i1, int i2);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial IntPtr core_Mat_ptrNd(MatHandle obj, int[] idx);
+
     #endregion
 }

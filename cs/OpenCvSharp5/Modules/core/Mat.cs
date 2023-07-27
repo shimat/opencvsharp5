@@ -994,6 +994,79 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return ret;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="elemChannels">Number of channels or number of columns the matrix should have.
+    /// For a 2-D matrix, when the matrix has only 1 column, then it should have 
+    /// elemChannels channels; When the matrix has only 1 channel, 
+    /// then it should have elemChannels columns. 
+    /// For a 3-D matrix, it should have only one channel. Furthermore, 
+    /// if the number of planes is not one, then the number of rows 
+    /// within every plane has to be 1; if the number of rows within 
+    /// every plane is not 1, then the number of planes has to be 1.</param>
+    /// <param name="depth">The depth the matrix should have. Set it to -1 when any depth is fine.</param>
+    /// <param name="requireContinuous">Set it to true to require the matrix to be continuous</param>
+    /// <returns>-1 if the requirement is not satisfied. 
+    /// Otherwise, it returns the number of elements in the matrix. Note 
+    /// that an element may have multiple channels.</returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public int CheckVector(int elemChannels, int depth = -1, bool requireContinuous = true)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_checkVector(
+                handle, elemChannels, depth, requireContinuous ? 1: 0, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+    
+#pragma warning disable CA1720
+
+    /// <summary>
+    /// Returns a pointer to the specified matrix row.
+    /// </summary>
+    /// <param name="i0">A 0-based row index.</param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int i0 = 0) =>
+            (byte*)NativeMethods.core_Mat_ptr1(handle, i0);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row">Index along the dimension 0</param>
+    /// <param name="col">Index along the dimension 1</param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int row, int col) =>
+        (byte*)NativeMethods.core_Mat_ptr2(handle, row, col);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i0"></param>
+    /// <param name="i1"></param>
+    /// <param name="i2"></param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int i0, int i1, int i2) =>
+        (byte*)NativeMethods.core_Mat_ptr3(handle, i0, i1, i2);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(params int[] idx)=>
+        (byte*)NativeMethods.core_Mat_ptrNd(handle, idx);
+    
+#pragma warning restore CA1720
+
+    #endregion
+
+    #region InputOutputArray
+
     /// <inheritdoc />
     [Pure]
     public InputArrayHandle ToInputArrayHandle()

@@ -225,7 +225,7 @@ CVAPI(ExceptionStatus) core_Mat_convertTo(const cv::Mat *obj, const cv::_OutputA
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_assignTo(const cv::Mat *obj, cv::Mat *m, int type)
+CVAPI(ExceptionStatus) core_Mat_assignTo(const cv::Mat *obj, cv::Mat *m, const int type)
 {
     BEGIN_WRAP;
     obj->assignTo(*m, type);
@@ -253,14 +253,14 @@ CVAPI(ExceptionStatus) core_Mat_setZero(cv::Mat *obj)
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_reshape1(const cv::Mat *obj, int cn, int rows, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_reshape1(const cv::Mat *obj, const int cn, const int rows, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->reshape(cn, rows));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, int cn, int newndims, const int* newsz, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, const int cn, const int newndims, const int* newsz, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(obj->reshape(cn, newndims, newsz));
@@ -328,6 +328,34 @@ CVAPI(ExceptionStatus) core_Mat_total(const cv::Mat* obj, size_t* result)
     BEGIN_WRAP;
     *result = obj->total();
     END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_checkVector(
+    const cv::Mat* obj, const int elemChannels, const int depth, const int requireContinuous, int *result)
+{
+    BEGIN_WRAP;
+    *result = obj->checkVector(elemChannels, depth, requireContinuous != 0);
+    END_WRAP;
+}
+
+CVAPI(uchar*) core_Mat_ptr1(cv::Mat* obj, const int i0)
+{
+    return obj->ptr(i0);
+}
+
+CVAPI(uchar*) core_Mat_ptr2(cv::Mat* obj, const int row, const int col)
+{
+    return obj->ptr(row, col);
+}
+
+CVAPI(uchar*) core_Mat_ptr3(cv::Mat* obj, const int i0, const int i1, const int i2)
+{
+    return obj->ptr(i0, i1, i2);
+}
+
+CVAPI(uchar*) core_Mat_ptrNd(cv::Mat* obj, const int* idx)
+{
+    return obj->ptr(idx);
 }
 
 #pragma endregion
