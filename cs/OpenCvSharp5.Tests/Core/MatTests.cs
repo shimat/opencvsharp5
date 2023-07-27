@@ -138,4 +138,120 @@ public class MatTests
         using var mat = new Mat(1, 1, MatType.CV_8UC3);
         Assert.Equal(MatType.CV_8UC3, mat.Type());
     }
+
+    [Fact]
+    public unsafe void Ptr1()
+    {
+        using var mat = new Mat(3, 2, MatType.CV_8UC1);
+        Assert.Equal(mat.Data, (nint)mat.Ptr(0));
+        Assert.Equal(mat.Data + 2, (nint)mat.Ptr(1));
+        Assert.Equal(mat.Data + 4, (nint)mat.Ptr(2));
+
+        Assert.Equal((nint)((byte*)mat.Data + 4), (nint)mat.Ptr<byte>(2));
+    }
+
+    [Fact]
+    public unsafe void Ptr2()
+    {
+        using var mat = new Mat(3, 3, MatType.CV_8UC1);
+        Assert.Equal(mat.Data, (nint)mat.Ptr(0, 0));
+        Assert.Equal(mat.Data + 4, (nint)mat.Ptr(1, 1));
+        Assert.Equal(mat.Data + 7, (nint)mat.Ptr(2, 1));
+
+        Assert.Equal((nint)((byte*)mat.Data + 7), (nint)mat.Ptr<byte>(2, 1));
+    }
+
+    [Fact]
+    public void Get1()
+    {
+        using var mat = new Mat(3, 1, MatType.CV_8UC1, new byte[]{1, 2, 3});
+        Assert.Equal((byte)1, mat.Get<byte>(0));
+        Assert.Equal((byte)2, mat.Get<byte>(1));
+        Assert.Equal((byte)3, mat.Get<byte>(2));
+    }
+    
+    [Fact]
+    public void Get2()
+    {
+        using var mat = new Mat(2, 2, MatType.CV_16UC1, new ushort[,]{
+            {1, 2},
+            {3, 4},
+        });
+        Assert.Equal((ushort)1, mat.Get<ushort>(0, 0));
+        Assert.Equal((ushort)2, mat.Get<ushort>(0, 1));
+        Assert.Equal((ushort)3, mat.Get<ushort>(1, 0));
+        Assert.Equal((ushort)4, mat.Get<ushort>(1, 1));
+    }
+
+    [Fact]
+    public void Set1()
+    {
+        using var mat = new Mat(3, 1, MatType.CV_32SC1);
+        mat.Set(0, 0);
+        mat.Set(1, 10);
+        mat.Set(2, 20);
+
+        Assert.Equal("""
+            [0;
+             10;
+             20]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void Set2()
+    {
+        using var mat = new Mat(2, 2, MatType.CV_16SC1);
+        mat.Set<short>(0, 0, 0);
+        mat.Set<short>(0, 1, 1);
+        mat.Set<short>(1, 0, 10);
+        mat.Set<short>(1, 1, 11);
+
+        Assert.Equal("""
+            [0, 1;
+             10, 11]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void At1()
+    {
+        using var mat = new Mat(3, 1, MatType.CV_8UC1, new byte[]{1, 2, 3});
+        Assert.Equal((byte)1, mat.At<byte>(0));
+        Assert.Equal((byte)2, mat.At<byte>(1));
+        Assert.Equal((byte)3, mat.At<byte>(2));
+
+        mat.At<byte>(0) = 10;
+        mat.At<byte>(1) = 11;
+        mat.At<byte>(2) = 12;
+
+        Assert.Equal("""
+            [ 10;
+              11;
+              12]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void At2()
+    {
+        using var mat = new Mat(2, 2, MatType.CV_16UC1, new ushort[,]{
+            {1, 2},
+            {3, 4},
+        });
+        Assert.Equal((ushort)1, mat.At<ushort>(0, 0));
+        Assert.Equal((ushort)2, mat.At<ushort>(0, 1));
+        Assert.Equal((ushort)3, mat.At<ushort>(1, 0));
+        Assert.Equal((ushort)4, mat.At<ushort>(1, 1));
+
+        mat.At<ushort>(0, 0) = 100;
+        mat.At<ushort>(0, 1) = 200;
+        mat.At<ushort>(1, 0) = 300;
+        mat.At<ushort>(1, 1) = 400;
+
+        Assert.Equal("""
+            [100, 200;
+             300, 400]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
 }

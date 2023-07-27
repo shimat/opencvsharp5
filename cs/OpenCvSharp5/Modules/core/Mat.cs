@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
 
@@ -1035,6 +1036,14 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             (byte*)NativeMethods.core_Mat_ptr1(handle, i0);
 
     /// <summary>
+    /// Returns a pointer to the specified matrix row.
+    /// </summary>
+    /// <param name="i0">A 0-based row index.</param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int i0 = 0) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr1(handle, i0);
+
+    /// <summary>
     /// 
     /// </summary>
     /// <param name="row">Index along the dimension 0</param>
@@ -1042,6 +1051,15 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <returns></returns>
     public unsafe byte* Ptr(int row, int col) =>
         (byte*)NativeMethods.core_Mat_ptr2(handle, row, col);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row">Index along the dimension 0</param>
+    /// <param name="col">Index along the dimension 1</param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int row, int col) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr2(handle, row, col);
 
     /// <summary>
     /// 
@@ -1056,12 +1074,189 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="i0"></param>
+    /// <param name="i1"></param>
+    /// <param name="i2"></param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int i0, int i1, int i2) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr3(handle, i0, i1, i2);
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <param name="idx"></param>
     /// <returns></returns>
-    public unsafe byte* Ptr(params int[] idx)=>
+    public unsafe byte* Ptr(params int[] idx) =>
         (byte*)NativeMethods.core_Mat_ptrNd(handle, idx);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(params int[] idx) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptrNd(handle, idx);
     
 #pragma warning restore CA1720
+    
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0) where T : struct
+    {
+        var p = Ptr(i0);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0, int i1) where T : struct
+    {
+        var p = Ptr(i0, i1);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0, int i1, int i2) where T : struct
+    {
+        var p = Ptr(i0, i1, i2);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(params int[] idx) where T : struct
+    {
+        var p = Ptr(idx);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0) where T : unmanaged
+    {
+        var p = Ptr(i0);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0, int i1) where T : unmanaged
+    {
+        var p = Ptr(i0, i1);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0, int i1, int i2) where T : unmanaged
+    {
+        var p = Ptr(i0, i1, i2);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(params int[] idx) where T : unmanaged
+    {
+        var p = Ptr(idx);
+        return ref Unsafe.AsRef<T>(p);
+    }
+    
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, T value) where T : struct
+    {
+        var p = Ptr(i0);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, int i1, T value) where T : struct
+    {
+        var p = Ptr(i0, i1);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : struct
+    {
+        var p = Ptr(i0, i1, i2);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int[] idx, T value) where T : struct
+    {
+        var p = Ptr(idx);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public string Dump(FormatType format = FormatType.Default) => Cv2.Format(this, format);
 
     #endregion
 

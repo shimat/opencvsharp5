@@ -53,13 +53,9 @@ public static partial class Cv2
     }
 
     /// <summary>
-    /// Returns a text string formatted using the printf-like expression.
-    /// 
-    /// The function acts like sprintf but forms and returns an STL string. It can be used to form an error 
-    /// message in the Exception constructor.
     /// </summary>
     /// <param name="mtx"></param>
-    /// <param name="format">printf-compatible formatting specifiers.</param>
+    /// <param name="format"></param>
     /// <returns></returns>
     public static string Format(IInputArray mtx, FormatType format = FormatType.Default)
     {
