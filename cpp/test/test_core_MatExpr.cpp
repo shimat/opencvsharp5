@@ -109,6 +109,52 @@ TEST(CoreTestMatExpr, diag)
     ASSERT_EQ(dstMat.at<uchar>(2), 9);
 }
 
+TEST(CoreTestMatExpr, cropByRange)
+{
+    const auto src = static_cast<cv::MatExpr>(cv::Mat_<uchar>(3, 3) <<
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 9);
+    cv::MatExpr *dst = nullptr;
+
+    ASSERT_EQ(
+        core_MatExpr_cropByRange(
+            &src, cvSlice(0, 2), cvSlice(1, 3), &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+
+    cv::Mat dstMat = *dst;    
+    ASSERT_EQ(dstMat.at<uchar>(0, 0), 2);
+    ASSERT_EQ(dstMat.at<uchar>(0, 1), 3);
+    ASSERT_EQ(dstMat.at<uchar>(1, 0), 5);
+    ASSERT_EQ(dstMat.at<uchar>(1, 1), 6);
+}
+
+TEST(CoreTestMatExpr, cropByRect)
+{
+    const auto src = static_cast<cv::MatExpr>(cv::Mat_<uchar>(3, 3) <<
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 9);
+    cv::MatExpr *dst = nullptr;
+
+    ASSERT_EQ(
+        core_MatExpr_cropByRect(
+            &src, cvRect(1, 0, 2, 2), &dst),
+        ExceptionStatus::NotOccurred);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(2, 2));
+
+    cv::Mat dstMat = *dst;    
+    ASSERT_EQ(dstMat.at<uchar>(0, 0), 2);
+    ASSERT_EQ(dstMat.at<uchar>(0, 1), 3);
+    ASSERT_EQ(dstMat.at<uchar>(1, 0), 5);
+    ASSERT_EQ(dstMat.at<uchar>(1, 1), 6);
+}
+
 TEST(CoreTestMatExpr, t)
 {
     const auto src = static_cast<cv::MatExpr>(cv::Mat_<uchar>(2, 2) <<

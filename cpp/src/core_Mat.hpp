@@ -267,6 +267,34 @@ CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, int cn, int newndim
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_Mat_isContinuous(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = (obj->isContinuous() ? 1 : 0);
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_isSubmatrix(const cv::Mat* obj, int* result)
+{
+    BEGIN_WRAP;
+    *result = (obj->isSubmatrix() ? 1 : 0);
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_elemSize(const cv::Mat* obj, size_t* result)
+{
+    BEGIN_WRAP;
+    *result = obj->elemSize();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_elemSize1(const cv::Mat* obj, size_t* result)
+{
+    BEGIN_WRAP;
+    *result = obj->elemSize1();
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_type(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;

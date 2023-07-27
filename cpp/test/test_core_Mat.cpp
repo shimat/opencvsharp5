@@ -379,7 +379,76 @@ TEST(CoreTestMat, reshape)
     ASSERT_EQ(dst2->size(), cv::Size(1, 4));
 }
 
-TEST(CoreTestMat, type) {
+TEST(CoreTestMat, isContinuous)
+{
+    int is_cont;
+
+    const cv::Mat m1(3, 3, CV_16SC1, cv::Scalar(1));
+    ASSERT_EQ(
+        core_Mat_isContinuous(&m1, &is_cont),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(is_cont, 1);
+
+    const cv::Mat m2 = m1(cv::Range(1, 3), cv::Range(0, 2));
+    ASSERT_EQ(
+        core_Mat_isContinuous(&m2, &is_cont),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(is_cont, 0);
+}
+
+TEST(CoreTestMat, isSubmatrix)
+{
+    int is_submat;
+
+    const cv::Mat m1(3, 3, CV_16SC1, cv::Scalar(1));
+    ASSERT_EQ(
+        core_Mat_isSubmatrix(&m1, &is_submat),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(is_submat, 0);
+
+    const cv::Mat m2 = m1(cv::Range(1, 3), cv::Range(0, 2));
+    ASSERT_EQ(
+        core_Mat_isSubmatrix(&m2, &is_submat),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(is_submat, 1);
+}
+
+TEST(CoreTestMat, elemSize)
+{
+    size_t elem_size;
+
+    cv::Mat m(1, 1, CV_16SC1);
+    ASSERT_EQ(
+        core_Mat_elemSize(&m, &elem_size),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(elem_size, 2);
+
+    m.create(1, 1, CV_16SC4);
+    ASSERT_EQ(
+        core_Mat_elemSize(&m, &elem_size),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(elem_size, 8);
+}
+
+TEST(CoreTestMat, elemSize1)
+{
+    size_t elem_size;
+
+    cv::Mat m(1, 1, CV_16SC1);
+    ASSERT_EQ(
+        core_Mat_elemSize1(&m, &elem_size),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(elem_size, 2);
+
+    m.create(1, 1, CV_16SC4);
+    ASSERT_EQ(
+        core_Mat_elemSize1(&m, &elem_size),
+        ExceptionStatus::NotOccurred);
+    ASSERT_EQ(elem_size, 2);
+}
+
+TEST(CoreTestMat, type)
+{
     int t;
 
     cv::Mat m1;
@@ -401,7 +470,8 @@ TEST(CoreTestMat, type) {
     ASSERT_EQ(t, CV_32SC4);
 }
 
-TEST(CoreTestMat, depth) {
+TEST(CoreTestMat, depth)
+{
     int d;
 
     cv::Mat m1;
@@ -423,7 +493,8 @@ TEST(CoreTestMat, depth) {
     ASSERT_EQ(d, CV_32F);
 }
 
-TEST(CoreTestMat, channels) {
+TEST(CoreTestMat, channels)
+{
     int ch;
 
     const cv::Mat m1(10, 10, CV_8UC1);
@@ -439,7 +510,8 @@ TEST(CoreTestMat, channels) {
     ASSERT_EQ(ch, 3);
 }
 
-TEST(CoreTestMat, empty) {
+TEST(CoreTestMat, empty)
+{
     int empty;
 
     cv::Mat m1;
@@ -461,7 +533,8 @@ TEST(CoreTestMat, empty) {
     ASSERT_EQ(empty, 0);
 }
 
-TEST(CoreTestMat, total) {
+TEST(CoreTestMat, total)
+{
     size_t total;
 
     const cv::Mat m1 = cv::Mat::zeros(10, 10, CV_8UC1);

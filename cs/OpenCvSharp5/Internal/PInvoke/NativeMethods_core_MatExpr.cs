@@ -44,6 +44,16 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_MatExpr_cropByRange(
+        MatExprHandle obj, Range rowRange, Range colRange, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_MatExpr_cropByRect(
+        MatExprHandle obj, Rect roi, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus core_MatExpr_t(MatExprHandle obj, out MatExprHandle returnValue);
 
     [LibraryImport(LibraryName)]

@@ -399,8 +399,44 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// unsafe pointer to the data
     /// </summary>
     public unsafe byte* DataPointer => (byte*)Data;
+    
+    /// <summary>
+    /// Returns a matrix size.
+    /// </summary>
+    [Pure]
+    public Size Size() => NativeMethods.core_Mat_size(handle);
+
+    /// <summary>
+    /// Returns a matrix size.
+    /// </summary>
+    [Pure]
+    public int Size(int dim)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_sizeAt(handle, dim, out var result));
+        return result;
+    }
+
+    /// <summary>
+    /// Returns number of bytes each matrix row occupies.
+    /// </summary>
+    [Pure]
+    public nint Step() => NativeMethods.core_Mat_step(handle);
+
+    /// <summary>
+    /// Returns number of bytes each matrix row occupies.
+    /// </summary>
+    [Pure]
+    public nint Step(int dim)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_stepAt(handle, dim, out var result));
+        return result;
+    }
 
     #endregion
+
+    #region Methods
 
     /// <summary>
     /// Creates a matrix header for the specified matrix row.
@@ -795,37 +831,77 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
-    /// Returns a matrix size.
+    /// Reports whether the matrix is continuous or not.
     /// </summary>
+    /// <returns></returns>
     [Pure]
-    public Size Size() => NativeMethods.core_Mat_size(handle);
-
-    /// <summary>
-    /// Returns a matrix size.
-    /// </summary>
-    [Pure]
-    public int Size(int dim)
+    public bool IsContinuous()
     {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_sizeAt(handle, dim, out var result));
-        return result;
+            NativeMethods.core_Mat_isContinuous(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret != 0;
+    }
+    
+    /// <summary>
+    /// returns true if the matrix is a submatrix of another matrix
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public bool IsSubmatrix()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_isSubmatrix(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret != 0;
+    }
+    
+    /// <summary>
+    /// Returns the matrix element size in bytes.
+    ///
+    /// The method returns the matrix element size in bytes. For example, if the matrix type is CV_16SC3 ,
+    /// the method returns 3\*sizeof(short) or 6.
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public nint ElemSize()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_elemSize(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
     }
 
     /// <summary>
-    /// Returns number of bytes each matrix row occupies.
+    /// Returns the size of each matrix element channel in bytes.
+    ///
+    /// The method returns the matrix element channel size in bytes, that is, it ignores the number of 
+    /// channels. For example, if the matrix type is CV_16SC3 , the method returns sizeof(short) or 2.
     /// </summary>
+    /// <returns></returns>
     [Pure]
-    public nint Step() => NativeMethods.core_Mat_step(handle);
-
-    /// <summary>
-    /// Returns number of bytes each matrix row occupies.
-    /// </summary>
-    [Pure]
-    public nint Step(int dim)
+    public nint ElemSize1()
     {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
         NativeMethods.HandleException(
-            NativeMethods.core_Mat_stepAt(handle, dim, out var result));
-        return result;
+            NativeMethods.core_Mat_elemSize1(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
     }
 
     /// <summary>
@@ -947,6 +1023,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
+
+    #endregion
 }
 
 /// <summary>

@@ -189,6 +189,46 @@ public class MatExpr : IDisposable, IInputArray, ISafeHandleHolder
         return new MatExpr(matExprPtr);
     }
     
+    /// <summary>
+    /// </summary>
+    [Pure]
+    public MatExpr Crop(Range rowRange, Range colRange)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_MatExpr_cropByRange(
+                handle, rowRange, colRange, out var matExprPtr));
+
+        GC.KeepAlive(this);
+        return new MatExpr(matExprPtr);
+    }
+    
+    /// <summary>
+    /// </summary>
+    public MatExpr this[Range rowRange, Range colRange] => Crop(rowRange, colRange);
+    
+    /// <summary>
+    /// </summary>
+    [Pure]
+    public MatExpr Crop(Rect roi)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_MatExpr_cropByRect(
+                handle, roi, out var matExprPtr));
+
+        GC.KeepAlive(this);
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// </summary>
+    public MatExpr this[Rect roi] => Crop(roi);
+
     /// <inheritdoc />
     [Pure]
     public InputArrayHandle ToInputArrayHandle()

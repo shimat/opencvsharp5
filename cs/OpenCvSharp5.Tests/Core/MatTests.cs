@@ -95,4 +95,47 @@ public class MatTests
         Assert.Equal(7, mat.Step());
         Assert.Equal(7, mat.Step(0));
     }
+    
+    [Fact]
+    public void IsContinuous()
+    {
+        using var mat = new Mat(3, 3, MatType.CV_8UC3, Scalar.All(1));
+        Assert.True(mat.IsContinuous());
+
+        // TODO
+    }
+    
+    [Fact]
+    public void IsSubmatrix()
+    {
+        using var mat = new Mat(3, 3, MatType.CV_8UC3, Scalar.All(1));
+        Assert.False(mat.IsSubmatrix());
+
+        // TODO
+    }
+    
+    [Fact]
+    public void ElemSize()
+    {
+        using var mat1 = new Mat(1, 1, MatType.CV_8UC1);
+        Assert.Equal(1, mat1.ElemSize());
+        using var mat2 = new Mat(1, 1, MatType.CV_8UC4);
+        Assert.Equal(4, mat2.ElemSize());
+    }
+    
+    [Fact]
+    public void ElemSize1()
+    {
+        using var mat1 = new Mat(1, 1, MatType.CV_8UC1);
+        Assert.Equal(1, mat1.ElemSize1());
+        using var mat2 = new Mat(1, 1, MatType.CV_8UC4);
+        Assert.Equal(1, mat2.ElemSize1());
+    }
+
+    [Fact]
+    public void Type()
+    {
+        using var mat = new Mat(1, 1, MatType.CV_8UC3);
+        Assert.Equal(MatType.CV_8UC3, mat.Type());
+    }
 }

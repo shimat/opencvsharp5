@@ -74,6 +74,22 @@ CVAPI(ExceptionStatus) core_MatExpr_diag(const cv::MatExpr *obj, const int d, cv
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_MatExpr_cropByRange(
+    const cv::MatExpr *obj, const CvSlice rowRange, const CvSlice colRange, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr((*obj)(cpp(rowRange), cpp(colRange)));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_MatExpr_cropByRect(
+    const cv::MatExpr *obj, const CvRect roi, cv::MatExpr **returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr((*obj)(cpp(roi)));
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_MatExpr_t(const cv::MatExpr *obj, cv::MatExpr **returnValue)
 {
     BEGIN_WRAP;
