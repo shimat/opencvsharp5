@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+using System;
 
 namespace OpenCvSharp5.Tests.Core;
 
@@ -70,6 +70,118 @@ public class MatTests
                5;
                9]
             """.Replace("\r\n", "\n"), Cv2.Format(diag, FormatType.Default));
+    }
+
+    [Fact]
+    public void CopyTo()
+    {
+        var matData = new short[,]
+        {
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
+        using var src = new Mat(2, 3, MatType.CV_16SC1, matData);
+        using var dst = new Mat();
+
+        src.CopyTo(dst);
+
+        Assert.Equal(2, dst.Rows);
+        Assert.Equal(3, dst.Cols);
+        Assert.Equal(MatType.CV_16SC1, dst.Type());
+
+        Assert.Equal("""
+            [1, 2, 3;
+             4, 5, 6]
+            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+    }
+
+    [Fact]
+    public void ConvertTo()
+    {
+        var matData = new short[,]
+        {
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
+        using var src = new Mat(2, 3, MatType.CV_16SC1, matData);
+        using var dst = new Mat();
+
+        src.ConvertTo(dst, MatType.CV_32SC1, 2, 1);
+
+        Assert.Equal(2, dst.Rows);
+        Assert.Equal(3, dst.Cols);
+        Assert.Equal(MatType.CV_32SC1, dst.Type());
+
+        Assert.Equal("""
+            [3, 5, 7;
+             9, 11, 13]
+            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+    }
+
+    [Fact]
+    public void SetTo()
+    {
+        var matData = new byte[,]
+        {
+            { 1, 2 },
+            { 3, 4 }
+        };
+        using var mat = new Mat(2, 2, MatType.CV_8UC1, matData);
+
+        var ret = mat.SetTo(new Scalar(7));
+
+        Assert.Same(mat, ret);
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(2, mat.Cols);
+        Assert.Equal(MatType.CV_8UC1, mat.Type());
+
+        Assert.Equal("""
+            [  7,   7;
+               7,   7]
+            """.Replace("\r\n", "\n"), Cv2.Format(mat, FormatType.Default));
+    }
+
+    [Fact]
+    public void SetZero()
+    {
+        var matData = new byte[,]
+        {
+            { 1, 2 },
+            { 3, 4 }
+        };
+        using var mat = new Mat(2, 2, MatType.CV_8UC1, matData);
+
+        var ret = mat.SetZero();
+
+        Assert.Same(mat, ret);
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(2, mat.Cols);
+        Assert.Equal(MatType.CV_8UC1, mat.Type());
+
+        Assert.Equal(0, Cv2.CountNonZero(mat));
+    }
+
+    [Fact]
+    public void T()
+    {
+        var matData = new byte[,]
+        {
+            { 1, 2 },
+            { 3, 4 }
+        };
+        using var src = new Mat(2, 2, MatType.CV_8UC1, matData);
+        using var dstExpr = src.T();
+        using var dst = dstExpr.ToMat();
+
+        Assert.Equal(new Size(2, 2), dstExpr.Size());
+        Assert.Equal(MatType.CV_8UC1, dstExpr.Type());
+
+        Assert.Equal("""
+            [  1,   3;
+               2,   4]
+            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
     }
 
     [Fact]

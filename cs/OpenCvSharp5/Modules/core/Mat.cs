@@ -723,7 +723,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         ThrowIfNull(value);
 
         using var valueHandle = value.ToInputArrayHandle();
-        using var maskHandle = mask?.ToInputArrayHandle();
+        using var maskHandle = mask?.ToInputArrayHandle() 
+            ?? InputArrayHandle.Null();
+
         NativeMethods.HandleException(
             NativeMethods.core_Mat_setTo1(handle, valueHandle, maskHandle));
 
@@ -748,9 +750,10 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     {
         if (disposeSignaled != 0)
             throw new ObjectDisposedException(GetType().Name);
-        ThrowIfNull(value);
         
-        using var maskHandle = mask?.ToInputArrayHandle();
+        using var maskHandle = mask?.ToInputArrayHandle() 
+            ?? InputArrayHandle.Null();
+
         NativeMethods.HandleException(
             NativeMethods.core_Mat_setTo2(handle, value, maskHandle));
 

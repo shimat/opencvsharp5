@@ -28,6 +28,17 @@ public class InputArrayHandle : SafeHandle
     {
     }
 
+    /// <summary>
+    /// Creates a instance that represents nullptr
+    /// </summary>
+    /// <returns></returns>
+    public static InputArrayHandle Null()
+    {
+        var handle = new InputArrayHandle();
+        handle.SetHandle(IntPtr.Zero);
+        return handle;
+    }
+
     /// <inheritdoc />
     protected override bool ReleaseHandle() 
     {

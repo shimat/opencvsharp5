@@ -137,7 +137,7 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial ExceptionStatus core_Mat_copyTo2(MatHandle obj, OutputArrayHandle m, InputArrayHandle? mask);
+    public static partial ExceptionStatus core_Mat_copyTo2(MatHandle obj, OutputArrayHandle m, InputArrayHandle mask);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -150,11 +150,17 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial ExceptionStatus core_Mat_setTo1(MatHandle obj, InputArrayHandle value, InputArrayHandle? mask);
-    
+    public static partial ExceptionStatus core_Mat_setTo1(MatHandle obj, InputArrayHandle value, IntPtr mask);
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static partial ExceptionStatus core_Mat_setTo2(MatHandle obj, Scalar value, InputArrayHandle? mask);
+    public static partial ExceptionStatus core_Mat_setTo1(MatHandle obj, InputArrayHandle value, InputArrayHandle mask);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_setTo2(MatHandle obj, Scalar value, IntPtr mask);
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_setTo2(MatHandle obj, Scalar value, InputArrayHandle mask);
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
