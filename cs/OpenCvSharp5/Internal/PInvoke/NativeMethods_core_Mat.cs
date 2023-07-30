@@ -201,6 +201,26 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_zeros1(int rows, int cols, int type, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_zeros2(int ndims, int[] sz, int type, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_ones1(int rows, int cols, int type, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_ones2(int ndims, int[] sz, int type, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_Mat_eye(int rows, int cols, int type, out MatExprHandle returnValue);
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus core_Mat_isContinuous(MatHandle obj, out int result);
 
     [LibraryImport(LibraryName)]

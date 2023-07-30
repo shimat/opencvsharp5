@@ -119,6 +119,29 @@ public class MatTests
     }
 
     [Fact]
+    public void AssignTo()
+    {
+        var matData = new int[,]
+        {
+            { 1, 2, },
+            { 3, 4, }
+        };
+        using var src = new Mat(2, 2, MatType.CV_32SC1, matData);
+        using var dst = new Mat();
+
+        src.AssignTo(dst, MatType.CV_8UC1);
+
+        Assert.Equal(2, dst.Rows);
+        Assert.Equal(2, dst.Cols);
+        Assert.Equal(MatType.CV_8UC1, dst.Type());
+
+        Assert.Equal("""
+            [  1,   2;
+               3,   4]
+            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+    }
+
+    [Fact]
     public void SetTo()
     {
         var matData = new byte[,]
@@ -164,6 +187,25 @@ public class MatTests
     }
 
     [Fact]
+    public void ReShape()
+    {
+        var matData = new Vec2<byte>[,]
+        {
+            { new Vec2<byte>(1, 2), new Vec2<byte>(3, 4) },
+            { new Vec2<byte>(5, 6), new Vec2<byte>(7, 8) }
+        };
+        using var src = new Mat(2, 2, MatType.CV_8UC2, matData);
+
+        using var dst1 = src.Reshape(1, 2);
+        Assert.Equal(MatType.CV_8UC1, dst1.Type());
+        Assert.Equal(new Size(4, 2), dst1.Size());
+
+        using var dst2 = src.Reshape(2, 4);
+        Assert.Equal(MatType.CV_8UC2, dst2.Type());
+        Assert.Equal(new Size(1, 4), dst2.Size());
+    }
+
+    [Fact]
     public void T()
     {
         var matData = new byte[,]
@@ -182,6 +224,85 @@ public class MatTests
             [  1,   3;
                2,   4]
             """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+    }
+
+    [Fact]
+    public void Inv()
+    {
+        var matData = new double[,]
+        {
+            { 1, 2 },
+            { 3, 4 }
+        };
+        using var src = new Mat(2, 2, MatType.CV_64FC1, matData);
+        using var dstExpr = src.Inv();
+        using var dst = dstExpr.ToMat();
+
+        Assert.Equal(new Size(2, 2), dstExpr.Size());
+        Assert.Equal(MatType.CV_64FC1, dstExpr.Type());
+
+        Assert.Equal("""
+            [-2, 1;
+             1.5, -0.5]
+            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+    }
+
+    [Fact]
+    public void Zeros()
+    {
+        using var zerosExpr1 = Mat.Zeros(2, 3, MatType.CV_8UC1);
+        Assert.Equal(new Size(3, 2), zerosExpr1.Size());
+        Assert.Equal(MatType.CV_8UC1, zerosExpr1.Type());
+        Assert.Equal(0, Cv2.CountNonZero(zerosExpr1));
+
+        using var zerosExpr2 = Mat.Zeros(new Size(3, 2), MatType.CV_8UC1);
+        Assert.Equal(new Size(3, 2), zerosExpr2.Size());
+        Assert.Equal(MatType.CV_8UC1, zerosExpr2.Type());
+        Assert.Equal(0, Cv2.CountNonZero(zerosExpr2));
+    }
+
+    [Fact]
+    public void Ones()
+    {
+        using var onesExpr1 = Mat.Ones(1, 2, MatType.CV_16UC1);
+        using var onesMat1 = onesExpr1.ToMat();
+        Assert.Equal(new Size(2, 1), onesExpr1.Size());
+        Assert.Equal(MatType.CV_16UC1, onesExpr1.Type());
+        Assert.Equal(2, Cv2.CountNonZero(onesExpr1));
+        Assert.Equal((ushort)1, onesMat1.Get<ushort>(0, 0));
+        Assert.Equal((ushort)1, onesMat1.Get<ushort>(0, 1));
+
+        using var onesExpr2 = Mat.Ones(new Size(2, 1), MatType.CV_16UC1);
+        using var onesMat2 = onesExpr2.ToMat();
+        Assert.Equal(new Size(2, 1), onesExpr2.Size());
+        Assert.Equal(MatType.CV_16UC1, onesExpr2.Type());
+        Assert.Equal(2, Cv2.CountNonZero(onesExpr2));
+        Assert.Equal((ushort)1, onesMat2.Get<ushort>(0, 0));
+        Assert.Equal((ushort)1, onesMat2.Get<ushort>(0, 1));
+    }
+
+    [Fact]
+    public void Eye()
+    {
+        using var eyeExpr1 = Mat.Eye(2, 2, MatType.CV_32SC1);
+        using var eyeMat1 = eyeExpr1.ToMat();
+        Assert.Equal(new Size(2, 2), eyeExpr1.Size());
+        Assert.Equal(MatType.CV_32SC1, eyeExpr1.Type());
+        Assert.Equal(2, Cv2.CountNonZero(eyeMat1));
+        Assert.Equal(1, eyeMat1.Get<int>(0, 0));
+        Assert.Equal(0, eyeMat1.Get<int>(0, 1));
+        Assert.Equal(0, eyeMat1.Get<int>(1, 0));
+        Assert.Equal(1, eyeMat1.Get<int>(1, 1));
+
+        using var eyeExpr2 = Mat.Eye(new Size(2, 2), MatType.CV_32SC1);
+        using var eyeMat2 = eyeExpr2.ToMat();
+        Assert.Equal(new Size(2, 2), eyeExpr2.Size());
+        Assert.Equal(MatType.CV_32SC1, eyeExpr2.Type());
+        Assert.Equal(2, Cv2.CountNonZero(eyeMat2));
+        Assert.Equal(1, eyeMat2.Get<int>(0, 0));
+        Assert.Equal(0, eyeMat2.Get<int>(0, 1));
+        Assert.Equal(0, eyeMat2.Get<int>(1, 0));
+        Assert.Equal(1, eyeMat2.Get<int>(1, 1));
     }
 
     [Fact]

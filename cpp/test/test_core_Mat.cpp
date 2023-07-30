@@ -374,7 +374,7 @@ TEST(CoreTestMat, reshape)
     ASSERT_EQ(
         core_Mat_reshape1(&src, 1, 2, &dst1),
         ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::Mat, MatDeleter> obj1(dst1);    
+    const std::unique_ptr<cv::Mat, MatDeleter> obj1(dst1);
     ASSERT_EQ(dst1->type(), CV_8UC1);
     ASSERT_EQ(dst1->size(), cv::Size(4, 2));
 
@@ -396,8 +396,8 @@ TEST(CoreTestMat, t)
     ASSERT_EQ(
         core_Mat_t(&src, &dst),
         ExceptionStatus::NotOccurred);
-    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
-
+    EXPECT_NE(nullptr, dst);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
@@ -419,6 +419,7 @@ TEST(CoreTestMat, inv)
     ASSERT_EQ(
         core_Mat_inv(&src, cv::DECOMP_LU, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
 
     ASSERT_EQ(dst->type(), CV_64FC1);
@@ -445,6 +446,7 @@ TEST(CoreTestMat, mul)
     ASSERT_EQ(
         core_Mat_mul(&src1, &src2_, 1, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst); 
 
     ASSERT_EQ(dst->type(), CV_64FC1);
@@ -455,6 +457,56 @@ TEST(CoreTestMat, mul)
     ASSERT_EQ(dstMat.at<double>(0, 1), -4);
     ASSERT_EQ(dstMat.at<double>(1, 0), 9);
     ASSERT_EQ(dstMat.at<double>(1, 1), 16);
+}
+
+TEST(CoreTestMat, zeros)
+{
+    cv::MatExpr* dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_zeros1(2, 3, CV_16SC1, &dst),
+        ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
+
+    ASSERT_EQ(dst->type(), CV_16SC1);
+    ASSERT_EQ(dst->size(), cv::Size(3, 2));
+    ASSERT_EQ(cv::countNonZero(*dst), 0);
+}
+
+TEST(CoreTestMat, ones)
+{
+    cv::MatExpr* dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_ones1(2, 3, CV_32SC1, &dst),
+        ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
+
+    ASSERT_EQ(dst->type(), CV_32SC1);
+    ASSERT_EQ(dst->size(), cv::Size(3, 2));
+    ASSERT_EQ(cv::countNonZero(*dst == 1), 6);
+}
+
+TEST(CoreTestMat, eye)
+{
+    cv::MatExpr* dst = nullptr;
+
+    ASSERT_EQ(
+        core_Mat_eye(3, 3, CV_8UC1, &dst),
+        ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
+    const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
+
+    ASSERT_EQ(dst->type(), CV_8UC1);
+    ASSERT_EQ(dst->size(), cv::Size(3, 3));
+    ASSERT_EQ(cv::countNonZero(*dst), 3);
+
+    const cv::Mat dstMat = *dst;
+    ASSERT_EQ(dstMat.at<uchar>(0, 0), 1);
+    ASSERT_EQ(dstMat.at<uchar>(1, 1), 1);
+    ASSERT_EQ(dstMat.at<uchar>(2, 2), 1);
 }
 
 TEST(CoreTestMat, isContinuous)

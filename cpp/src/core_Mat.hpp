@@ -306,6 +306,41 @@ CVAPI(ExceptionStatus) core_Mat_dot(
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_Mat_zeros1(int rows, int cols, int type, cv::MatExpr** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(cv::Mat::zeros(rows, cols, type));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_zeros2(int ndims, const int* sz, int type, cv::MatExpr** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(cv::Mat::zeros(ndims, sz, type));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_ones1(int rows, int cols, int type, cv::MatExpr** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(cv::Mat::ones(rows, cols, type));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_ones2(int ndims, const int* sz, int type, cv::MatExpr** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(cv::Mat::ones(ndims, sz, type));
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_eye(int rows, int cols, int type, cv::MatExpr** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::MatExpr(cv::Mat::eye(rows, cols, type));
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_Mat_isContinuous(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;

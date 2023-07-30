@@ -365,8 +365,118 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         Dispose(false);
     }
 
+    #region Static initializers
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Zeros(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_zeros1(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative to the matrix size specification Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Zeros(Size size, MatType type) => Zeros(size.Height, size.Width, type);
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="type">Created matrix type.</param>
+    /// <param name="sz">Array of integers specifying the array shape.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static MatExpr Zeros(MatType type, params int[] sz)
+    {
+        ThrowIfNull(sz);
+        if (sz.Length == 0)
+            throw new ArgumentException("Empty size array.", nameof(sz));
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_zeros2(sz.Length, sz, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_ones1(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative to the matrix size specification Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(Size size, MatType type) => Ones(size.Height, size.Width, type);
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="type">Created matrix type.</param>
+    /// <param name="sz">Array of integers specifying the array shape.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(MatType type, params int[] sz)
+    {
+        ThrowIfNull(sz);
+        if (sz.Length == 0)
+            throw new ArgumentException("Empty size array.", nameof(sz));
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_ones2(sz.Length, sz, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an identity matrix of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Eye(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_eye(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an identity matrix of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative matrix size specification as Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Eye(Size size, MatType type) => Eye(size.Height, size.Width, type);
+
     #endregion
-    
+
+    #endregion
+
     #region Fields
 
     /// <summary>
