@@ -86,7 +86,7 @@ CVAPI(ExceptionStatus) core_MatExpr_cropByRect(
     const cv::MatExpr *obj, const CvRect roi, cv::MatExpr **returnValue)
 {
     BEGIN_WRAP;
-    *returnValue = new cv::MatExpr((*obj)(cpp(roi)));
+    *returnValue = new cv::MatExpr((*obj)(roi));
     END_WRAP;
 }
 

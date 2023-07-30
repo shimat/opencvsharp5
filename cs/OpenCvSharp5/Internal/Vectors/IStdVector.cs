@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OpenCvSharp5.Internal.Vectors;
+﻿namespace OpenCvSharp5.Internal.Vectors;
 
 /// <summary>
 /// Represents std::vector 

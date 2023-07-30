@@ -21,6 +21,7 @@ CVAPI(ExceptionStatus) core_Mat_new2(const int row, const int col, const int typ
     END_WRAP;
 }
 
+// ReSharper disable once CppPassValueParameterByConstReference
 CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int type, const CvScalar s, cv::Mat** result)
 {
     BEGIN_WRAP;
@@ -28,21 +29,22 @@ CVAPI(ExceptionStatus) core_Mat_new3(const int row, const int col, const int typ
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new4(const int ndims, int* sizes, const int type, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new4(const int ndims, const int* sizes, const int type, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(ndims, sizes, type);
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new5(const int ndims, int* sizes, const int type, CvScalar s, cv::Mat **returnValue)
+// ReSharper disable once CppPassValueParameterByConstReference
+CVAPI(ExceptionStatus) core_Mat_new5(const int ndims, const int* sizes, const int type, CvScalar s, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(ndims, sizes, type, static_cast<cv::Scalar>(s));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new6(cv::Mat *mat, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new6(const cv::Mat *mat, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(*mat);
@@ -63,21 +65,21 @@ CVAPI(ExceptionStatus) core_Mat_new8(const int ndims, const int* sizes, const in
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new9(cv::Mat *mat, const CvSlice rowRange, const CvSlice colRange, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new9(const cv::Mat *mat, const CvSlice rowRange, const CvSlice colRange, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::Mat(*mat, cpp(rowRange), cpp(colRange));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_new10(cv::Mat *mat, const CvRect roi, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new10(const cv::Mat *mat, const CvRect roi, cv::Mat **returnValue)
 {
     BEGIN_WRAP
     *returnValue = new cv::Mat(*mat, static_cast<cv::Rect>(roi));
     END_WRAP
 }
 
-CVAPI(ExceptionStatus) core_Mat_new11(cv::Mat *mat, cv::Range *ranges, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_new11(const cv::Mat *mat, const cv::Range *ranges, cv::Mat **returnValue)
 {
     BEGIN_WRAP
     *returnValue = new cv::Mat(*mat, ranges);
@@ -239,6 +241,7 @@ CVAPI(ExceptionStatus) core_Mat_setTo1(cv::Mat *obj, const cv::_InputArray *valu
     END_WRAP;
 }
 
+// ReSharper disable once CppPassValueParameterByConstReference
 CVAPI(ExceptionStatus) core_Mat_setTo2(cv::Mat *obj, const CvScalar value, cv::_InputArray *mask)
 {
     BEGIN_WRAP;
@@ -260,10 +263,10 @@ CVAPI(ExceptionStatus) core_Mat_reshape1(const cv::Mat *obj, const int cn, const
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, const int cn, const int newndims, const int* newsz, cv::Mat **returnValue)
+CVAPI(ExceptionStatus) core_Mat_reshape2(const cv::Mat *obj, const int cn, const int newNdims, const int* newSz, cv::Mat **returnValue)
 {
     BEGIN_WRAP;
-    *returnValue = new cv::Mat(obj->reshape(cn, newndims, newsz));
+    *returnValue = new cv::Mat(obj->reshape(cn, newNdims, newSz));
     END_WRAP;
 }
 
@@ -306,40 +309,56 @@ CVAPI(ExceptionStatus) core_Mat_dot(
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_zeros1(int rows, int cols, int type, cv::MatExpr** returnValue)
+CVAPI(ExceptionStatus) core_Mat_zeros1(const int rows, const int cols, const int type, cv::MatExpr** returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::MatExpr(cv::Mat::zeros(rows, cols, type));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_zeros2(int ndims, const int* sz, int type, cv::MatExpr** returnValue)
+CVAPI(ExceptionStatus) core_Mat_zeros2(const int ndims, const int* sz, const int type, cv::MatExpr** returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::MatExpr(cv::Mat::zeros(ndims, sz, type));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_ones1(int rows, int cols, int type, cv::MatExpr** returnValue)
+CVAPI(ExceptionStatus) core_Mat_ones1(const int rows, const int cols, const int type, cv::MatExpr** returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::MatExpr(cv::Mat::ones(rows, cols, type));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_ones2(int ndims, const int* sz, int type, cv::MatExpr** returnValue)
+CVAPI(ExceptionStatus) core_Mat_ones2(const int ndims, const int* sz, const int type, cv::MatExpr** returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::MatExpr(cv::Mat::ones(ndims, sz, type));
     END_WRAP;
 }
 
-CVAPI(ExceptionStatus) core_Mat_eye(int rows, int cols, int type, cv::MatExpr** returnValue)
+CVAPI(ExceptionStatus) core_Mat_eye(const int rows, const int cols, const int type, cv::MatExpr** returnValue)
 {
     BEGIN_WRAP;
     *returnValue = new cv::MatExpr(cv::Mat::eye(rows, cols, type));
     END_WRAP;
 }
+
+CVAPI(ExceptionStatus) core_Mat_create1(
+    cv::Mat* obj, const int rows, const int cols, const int type)
+{
+    BEGIN_WRAP;
+    obj->create(rows, cols, type);
+    END_WRAP;   
+}
+
+CVAPI(ExceptionStatus) core_Mat_create2(
+    cv::Mat* obj, const int ndims, const int* sizes, const int type)
+{
+    BEGIN_WRAP;
+    obj->create(ndims, sizes, type);
+    END_WRAP;   
+}    
 
 CVAPI(ExceptionStatus) core_Mat_isContinuous(const cv::Mat* obj, int* result)
 {

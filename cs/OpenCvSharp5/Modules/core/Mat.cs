@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Xml.Linq;
 using OpenCvSharp5.Internal;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace OpenCvSharp5;
 
@@ -549,7 +548,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
     #endregion
 
-    #region Methods
+    #region OpenCV Methods
 
     /// <summary>
     /// Creates a matrix header for the specified matrix row.
@@ -1060,6 +1059,76 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="rows">New number of rows.</param>
+    /// <param name="cols">New number of columns.</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(int rows, int cols, MatType type)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_create1(handle, rows, cols, type));
+        GC.KeepAlive(this);
+    }
+    
+    /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="size">Alternative new matrix size specification: Size(cols, rows)</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(Size size, MatType type) => Create(size.Height, size.Width, type);
+    
+    /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="sizes">Array of integers specifying a new array shape.</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(IEnumerable<int> sizes, MatType type)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        if (sizes is not int[] sizesArray)
+            sizesArray = sizes.ToArray();
+        if (sizesArray.Length == 0)
+            throw new ArgumentException("Empty sizes", nameof(sizes));
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_create2(handle, sizesArray.Length, sizesArray, type));
+        GC.KeepAlive(this);
+    }
+    
+    /// <summary>
     /// Reports whether the matrix is continuous or not.
     /// </summary>
     /// <returns></returns>
@@ -1487,6 +1556,16 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     public string Dump(FormatType format = FormatType.Default) => Cv2.Format(this, format);
 
     #endregion
+
+    /// <summary>
+    /// Creates a new span over the Mat.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public unsafe Span<T> AsSpan<T>() where T : unmanaged 
+        => IsContinuous() 
+            ? new Span<T>(DataPointer, (int)Total()) 
+            : throw new NotSupportedException("AsSpan cannot be performed because the Mat memory is not continuous.");
 
     #region InputOutputArray
 

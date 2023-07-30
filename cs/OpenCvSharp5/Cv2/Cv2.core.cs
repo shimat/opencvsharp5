@@ -1,6 +1,4 @@
-﻿using System.Data.SqlTypes;
-using System.Runtime.InteropServices;
-using OpenCvSharp5.Internal;
+﻿using OpenCvSharp5.Internal;
 using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5;

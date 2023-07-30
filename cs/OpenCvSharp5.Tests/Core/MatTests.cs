@@ -1,13 +1,106 @@
-using System;
-
 namespace OpenCvSharp5.Tests.Core;
 
 public class MatTests
 {
     [Fact]
-    public void NewAndDispose()
+    public void New1()
     {
         using var mat = new Mat();
+    }
+    
+    [Fact]
+    public void New2()
+    {
+        using var mat = new Mat(2, 3, MatType.CV_16SC4);
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(3, mat.Cols);
+        Assert.Equal(new Size(3, 2), mat.Size());
+        Assert.Equal(MatType.CV_16SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+    }
+
+    [Fact]
+    public void New3()
+    {
+        using var mat = new Mat(2, 3, MatType.CV_16SC4, new Scalar(1, 2, 3, 4));
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(3, mat.Cols);
+        Assert.Equal(new Size(3, 2), mat.Size());
+        Assert.Equal(MatType.CV_16SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+
+        foreach (var item in mat.AsSpan<Vec4<short>>())
+        {
+            Assert.Equal(new Vec4<short>(1, 2, 3, 4), item);
+        }
+    }
+    
+    [Fact]
+    public void New4()
+    {
+        using var mat = new Mat(new Size(3, 2), MatType.CV_16SC4);
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(3, mat.Cols);
+        Assert.Equal(new Size(3, 2), mat.Size());
+        Assert.Equal(MatType.CV_16SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+    }
+
+    [Fact]
+    public void New5()
+    {
+        using var mat = new Mat(new Size(3, 2), MatType.CV_16SC4, new Scalar(1, 2, 3, 4));
+
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(3, mat.Cols);
+        Assert.Equal(new Size(3, 2), mat.Size());
+        Assert.Equal(MatType.CV_16SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+
+        foreach (var item in mat.AsSpan<Vec4<short>>())
+        {
+            Assert.Equal(new Vec4<short>(1, 2, 3, 4), item);
+        }
+    }
+
+    [Fact]
+    public void New6()
+    {
+        using var mat = new Mat(new []{1, 2, 3}, MatType.CV_32SC4);
+
+        Assert.Equal(3, mat.Dims);
+        Assert.Equal(1, mat.Size(0));
+        Assert.Equal(2, mat.Size(1));
+        Assert.Equal(3, mat.Size(2));
+        Assert.Equal(MatType.CV_32SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+    }
+    
+    [Fact]
+    public void New7()
+    {
+        using var mat = new Mat(new []{1, 2, 3}, MatType.CV_32SC4, new Scalar(1, 2, 3, 4));
+
+        Assert.Equal(3, mat.Dims);
+        Assert.Equal(1, mat.Size(0));
+        Assert.Equal(2, mat.Size(1));
+        Assert.Equal(3, mat.Size(2));
+        Assert.Equal(MatType.CV_32SC4, mat.Type());
+        Assert.True(mat.IsContinuous());
+        Assert.False(mat.IsSubmatrix());
+
+        foreach (var item in mat.AsSpan<Vec4<int>>())
+        {
+            Assert.Equal(new Vec4<int>(1, 2, 3, 4), item);
+        }
     }
 
     [Fact]
@@ -69,7 +162,7 @@ public class MatTests
             [  1;
                5;
                9]
-            """.Replace("\r\n", "\n"), Cv2.Format(diag, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(diag));
     }
 
     [Fact]
@@ -92,7 +185,7 @@ public class MatTests
         Assert.Equal("""
             [1, 2, 3;
              4, 5, 6]
-            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(dst));
     }
 
     [Fact]
@@ -115,16 +208,16 @@ public class MatTests
         Assert.Equal("""
             [3, 5, 7;
              9, 11, 13]
-            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(dst));
     }
 
     [Fact]
     public void AssignTo()
     {
-        var matData = new int[,]
+        var matData = new [,]
         {
-            { 1, 2, },
-            { 3, 4, }
+            { 1, 2 },
+            { 3, 4 }
         };
         using var src = new Mat(2, 2, MatType.CV_32SC1, matData);
         using var dst = new Mat();
@@ -138,7 +231,7 @@ public class MatTests
         Assert.Equal("""
             [  1,   2;
                3,   4]
-            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(dst));
     }
 
     [Fact]
@@ -162,7 +255,7 @@ public class MatTests
         Assert.Equal("""
             [  7,   7;
                7,   7]
-            """.Replace("\r\n", "\n"), Cv2.Format(mat, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(mat));
     }
 
     [Fact]
@@ -191,8 +284,8 @@ public class MatTests
     {
         var matData = new Vec2<byte>[,]
         {
-            { new Vec2<byte>(1, 2), new Vec2<byte>(3, 4) },
-            { new Vec2<byte>(5, 6), new Vec2<byte>(7, 8) }
+            { new(1, 2), new(3, 4) },
+            { new(5, 6), new(7, 8) }
         };
         using var src = new Mat(2, 2, MatType.CV_8UC2, matData);
 
@@ -223,7 +316,7 @@ public class MatTests
         Assert.Equal("""
             [  1,   3;
                2,   4]
-            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(dst));
     }
 
     [Fact]
@@ -244,7 +337,7 @@ public class MatTests
         Assert.Equal("""
             [-2, 1;
              1.5, -0.5]
-            """.Replace("\r\n", "\n"), Cv2.Format(dst, FormatType.Default));
+            """.Replace("\r\n", "\n"), Cv2.Format(dst));
     }
 
     [Fact]
@@ -303,6 +396,29 @@ public class MatTests
         Assert.Equal(0, eyeMat2.Get<int>(0, 1));
         Assert.Equal(0, eyeMat2.Get<int>(1, 0));
         Assert.Equal(1, eyeMat2.Get<int>(1, 1));
+    }
+    
+    [Fact]
+    public void Create()
+    {
+        using var mat = new Mat();
+
+        mat.Create(2, 3, MatType.CV_32FC1);
+        Assert.Equal(2, mat.Rows);
+        Assert.Equal(3, mat.Cols);
+        Assert.Equal(MatType.CV_32FC1, mat.Type());
+
+        mat.Create(new Size(5, 3), MatType.CV_8SC2);
+        Assert.Equal(3, mat.Rows);
+        Assert.Equal(5, mat.Cols);
+        Assert.Equal(MatType.CV_8SC2, mat.Type());
+
+        mat.Create(new[] { 1, 2, 3 }, MatType.CV_64FC4);
+        Assert.Equal(3, mat.Dims);
+        Assert.Equal(1, mat.Size(0));
+        Assert.Equal(2, mat.Size(1));
+        Assert.Equal(3, mat.Size(2));
+        Assert.Equal(MatType.CV_64FC4, mat.Type());
     }
 
     [Fact]
@@ -376,7 +492,7 @@ public class MatTests
     public unsafe void Ptr1()
     {
         using var mat = new Mat(3, 2, MatType.CV_8UC1);
-        Assert.Equal(mat.Data, (nint)mat.Ptr(0));
+        Assert.Equal(mat.Data, (nint)mat.Ptr());
         Assert.Equal(mat.Data + 2, (nint)mat.Ptr(1));
         Assert.Equal(mat.Data + 4, (nint)mat.Ptr(2));
 

@@ -2,6 +2,9 @@
 #include "../src/core_Mat.hpp"
 #include <array>
 
+#pragma warning( push )
+#pragma warning( disable : 6011 )
+
 #pragma region Constructors
 
 struct MatDeleter
@@ -509,6 +512,33 @@ TEST(CoreTestMat, eye)
     ASSERT_EQ(dstMat.at<uchar>(2, 2), 1);
 }
 
+TEST(CoreTestMat, create1)
+{
+    cv::Mat m;
+    ASSERT_EQ(
+        core_Mat_create1(&m, 2, 3, CV_8UC3),
+        ExceptionStatus::NotOccurred);
+    ASSERT_FALSE(m.empty());
+    ASSERT_EQ(m.rows, 2);
+    ASSERT_EQ(m.cols, 3);
+    ASSERT_EQ(m.type(), CV_8UC3);
+}
+
+TEST(CoreTestMat, create2)
+{
+    constexpr int sizes[] = {1, 2, 3};
+    cv::Mat m;
+    ASSERT_EQ(
+        core_Mat_create2(&m, 3, sizes, CV_8UC3),
+        ExceptionStatus::NotOccurred);
+    ASSERT_FALSE(m.empty());
+    ASSERT_EQ(m.dims, 3);
+    ASSERT_EQ(m.size[0], 1);
+    ASSERT_EQ(m.size[1], 2);
+    ASSERT_EQ(m.size[2], 3);
+    ASSERT_EQ(m.type(), CV_8UC3);
+}
+
 TEST(CoreTestMat, isContinuous)
 {
     int is_cont;
@@ -681,3 +711,5 @@ TEST(CoreTestMat, total)
 }
 
 #pragma endregion
+
+#pragma warning( pop )

@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 #include "../src/core_MatExpr.hpp"
 
+#pragma warning( push )
+#pragma warning( disable : 6011 )
+
 struct MatExprDeleter
 {
     void operator()(const cv::MatExpr *obj) const
@@ -55,6 +58,7 @@ TEST(CoreTestMatExpr, row)
     ASSERT_EQ(
         core_MatExpr_row(&src, 1, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     
     ASSERT_EQ(dst->type(), CV_8UC1);
@@ -77,6 +81,7 @@ TEST(CoreTestMatExpr, col)
     ASSERT_EQ(
         core_MatExpr_col(&src, 1, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     
     ASSERT_EQ(dst->type(), CV_8UC1);
@@ -99,6 +104,7 @@ TEST(CoreTestMatExpr, diag)
     ASSERT_EQ(
         core_MatExpr_diag(&src, 0, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(1, 3));
@@ -121,6 +127,7 @@ TEST(CoreTestMatExpr, cropByRange)
         core_MatExpr_cropByRange(
             &src, cvSlice(0, 2), cvSlice(1, 3), &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
@@ -144,6 +151,7 @@ TEST(CoreTestMatExpr, cropByRect)
         core_MatExpr_cropByRect(
             &src, cvRect(1, 0, 2, 2), &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
@@ -165,6 +173,7 @@ TEST(CoreTestMatExpr, t)
     ASSERT_EQ(
         core_MatExpr_t(&src, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
@@ -184,6 +193,7 @@ TEST(CoreTestMatExpr, mul1)
     ASSERT_EQ(
         core_MatExpr_mul1(&src, &src, 2, &dst),
         ExceptionStatus::NotOccurred);
+    EXPECT_NE(nullptr, dst);
     const std::unique_ptr<cv::MatExpr, MatExprDeleter> obj(dst);
     ASSERT_EQ(dst->type(), CV_8UC1);
     ASSERT_EQ(dst->size(), cv::Size(2, 2));
@@ -194,3 +204,5 @@ TEST(CoreTestMatExpr, mul1)
     ASSERT_EQ(dstMat.at<uchar>(1, 0), 0);
     ASSERT_EQ(dstMat.at<uchar>(1, 1), 2);
 }
+
+#pragma warning( pop )
