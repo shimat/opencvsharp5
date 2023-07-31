@@ -23,13 +23,35 @@ public readonly record struct TermCriteria(CriteriaTypes Type, int MaxCount, dou
     public readonly double Epsilon = Epsilon;
 
     /// <summary>
+    /// Default constructor
+    /// </summary>
+    public TermCriteria()
+        : this(CriteriaTypes.Count, default, default)
+    {
+    }
+
+    /// <summary>
     /// full constructor with both type (count | epsilon)
     /// </summary>
     /// <param name="maxCount"></param>
     /// <param name="epsilon"></param>
-    public static TermCriteria Both(int maxCount, double epsilon) =>
-        new (
-            Type: CriteriaTypes.Count | CriteriaTypes.Eps,
+    public TermCriteria(int maxCount, double epsilon)
+        : this(Type: CriteriaTypes.Count | CriteriaTypes.Eps,
             MaxCount: maxCount,
-            Epsilon: epsilon);
+            Epsilon: epsilon)
+    { 
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <returns></returns>
+    public bool IsValid
+    {
+        get
+        {
+            var isCount = Type.HasFlag(CriteriaTypes.Count) && MaxCount > 0;
+            var isEps = Type.HasFlag(CriteriaTypes.Eps) && !double.IsNaN(Epsilon);
+            return isCount || isEps;
+        }
+    }
 }
