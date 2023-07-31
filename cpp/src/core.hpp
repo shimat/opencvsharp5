@@ -33,6 +33,17 @@ CVAPI(ExceptionStatus) core_getVersionString(std::string *buffer)
 }
 
 
+CVAPI(ExceptionStatus) core_format(
+    const cv::_InputArray *mtx, int fmt, std::string* buffer)
+{
+    BEGIN_WRAP;
+    const auto formatted = cv::format(*mtx, static_cast<cv::Formatter::FormatType>(fmt));
+
+    std::stringstream s;
+    s << formatted;
+    buffer->assign(s.str());
+    END_WRAP;
+}
 
 
 CVAPI(ExceptionStatus) core_compare(

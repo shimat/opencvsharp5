@@ -1,6 +1,4 @@
-﻿using System.Data.SqlTypes;
-using System.Runtime.InteropServices;
-using OpenCvSharp5.Internal;
+﻿using OpenCvSharp5.Internal;
 using OpenCvSharp5.Internal.Vectors;
 
 namespace OpenCvSharp5;
@@ -50,6 +48,24 @@ public static partial class Cv2
         NativeMethods.HandleException(
             NativeMethods.core_getVersionString(stdString));
         return stdString.ToString();
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="mtx"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public static string Format(IInputArray mtx, FormatType format = FormatType.Default)
+    {
+        ThrowIfNull(mtx);
+
+        using var buf = StdString.Create();
+        using var mtxHandle = mtx.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_format(mtxHandle, (int)format, buf));
+
+        GC.KeepAlive(mtx);
+        return buf.ToString();
     }
 
     /// <summary>

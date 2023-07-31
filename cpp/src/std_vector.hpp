@@ -443,7 +443,6 @@ CVAPI(void) vector_Mat_copyOneElement(const std::vector<cv::Mat>* vector, int in
 
 CVAPI(void) vector_Mat_delete(std::vector<cv::Mat>* vector)
 {
-    //vector->~vector();
     delete vector;
 }
 #pragma endregion

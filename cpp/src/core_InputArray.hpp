@@ -11,6 +11,13 @@ CVAPI(ExceptionStatus) core_InputArray_new_byMat(cv::Mat* mat, cv::_InputArray**
     END_WRAP;
 }
 
+CVAPI(ExceptionStatus) core_InputArray_new_byMatExpr(cv::MatExpr* matExpr, cv::_InputArray** returnValue)
+{
+    BEGIN_WRAP;
+    *returnValue = new cv::_InputArray(*matExpr);
+    END_WRAP;
+}
+
 CVAPI(ExceptionStatus) core_InputArray_delete(const cv::_InputArray* obj)
 {
     BEGIN_WRAP;

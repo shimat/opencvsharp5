@@ -23,3 +23,34 @@ enum class ExceptionStatus : int { NotOccurred = 0, Occurred = 1 };
 #define BEGIN_WRAP try{
 #define END_WRAP return ExceptionStatus::NotOccurred;}catch(std::exception){return ExceptionStatus::Occurred;}
 #endif
+
+
+static cv::_InputArray entity(cv::_InputArray *obj)
+{
+    return (obj != nullptr) ? *obj : static_cast<cv::_InputArray>(cv::noArray());
+}
+static cv::_OutputArray entity(cv::_OutputArray *obj)
+{
+    return (obj != nullptr) ? *obj : static_cast<cv::_OutputArray>(cv::noArray());
+}
+static cv::_InputOutputArray entity(cv::_InputOutputArray *obj)
+{
+    return (obj != nullptr) ? *obj : cv::noArray();
+}
+static cv::Mat entity(cv::Mat *obj)
+{
+    return (obj != nullptr) ? *obj : cv::Mat();
+}
+static cv::UMat entity(cv::UMat* obj)
+{
+    return (obj != nullptr) ? *obj : cv::UMat();
+}
+static cv::SparseMat entity(cv::SparseMat *obj)
+{
+    return (obj != nullptr) ? *obj : cv::SparseMat();
+}
+
+inline cv::Range cpp(CvSlice s)
+{
+    return {s.start_index, s.end_index};
+}

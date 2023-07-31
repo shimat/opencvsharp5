@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.Contracts;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
@@ -361,8 +364,120 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         Dispose(false);
     }
 
+    #region Static initializers
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Zeros(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_zeros1(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative to the matrix size specification Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Zeros(Size size, MatType type) => Zeros(size.Height, size.Width, type);
+
+    /// <summary>
+    /// Returns a zero array of the specified size and type.
+    /// </summary>
+    /// <param name="type">Created matrix type.</param>
+    /// <param name="sz">Array of integers specifying the array shape.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static MatExpr Zeros(MatType type, params int[] sz)
+    {
+        ThrowIfNull(sz);
+        if (sz.Length == 0)
+            throw new ArgumentException("Empty size array.", nameof(sz));
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_zeros2(sz.Length, sz, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_ones1(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative to the matrix size specification Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(Size size, MatType type) => Ones(size.Height, size.Width, type);
+
+    /// <summary>
+    /// Returns an array of all 1's of the specified size and type.
+    /// </summary>
+    /// <param name="type">Created matrix type.</param>
+    /// <param name="sz">Array of integers specifying the array shape.</param>
+    /// <returns></returns>
+    public static MatExpr Ones(MatType type, params int[] sz)
+    {
+        ThrowIfNull(sz);
+        if (sz.Length == 0)
+            throw new ArgumentException("Empty size array.", nameof(sz));
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_ones2(sz.Length, sz, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an identity matrix of the specified size and type.
+    /// </summary>
+    /// <param name="rows">Number of rows.</param>
+    /// <param name="cols">Number of columns.</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Eye(int rows, int cols, MatType type)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_eye(rows, cols, type, out var matExprPtr));
+
+        return new MatExpr(matExprPtr);
+    }
+
+    /// <summary>
+    /// Returns an identity matrix of the specified size and type.
+    /// </summary>
+    /// <param name="size">Alternative matrix size specification as Size(cols, rows) .</param>
+    /// <param name="type">Created matrix type.</param>
+    /// <returns></returns>
+    public static MatExpr Eye(Size size, MatType type) => Eye(size.Height, size.Width, type);
+
     #endregion
-    
+
+    #endregion
+
+    #region Fields
+
     /// <summary>
     /// includes several bit-fields:
     /// - the magic signature
@@ -393,13 +508,20 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     public nint Data => NativeMethods.core_Mat_data(handle);
 
     /// <summary>
+    /// unsafe pointer to the data
+    /// </summary>
+    public unsafe byte* DataPointer => (byte*)Data;
+    
+    /// <summary>
     /// Returns a matrix size.
     /// </summary>
+    [Pure]
     public Size Size() => NativeMethods.core_Mat_size(handle);
 
     /// <summary>
     /// Returns a matrix size.
     /// </summary>
+    [Pure]
     public int Size(int dim)
     {
         NativeMethods.HandleException(
@@ -410,11 +532,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
+    [Pure]
     public nint Step() => NativeMethods.core_Mat_step(handle);
 
     /// <summary>
     /// Returns number of bytes each matrix row occupies.
     /// </summary>
+    [Pure]
     public nint Step(int dim)
     {
         NativeMethods.HandleException(
@@ -422,16 +546,668 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return result;
     }
 
+    #endregion
+
+    #region OpenCV Methods
+
     /// <summary>
-    /// unsafe pointer to the data
+    /// Creates a matrix header for the specified matrix row.
     /// </summary>
-    public unsafe byte* DataPointer => (byte*)Data;
+    /// <param name="y">A 0-based row index.</param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Row(int y)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_row(handle, y, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Creates a matrix header for the specified matrix column.
+    /// </summary>
+    /// <param name="x">A 0-based column index.</param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Col(int x)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_col(handle, x, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Creates a matrix header for the specified row span.
+    ///
+    /// The method makes a new header for the specified row span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="startRow">An inclusive 0-based start index of the row span.</param>
+    /// <param name="endRow">An exclusive 0-based ending index of the row span.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat RowRange(int startRow, int endRow)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_rowRange1(handle, startRow, endRow, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Creates a matrix header for the specified row span.
+    ///
+    /// The method makes a new header for the specified row span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="r">Range structure containing both the start and the end indices.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat RowRange(Range r)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_rowRange2(handle, r, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Creates a matrix header for the specified column span.
+    ///
+    /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="startCol">An inclusive 0-based start index of the column span.</param>
+    /// <param name="endCol">An exclusive 0-based ending index of the column span.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat ColRange(int startCol, int endCol)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_colRange1(handle, startCol, endCol, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary> 
+    /// Creates a matrix header for the specified column span.
+    ///
+    /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="r">Range structure containing both the start and the end indices.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat ColRange(Range r)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_colRange2(handle, r, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Extracts a diagonal from a matrix.
+    ///
+    /// The method makes a new header for the specified matrix diagonal. The new matrix is represented as a
+    /// single-column matrix. Similarly to Mat::row and Mat::col, this is an O(1) operation.
+    /// </summary>
+    /// <param name="d">index of the diagonal, with the following values:
+    /// - d=0 is the main diagonal.
+    /// - d&lt;0 is a diagonal from the lower half. For example, d=-1 means the diagonal is set
+    /// immediately below the main one.
+    /// - `d&gt;0` is a diagonal from the upper half. For example, d=1 means the diagonal is set
+    /// immediately above the main one.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat Diag(int d = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_diag(handle, d, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+    
+    /// <summary>
+    /// creates a diagonal matrix.
+    ///
+    /// The method creates a square diagonal matrix from specified main diagonal.
+    /// </summary>
+    /// <param name="d">One-dimensional matrix that represents the main diagonal.</param>
+    /// <returns></returns>
+    public static Mat Diag(Mat d) => d.Diag();
+
+    /// <summary>
+    /// Creates a full copy of the array and the underlying data.
+    ///
+    /// The method creates a full copy of the array. The original step[] is not taken into account. So, the
+    /// array copy is a continuous array occupying total()*elemSize() bytes.
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public Mat Clone()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_clone(handle, out var matPtr));
+
+        GC.KeepAlive(this);
+        return new Mat(matPtr);
+    }
+
+    /// <summary>
+    /// Copies the matrix to another one.
+    /// </summary>
+    /// <param name="m"></param>
+    public void CopyTo(IOutputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_copyTo1(handle, mHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+
+    /// <summary>
+    /// Copies the matrix to another one.
+    /// </summary>
+    /// <param name="m">Destination matrix. If it does not have a proper size or type before the operation, it is reallocated.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels.</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void CopyTo(IOutputArray m, IInputArray mask)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        using var maskHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_copyTo2(handle, mHandle, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+        GC.KeepAlive(mask);
+    }
+
+    /// <summary>
+    /// Converts an array to another data type with optional scaling.
+    ///
+    /// 
+    /// </summary>
+    /// <param name="m">output matrix; if it does not have a proper size or type before the operation, it is reallocated.</param>
+    /// <param name="rtype">desired output matrix type or, rather, the depth since the number of channels are the
+    /// same as the input has; if rtype is negative, the output matrix will have the same type as the input.</param>
+    /// <param name="alpha">optional scale factor.</param>
+    /// <param name="beta">optional delta added to the scaled values.</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void ConvertTo(IOutputArray m, MatType rtype, double alpha = 1, double beta = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        using var mHandle = m.ToOutputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_convertTo(handle, mHandle, rtype, alpha, beta));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// Provides a functional form of convertTo.
+    ///
+    /// This is an internally used method called by the @ref MatrixExpressions engine.
+    /// </summary>
+    /// <param name="m">Destination array.</param>
+    /// <param name="type">Desired destination array depth (or -1 if it should be the same as the source type).</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void AssignTo(Mat m, MatType? type = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(m);
+
+        int typeValue = type.GetValueOrDefault(-1);
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_assignTo(handle, m.handle, typeValue));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// Sets all or some of the array elements to the specified value.
+    ///
+    /// This is an advanced variant of the Mat::operator=(const Scalar&amp; s) operator.
+    /// </summary>
+    /// <param name="value">Assigned scalar converted to the actual array type.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix 
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat SetTo(IInputArray value, IInputArray? mask = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(value);
+
+        using var valueHandle = value.ToInputArrayHandle();
+        using var maskHandle = mask?.ToInputArrayHandle() 
+            ?? InputArrayHandle.Null();
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setTo1(handle, valueHandle, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(value);
+        GC.KeepAlive(mask);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets all or some of the array elements to the specified value.
+    ///
+    /// This is an advanced variant of the Mat::operator=(const Scalar&amp; s) operator.
+    /// </summary>
+    /// <param name="value">Assigned scalar converted to the actual array type.</param>
+    /// <param name="mask">Operation mask of the same size as \*this. Its non-zero elements indicate which matrix 
+    /// elements need to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public Mat SetTo(Scalar value, IInputArray? mask = null)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        using var maskHandle = mask?.ToInputArrayHandle() 
+            ?? InputArrayHandle.Null();
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setTo2(handle, value, maskHandle));
+
+        GC.KeepAlive(this);
+        GC.KeepAlive(value);
+        GC.KeepAlive(mask);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets all the array elements to 0.
+    /// </summary>
+    /// <returns></returns>
+    public Mat SetZero()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_setZero(handle));
+
+        GC.KeepAlive(this);
+        return this;
+    }
+
+    /// <summary>
+    /// Changes the shape and/or the number of channels of a 2D matrix without copying the data.
+    ///
+    /// The method makes a new matrix header for \*this elements. The new matrix may have a different size
+    /// and/or different number of channels. Any combination is possible if:
+    /// -   No extra elements are included into the new matrix and no elements are excluded. Consequently,
+    /// the product rows\*cols\*channels() must stay the same after the transformation.
+    /// -   No data is copied. That is, this is an O(1) operation. Consequently, if you change the number of
+    /// rows, or the operation changes the indices of elements row in some other way, the matrix must be
+    /// continuous. See Mat::isContinuous .
+    /// </summary>
+    /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
+    /// <param name="rows">New number of rows. If the parameter is 0, the number of rows remains the same.</param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Reshape(int cn, int rows = 0)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_reshape1(handle, cn, rows, out var outMatHandle));
+
+        GC.KeepAlive(this);
+        return new Mat(outMatHandle);
+    }
+
+    /// <summary>
+    /// Changes the shape and/or the number of channels of a 2D matrix without copying the data.
+    ///
+    /// The method makes a new matrix header for \*this elements. The new matrix may have a different size
+    /// and/or different number of channels. Any combination is possible if:
+    /// -   No extra elements are included into the new matrix and no elements are excluded. Consequently,
+    /// the product rows\*cols\*channels() must stay the same after the transformation.
+    /// -   No data is copied. That is, this is an O(1) operation. Consequently, if you change the number of
+    /// rows, or the operation changes the indices of elements row in some other way, the matrix must be
+    /// continuous. See Mat::isContinuous .
+    /// </summary>
+    /// <param name="cn">New number of channels. If the parameter is 0, the number of channels remains the same.</param>
+    /// <param name="newShape"></param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Reshape(int cn, IReadOnlyCollection<int> newShape)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        ThrowIfNull(newShape);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_reshape2(
+                handle, cn, newShape.Count, newShape.ToArray(), out var outMatHandle));
+
+        GC.KeepAlive(this);
+        return new Mat(outMatHandle);
+    }
+    
+    /// <summary>
+    /// Transposes a matrix.
+    ///
+    /// The method performs matrix transposition by means of matrix expressions. It does not perform the
+    /// actual transposition but returns a temporary matrix transposition object that can be further used as
+    /// a part of more complex matrix expressions or can be assigned to a matrix:
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr T()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_t(handle, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Inverses a matrix.
+    ///
+    /// The method performs a matrix inversion by means of matrix expressions. This means that a temporary
+    /// matrix inversion object is returned by the method and can be used further as a part of more complex
+    /// matrix expressions or can be assigned to a matrix.
+    /// </summary>
+    /// <param name="method">Matrix inversion method.</param>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr Inv(DecompTypes method = DecompTypes.LU)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_inv(handle, method, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Performs an element-wise multiplication or division of the two matrices.
+    ///
+    /// The method returns a temporary object encoding per-element array multiplication, with optional
+    /// scale. Note that this is not a matrix multiplication that corresponds to a simpler "\*" operator.
+    /// </summary>
+    /// <param name="m">Another array of the same type and the same size as \*this, or a matrix expression.</param>
+    /// <param name="scale">Optional scale factor.</param>
+    /// <returns></returns>
+    [Pure]
+    public MatExpr Mul(IInputArray m, double scale = 1)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_mul(handle, mHandle, scale, out var outMatExprHandle));
+        GC.KeepAlive(this);
+
+        return new MatExpr(outMatExprHandle);
+    }
+    
+    /// <summary>
+    /// Computes a cross-product of two 3-element vectors.
+    ///
+    /// The method computes a cross-product of two 3-element vectors. The vectors must be 3-element
+    /// floating-point vectors of the same shape and size. The result is another 3-element vector of the
+    /// same shape and type as operands.
+    /// </summary>
+    /// <param name="m">Another cross-product operand.</param>
+    /// <returns></returns>
+    [Pure]
+    public Mat Cross(IInputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_cross(handle, mHandle, out var outMatHandle));
+        GC.KeepAlive(this);
+
+        return new Mat(outMatHandle);
+    }
+    
+    /// <summary>
+    /// Computes a dot-product of two vectors.
+    ///
+    /// The method computes a dot-product of two matrices. If the matrices are not single-column or
+    /// single-row vectors, the top-to-bottom left-to-right scan ordering is used to treat them as 1D
+    /// vectors. The vectors must have the same size and type. If the matrices have more than one channel,
+    /// the dot products from all the channels are summed together.
+    /// </summary>
+    /// <param name="m">another dot-product operand.</param>
+    /// <returns></returns>
+    [Pure]
+    public double Dot(IInputArray m)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        using var mHandle = m.ToInputArrayHandle();
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_dot(handle, mHandle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+    /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="rows">New number of rows.</param>
+    /// <param name="cols">New number of columns.</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(int rows, int cols, MatType type)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_create1(handle, rows, cols, type));
+        GC.KeepAlive(this);
+    }
+    
+    /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="size">Alternative new matrix size specification: Size(cols, rows)</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(Size size, MatType type) => Create(size.Height, size.Width, type);
+    
+    /// <summary>
+    /// Allocates new array data if needed.
+    /// 
+    /// This is one of the key Mat methods. Most new-style OpenCV functions and methods that produce arrays 
+    /// call this method for each output array. The method uses the following algorithm:
+    ///
+    /// -# If the current array shape and the type match the new ones, return immediately. Otherwise, 
+    /// de-reference the previous data by calling Mat::release.
+    /// -# Initialize the new header.
+    /// -# Allocate the new data of total()\*elemSize() bytes.
+    /// -# Allocate the new, associated with the data, reference counter and set it to 1.
+    /// </summary>
+    /// <param name="sizes">Array of integers specifying a new array shape.</param>
+    /// <param name="type">New matrix type.</param>
+    public void Create(IEnumerable<int> sizes, MatType type)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        if (sizes is not int[] sizesArray)
+            sizesArray = sizes.ToArray();
+        if (sizesArray.Length == 0)
+            throw new ArgumentException("Empty sizes", nameof(sizes));
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_create2(handle, sizesArray.Length, sizesArray, type));
+        GC.KeepAlive(this);
+    }
+    
+    /// <summary>
+    /// Reports whether the matrix is continuous or not.
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public bool IsContinuous()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_isContinuous(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret != 0;
+    }
+    
+    /// <summary>
+    /// returns true if the matrix is a submatrix of another matrix
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public bool IsSubmatrix()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_isSubmatrix(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret != 0;
+    }
+    
+    /// <summary>
+    /// Returns the matrix element size in bytes.
+    ///
+    /// The method returns the matrix element size in bytes. For example, if the matrix type is CV_16SC3 ,
+    /// the method returns 3\*sizeof(short) or 6.
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public nint ElemSize()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_elemSize(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+
+    /// <summary>
+    /// Returns the size of each matrix element channel in bytes.
+    ///
+    /// The method returns the matrix element channel size in bytes, that is, it ignores the number of 
+    /// channels. For example, if the matrix type is CV_16SC3 , the method returns sizeof(short) or 2.
+    /// </summary>
+    /// <returns></returns>
+    [Pure]
+    public nint ElemSize1()
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_elemSize1(handle, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
 
     /// <summary>
     /// returns element type, similar to CV_MAT_TYPE(cvmat->type)
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public MatType Type()
     {
         if (disposeSignaled != 0)
@@ -449,6 +1225,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public int Depth()
     {
         if (disposeSignaled != 0)
@@ -466,6 +1243,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public int Channels()
     {
         if (disposeSignaled != 0)
@@ -483,6 +1261,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public bool Empty()
     {
         if (disposeSignaled != 0)
@@ -494,12 +1273,13 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         return ret != 0;
     }
- 
+
     /// <summary>
     /// returns the total number of matrix elements
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
     public nint Total()
     {
         if (disposeSignaled != 0)
@@ -512,7 +1292,285 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return ret;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="elemChannels">Number of channels or number of columns the matrix should have.
+    /// For a 2-D matrix, when the matrix has only 1 column, then it should have 
+    /// elemChannels channels; When the matrix has only 1 channel, 
+    /// then it should have elemChannels columns. 
+    /// For a 3-D matrix, it should have only one channel. Furthermore, 
+    /// if the number of planes is not one, then the number of rows 
+    /// within every plane has to be 1; if the number of rows within 
+    /// every plane is not 1, then the number of planes has to be 1.</param>
+    /// <param name="depth">The depth the matrix should have. Set it to -1 when any depth is fine.</param>
+    /// <param name="requireContinuous">Set it to true to require the matrix to be continuous</param>
+    /// <returns>-1 if the requirement is not satisfied. 
+    /// Otherwise, it returns the number of elements in the matrix. Note 
+    /// that an element may have multiple channels.</returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public int CheckVector(int elemChannels, int depth = -1, bool requireContinuous = true)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_checkVector(
+                handle, elemChannels, depth, requireContinuous ? 1: 0, out var ret));
+        GC.KeepAlive(this);
+
+        return ret;
+    }
+    
+#pragma warning disable CA1720
+
+    /// <summary>
+    /// Returns a pointer to the specified matrix row.
+    /// </summary>
+    /// <param name="i0">A 0-based row index.</param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int i0 = 0) =>
+            (byte*)NativeMethods.core_Mat_ptr1(handle, i0);
+
+    /// <summary>
+    /// Returns a pointer to the specified matrix row.
+    /// </summary>
+    /// <param name="i0">A 0-based row index.</param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int i0 = 0) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr1(handle, i0);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row">Index along the dimension 0</param>
+    /// <param name="col">Index along the dimension 1</param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int row, int col) =>
+        (byte*)NativeMethods.core_Mat_ptr2(handle, row, col);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="row">Index along the dimension 0</param>
+    /// <param name="col">Index along the dimension 1</param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int row, int col) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr2(handle, row, col);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i0"></param>
+    /// <param name="i1"></param>
+    /// <param name="i2"></param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(int i0, int i1, int i2) =>
+        (byte*)NativeMethods.core_Mat_ptr3(handle, i0, i1, i2);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i0"></param>
+    /// <param name="i1"></param>
+    /// <param name="i2"></param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(int i0, int i1, int i2) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptr3(handle, i0, i1, i2);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    public unsafe byte* Ptr(params int[] idx) =>
+        (byte*)NativeMethods.core_Mat_ptrNd(handle, idx);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    public unsafe T* Ptr<T>(params int[] idx) where T : unmanaged =>
+        (T*)NativeMethods.core_Mat_ptrNd(handle, idx);
+    
+#pragma warning restore CA1720
+    
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0) where T : struct
+    {
+        var p = Ptr(i0);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0, int i1) where T : struct
+    {
+        var p = Ptr(i0, i1);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(int i0, int i1, int i2) where T : struct
+    {
+        var p = Ptr(i0, i1, i2);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe T Get<T>(params int[] idx) where T : struct
+    {
+        var p = Ptr(idx);
+        return Unsafe.Read<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0) where T : unmanaged
+    {
+        var p = Ptr(i0);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0, int i1) where T : unmanaged
+    {
+        var p = Ptr(i0, i1);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(int i0, int i1, int i2) where T : unmanaged
+    {
+        var p = Ptr(i0, i1, i2);
+        return ref Unsafe.AsRef<T>(p);
+    }
+
+    /// <summary>
+    /// Returns a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <returns>A value to the specified array element.</returns>
+    public unsafe ref T At<T>(params int[] idx) where T : unmanaged
+    {
+        var p = Ptr(idx);
+        return ref Unsafe.AsRef<T>(p);
+    }
+    
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, T value) where T : struct
+    {
+        var p = Ptr(i0);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, int i1, T value) where T : struct
+    {
+        var p = Ptr(i0, i1);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="i0">Index along the dimension 0</param>
+    /// <param name="i1">Index along the dimension 1</param>
+    /// <param name="i2">Index along the dimension 2</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : struct
+    {
+        var p = Ptr(i0, i1, i2);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// Set a value to the specified array element.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="idx">Array of Mat::dims indices.</param>
+    /// <param name="value"></param>
+    public unsafe void Set<T>(int[] idx, T value) where T : struct
+    {
+        var p = Ptr(idx);
+        Unsafe.Write(p, value);
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public string Dump(FormatType format = FormatType.Default) => Cv2.Format(this, format);
+
+    #endregion
+
+    /// <summary>
+    /// Creates a new span over the Mat.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public unsafe Span<T> AsSpan<T>() where T : unmanaged 
+        => IsContinuous() 
+            ? new Span<T>(DataPointer, (int)Total()) 
+            : throw new NotSupportedException("AsSpan cannot be performed because the Mat memory is not continuous.");
+
+    #region InputOutputArray
+
     /// <inheritdoc />
+    [Pure]
     public InputArrayHandle ToInputArrayHandle()
     {
         NativeMethods.HandleException(
@@ -520,8 +1578,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
-    
+
     /// <inheritdoc />
+    [Pure]
     public OutputArrayHandle ToOutputArrayHandle()
     {
         NativeMethods.HandleException(
@@ -529,8 +1588,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
-    
+
     /// <inheritdoc />
+    [Pure]
     public InputOutputArrayHandle ToInputOutputArrayHandle()
     {
         NativeMethods.HandleException(
@@ -538,6 +1598,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         GC.KeepAlive(this);
         return resultHandle;
     }
+
+    #endregion
 }
 
 /// <summary>

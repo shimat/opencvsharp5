@@ -34,6 +34,23 @@ public class CoreTests
     }
 
     [Fact]
+    public void Format()
+    {
+        var matData = new byte[]
+        {
+                    1, 2, 3,
+                    4, 5, 6,
+        };
+        using var mat = new Mat(2, 3, MatType.CV_8UC1, matData);
+
+        var s = Cv2.Format(mat, FormatType.Default);
+        Assert.Equal("""
+            [  1,   2,   3;
+               4,   5,   6]
+            """.Replace("\r\n", "\n"), s);
+    }
+
+    [Fact]
     public void Split1()
     {
         using var src = new Mat(1, 1, MatType.CV_8UC3, new Scalar(1, 2, 3));

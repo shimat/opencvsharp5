@@ -21,6 +21,11 @@ internal static partial class NativeMethods
 
     [LibraryImport(LibraryName)]
     [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static partial ExceptionStatus core_format(InputArrayHandle mtx, int fmt, StdString buf);
+
+
+    [LibraryImport(LibraryName)]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static partial ExceptionStatus core_compare(
         InputArrayHandle src1, InputArrayHandle src2, OutputArrayHandle dst, int cmpop);
 
