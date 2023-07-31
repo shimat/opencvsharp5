@@ -4,17 +4,11 @@ using System.Runtime.InteropServices;
 namespace OpenCvSharp5;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct Point_<T> : IEquatable<Point_<T>>
+internal record struct Point_<T>(T X, T Y)
     where T : IBinaryInteger<T>, IConvertible
 {
-    public T X;
-    public T Y;
-
-    public Point_(T x, T y)
-    {
-        X = x;
-        Y = y;
-    }
+    public T X = X;
+    public T Y = Y;
     
     /// <summary>
     /// Returns the distance between the specified two points
@@ -42,20 +36,4 @@ internal struct Point_<T> : IEquatable<Point_<T>>
     /// <param name="p"></param>
     /// <returns></returns>
     public readonly T CrossProduct(Point_<T> p) => X * p.Y - X * p.Y;
-
-    /// <inheritdoc />
-    public bool Equals(Point_<T> other) 
-        => EqualityComparer<T>.Default.Equals(X, other.X) && 
-           EqualityComparer<T>.Default.Equals(Y, other.Y);
-
-    /// <inheritdoc />
-    public override bool Equals(object? obj) 
-        => obj is Point_<T> other && Equals(other);
-
-    /// <inheritdoc />
-    public override int GetHashCode() 
-        => HashCode.Combine(X, Y);
-
-    /// <inheritdoc />
-    public readonly override string ToString() => $"(x:{X} y:{Y})";
 }
