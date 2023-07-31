@@ -29,6 +29,10 @@ public record struct Point3f(float X, float Y, float Z)
 
 #pragma warning disable 1591
 
+    public static Point3f FromValueTuple((float, float, float) vec) => new(vec.Item1, vec.Item2, vec.Item3);
+
+    public static implicit operator Point3f((float, float, float) vec) => new(vec.Item1, vec.Item2, vec.Item3);
+
     public static explicit operator Point3i(Point3f self) => self.ToPoint3i();
 
     // ReSharper disable once InconsistentNaming

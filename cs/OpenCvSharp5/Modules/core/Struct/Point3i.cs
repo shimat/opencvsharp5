@@ -24,10 +24,14 @@ public record struct Point3i(int X, int Y, int Z)
     /// 
     /// </summary>
     public int Z = Z;
-    
+
     #region Cast
 
 #pragma warning disable 1591
+
+    public static Point3i FromValueTuple((int, int, int) vec) => new(vec.Item1, vec.Item2, vec.Item3);
+
+    public static implicit operator Point3i((int, int, int) vec) => new(vec.Item1, vec.Item2, vec.Item3);
 
     public static implicit operator Vec3i(Point3i point) => point.ToVec3i();
 

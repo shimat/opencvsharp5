@@ -23,10 +23,14 @@ public record struct Point3d(double X, double Y, double Z)
     /// 
     /// </summary>
     public double Z = Z;
-    
+
     #region Cast
 
 #pragma warning disable 1591
+
+    public static Point3d FromValueTuple((double, double, double) vec) => new(vec.Item1, vec.Item2, vec.Item3);
+
+    public static implicit operator Point3d((double, double, double) vec) => new(vec.Item1, vec.Item2, vec.Item3);
 
     public static explicit operator Point3i(Point3d self) => self.ToPoint3i();
 

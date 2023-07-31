@@ -1,11 +1,12 @@
-﻿using System.Numerics;
+﻿#if false
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
 [StructLayout(LayoutKind.Sequential)]
 internal record struct Point_<T>(T X, T Y)
-    where T : IBinaryInteger<T>, IConvertible
+    where T : IBinaryInteger<T>
 {
     public T X = X;
     public T Y = Y;
@@ -20,7 +21,7 @@ internal record struct Point_<T>(T X, T Y)
         T xDiff = p.X - X;
         T yDiff = p.Y - Y;
         T sqDist = xDiff * xDiff + yDiff * yDiff;
-        return Math.Sqrt(sqDist.ToDouble(null));
+        return double.Sqrt(double.CreateSaturating(sqDist));
     }
 
     /// <summary>
@@ -37,3 +38,5 @@ internal record struct Point_<T>(T X, T Y)
     /// <returns></returns>
     public readonly T CrossProduct(Point_<T> p) => X * p.Y - X * p.Y;
 }
+
+#endif
