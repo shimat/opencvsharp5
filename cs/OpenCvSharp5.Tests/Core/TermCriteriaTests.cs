@@ -29,16 +29,14 @@ public class TermCriteriaTests
         Assert.Equal(0.1, criteria.Epsilon);
     }
 
-    [Fact]
-    public void IsValid()
+    [Theory]
+    [InlineData(10, 0.1, true)]
+    [InlineData(0, 0.1, true)]
+    [InlineData(10, double.NaN, true)]
+    [InlineData(0, double.NaN, false)]
+    public void IsValid(int maxCount, double eps, bool isValid)
     {
-        var criteria1 = new TermCriteria(10, 0.1);
-        Assert.True(criteria1.IsValid);
-
-        var criteria2 = new TermCriteria(0, 0.1);
-        Assert.True(criteria2.IsValid);
-        
-        var criteria3 = new TermCriteria(0, double.NaN);
-        Assert.False(criteria3.IsValid);
+        var criteria = new TermCriteria(maxCount, eps);
+        Assert.Equal(isValid, criteria.IsValid);
     }
 }

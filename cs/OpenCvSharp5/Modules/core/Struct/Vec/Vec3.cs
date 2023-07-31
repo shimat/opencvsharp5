@@ -68,6 +68,39 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
     }
 
     /// <summary>
+    /// Indexer
+    /// </summary>
+    /// <param name="i"></param>
+    /// <returns></returns>
+    public T this[Index i]
+    {
+        readonly get =>
+            i.GetOffset(3) switch
+            {
+                0 => Item1,
+                1 => Item2,
+                2 => Item3,
+                _ => throw new ArgumentOutOfRangeException(nameof(i))
+            };
+        set
+        {
+            switch (i.GetOffset(3))
+            {
+                case 0:
+                    Item1 = value;
+                    break;
+                case 1:
+                    Item2 = value;
+                    break;
+                case 2:
+                    Item3 = value;
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(i));
+            }
+        }
+    }
+
+    /// <summary>
     /// this + other
     /// </summary>
     /// <param name="other"></param>
@@ -118,6 +151,16 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
         T.CreateSaturating(double.CreateSaturating(Item3) * alpha));
 
     /// <summary>
+    /// this * alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec3<T> MultiplyChecked(double alpha) => new(
+        T.CreateChecked(double.CreateSaturating(Item1) * alpha),
+        T.CreateChecked(double.CreateSaturating(Item2) * alpha),
+        T.CreateChecked(double.CreateSaturating(Item3) * alpha));
+
+    /// <summary>
     /// this / alpha
     /// </summary>
     /// <param name="alpha"></param>
@@ -127,12 +170,24 @@ public record struct Vec3<T>(T Item1, T Item2, T Item3)
         T.CreateSaturating(double.CreateSaturating(Item2) / alpha),
         T.CreateSaturating(double.CreateSaturating(Item3) / alpha));
 
+    /// <summary>
+    /// this / alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec3<T> DivideChecked(double alpha) => new(
+        T.CreateChecked(double.CreateSaturating(Item1) / alpha),
+        T.CreateChecked(double.CreateSaturating(Item2) / alpha),
+        T.CreateChecked(double.CreateSaturating(Item3) / alpha));
+
 #pragma warning disable 1591
     public static Vec3<T> operator +(Vec3<T> a, Vec3<T> b) => a.Add(b);
     public static Vec3<T> operator checked +(Vec3<T> a, Vec3<T> b) => a.AddChecked(b);
     public static Vec3<T> operator -(Vec3<T> a, Vec3<T> b) => a.Subtract(b);
     public static Vec3<T> operator checked -(Vec3<T> a, Vec3<T> b) => a.SubtractChecked(b);
     public static Vec3<T> operator *(Vec3<T> a, double alpha) => a.Multiply(alpha);
+    public static Vec3<T> operator checked *(Vec3<T> a, double alpha) => a.MultiplyChecked(alpha);
     public static Vec3<T> operator /(Vec3<T> a, double alpha) => a.Divide(alpha);
+    public static Vec3<T> operator checked  /(Vec3<T> a, double alpha) => a.DivideChecked(alpha);
 #pragma warning restore 1591
 }

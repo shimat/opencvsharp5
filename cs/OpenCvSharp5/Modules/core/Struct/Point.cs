@@ -29,7 +29,7 @@ public record struct Point(int X, int Y)
     public static implicit operator Vec2<int>(Point point) => point.ToVec2i();
 
     // ReSharper disable once InconsistentNaming
-    public static Point FromVec2i(Vec2<int> vec) => new(vec.Item0, vec.Item1);
+    public static Point FromVec2i(Vec2<int> vec) => new(vec.Item1, vec.Item2);
 
     public static implicit operator Point(Vec2<int> vec) => FromVec2i(vec);
 
