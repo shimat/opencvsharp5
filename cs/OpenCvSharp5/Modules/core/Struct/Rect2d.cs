@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
@@ -82,7 +81,7 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect2d Add(Point2d pt) => new (X + pt.X, Y + pt.Y, Width, Height);
+    public readonly Rect2d Add(Point2d pt) => this with { X = X + pt.X, Y = Y + pt.Y };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
@@ -97,7 +96,7 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect2d Subtract(Point2d pt) => new(X - pt.X, Y - pt.Y, Width, Height);
+    public readonly Rect2d Subtract(Point2d pt) => this with { X = X - pt.X, Y = Y - pt.Y };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -105,14 +104,14 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect2d operator +(Rect2d rect, Size2d size) => new (rect.X, rect.Y, rect.Width + size.Width, rect.Height + size.Height);
+    public static Rect2d operator +(Rect2d rect, Size2d size) => rect with { Width = rect.Width + size.Width, Height = rect.Height + size.Height };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect2d Add(Size2d size) => new(X, Y, Width + size.Width, Height + size.Height);
+    public readonly Rect2d Add(Size2d size) => this with { Width = Width + size.Width, Height = Height + size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -120,14 +119,14 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect2d operator -(Rect2d rect, Size2d size) => new (rect.X, rect.Y, rect.Width - size.Width, rect.Height - size.Height);
+    public static Rect2d operator -(Rect2d rect, Size2d size) => rect with { Width = rect.Width - size.Width, Height = rect.Height - size.Height };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect2d Subtract(Size2d size) => new(X, Y, Width - size.Width, Height - size.Height);
+    public readonly Rect2d Subtract(Size2d size) => this with { Width = Width - size.Width, Height = Height - size.Height };
 
     #endregion
 
@@ -139,7 +138,6 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <param name="a">A rectangle to intersect. </param>
     /// <param name="b">A rectangle to intersect. </param>
     /// <returns></returns>
-    [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
     public static Rect2d operator &(Rect2d a, Rect2d b) => Intersect(a, b);
 
     /// <summary>
@@ -148,7 +146,6 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <param name="a">A rectangle to union. </param>
     /// <param name="b">A rectangle to union. </param>
     /// <returns></returns>
-    [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
     public static Rect2d operator |(Rect2d a, Rect2d b) => Union(a, b);
 
     #endregion
@@ -160,37 +157,29 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <summary>
     /// Gets the y-coordinate of the top edge of this Rect2d structure. 
     /// </summary>
-    public double Top
-    {
-        get => Y;
-        set => Y = value;
-    }
+    public readonly double Top => Y;
 
     /// <summary>
     /// Gets the y-coordinate that is the sum of the Y and Height property values of this Rect2d structure.
     /// </summary>
-    public double Bottom => Y + Height;
+    public readonly double Bottom => Y + Height;
 
     /// <summary>
     /// Gets the x-coordinate of the left edge of this Rect2d structure. 
     /// </summary>
-    public double Left
-    {
-        get => X;
-        set => X = value;
-    }
+    public readonly double Left => X;
 
     /// <summary>
     /// Gets the x-coordinate that is the sum of X and Width property values of this Rect2d structure. 
     /// </summary>
-    public double Right => X + Width;
+    public readonly double Right => X + Width;
 
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point2d(X, Y)]
     /// </summary>
     public Point2d Location
     {
-        get => new (X, Y);
+        readonly get => new (X, Y);
         set
         {
             X = value.X;
@@ -203,7 +192,7 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// </summary>
     public Size2d Size
     {
-        get => new (Width, Height);
+        readonly get => new (Width, Height);
         set
         {
             Width = value.Width;
@@ -214,12 +203,12 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point2d(X, Y)]
     /// </summary>
-    public Point2d TopLeft => new (X, Y);
+    public readonly Point2d TopLeft => new (X, Y);
 
     /// <summary>
     /// Coordinate of the right-most rectangle corner [Point2d(X+Width, Y+Height)]
     /// </summary>
-    public Point2d BottomRight => new (X + Width, Y + Height);
+    public readonly Point2d BottomRight => new (X + Width, Y + Height);
 
     #endregion
 
@@ -283,7 +272,7 @@ public record struct Rect2d(double X, double Y, double Width, double Height)
     /// <param name="x">The amount to inflate this Rectangle horizontally. </param>
     /// <param name="y">The amount to inflate this Rectangle vertically. </param>
     /// <returns></returns>
-    public static Rect Inflate(Rect rect, int x, int y)
+    public static Rect2d Inflate(Rect2d rect, int x, int y)
     {
         rect.Inflate(x, y);
         return rect;

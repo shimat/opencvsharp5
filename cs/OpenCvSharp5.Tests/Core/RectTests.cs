@@ -7,12 +7,28 @@ public class RectTests
     public void FromLTRB()
     {
         var rect = Rect.FromLTRB(1, 2, 3, 4);
+        Assert.Equal(new Rect(1, 2, 2, 2), rect);
+
+        Assert.Throws<ArgumentException>(() =>
+        {
+            Rect.FromLTRB(10, 20, 5, 40);
+        });
+        Assert.Throws<ArgumentException>(() =>
+        {
+            Rect.FromLTRB(10, 20, 30, 5);
+        });
+    }
+
+    [Fact]
+    public void FromLocationSize()
+    {
+        var rect = new Rect(new Point(1, 2), new Size(3, 4));
         Assert.Equal(1, rect.X);
         Assert.Equal(2, rect.Y);
-        Assert.Equal(2, rect.Width);
-        Assert.Equal(2, rect.Height);
+        Assert.Equal(3, rect.Width);
+        Assert.Equal(4, rect.Height);
     }
-    
+
     [Fact]
     public void Left()
     {

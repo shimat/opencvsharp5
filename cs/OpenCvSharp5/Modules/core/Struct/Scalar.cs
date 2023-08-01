@@ -37,7 +37,7 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
     /// </summary>
     public double this[int i]
     {
-        get =>
+        readonly get =>
             i switch
             {
                 0 => Val0,
@@ -102,8 +102,7 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
     {
     }
     
-    /// <summary>
-    /// 
+    /// <summary> 
     /// </summary>
     /// <param name="r"></param>
     /// <param name="g"></param>
@@ -124,7 +123,7 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
         if (rng is null) 
             throw new ArgumentNullException(nameof(rng));
 
-        var buf = new byte[3];
+        Span<byte> buf = stackalloc byte[3];
         rng.GetBytes(buf);
         return new Scalar(buf[0], buf[1], buf[2]);
     }
