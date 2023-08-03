@@ -68,6 +68,43 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
         }
     }
 
+    /// <summary>
+    /// Indexer
+    /// </summary>
+    /// <param name="i"></param>
+    /// <returns></returns>
+    public double this[Index i]
+    {
+        readonly get =>
+            i.GetOffset(4) switch
+            {
+                0 => Val0,
+                1 => Val1,
+                2 => Val2,
+                3 => Val3,
+                _ => throw new ArgumentOutOfRangeException(nameof(i))
+            };
+        set
+        {
+            switch (i.GetOffset(4))
+            {
+                case 0:
+                    Val0 = value;
+                    break;
+                case 1:
+                    Val1 = value;
+                    break;
+                case 2:
+                    Val2 = value;
+                    break;
+                case 3:
+                    Val3 = value;
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(i));
+            }
+        }
+    }
+
     #endregion
 
     #region Init
