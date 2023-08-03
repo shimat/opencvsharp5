@@ -8,8 +8,8 @@ public class Vec2Tests
     public void Byte()
     {
         var v = new Vec2b(1, 2);
-        Assert.Equal(1, v.Item1);
-        Assert.Equal(2, v.Item2);
+        Assert.Equal(1, v.Item0);
+        Assert.Equal(2, v.Item1);
 
         var (item1, item2) = v;
         Assert.Equal(1, item1);
@@ -18,7 +18,7 @@ public class Vec2Tests
         Assert.Equal(new Vec2b(1, 2), v);
         Assert.NotEqual(new Vec2b(2, 1), v);
 
-        Assert.Equal("Vec2 { Item1 = 1, Item2 = 2 }", v.ToString());
+        Assert.Equal("Vec2 { Item0 = 1, Item1 = 2 }", v.ToString());
 
         Assert.Equal(1, v[0]);
         Assert.Equal(2, v[1]);

@@ -8,9 +8,9 @@ public class Vec3Tests
     public void Byte()
     {
         var v = new Vec3b(1, 2, 3);
-        Assert.Equal(1, v.Item1);
-        Assert.Equal(2, v.Item2);
-        Assert.Equal(3, v.Item3);
+        Assert.Equal(1, v.Item0);
+        Assert.Equal(2, v.Item1);
+        Assert.Equal(3, v.Item2);
 
         var (item1, item2, item3) = v;
         Assert.Equal(1, item1);
@@ -20,7 +20,7 @@ public class Vec3Tests
         Assert.Equal(new Vec3b(1, 2, 3), v);
         Assert.NotEqual(new Vec3b(2, 1, 0), v);
 
-        Assert.Equal("Vec3 { Item1 = 1, Item2 = 2, Item3 = 3 }", v.ToString());
+        Assert.Equal("Vec3 { Item0 = 1, Item1 = 2, Item2 = 3 }", v.ToString());
 
         Assert.Equal(1, v[0]);
         Assert.Equal(2, v[1]);

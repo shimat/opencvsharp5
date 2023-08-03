@@ -8,21 +8,23 @@ namespace OpenCvSharp5;
 /// <summary>
 /// 2-Tuple
 /// </summary>
+/// <param name="Item0">The value of the first component of this object.</param>
+/// <param name="Item1">The value of the second component of this object.</param>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
-public record struct Vec2<T>(T Item1, T Item2)
+public record struct Vec2<T>(T Item0, T Item1)
     where T : unmanaged, INumber<T>
 {
     /// <summary>
     /// The value of the first component of this object.
     /// </summary>
-    public T Item1 = Item1;
+    public T Item0 = Item0;
 
     /// <summary>
     /// The value of the second component of this object.
     /// </summary>
-    public T Item2 = Item2;
+    public T Item1 = Item1;
 
     /// <summary>
     /// returns a Vec with all elements set to v0
@@ -38,11 +40,11 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <returns></returns>
     public T this[int i]
     {
-        readonly get =>
+        readonly get => 
             i switch
             {
-                0 => Item1,
-                1 => Item2,
+                0 => Item0,
+                1 => Item1,
                 _ => throw new ArgumentOutOfRangeException(nameof(i))
             };
         set
@@ -50,10 +52,10 @@ public record struct Vec2<T>(T Item1, T Item2)
             switch (i)
             {
                 case 0:
-                    Item1 = value;
+                    Item0 = value;
                     break;
                 case 1:
-                    Item2 = value;
+                    Item1 = value;
                     break;
                 default: throw new ArgumentOutOfRangeException(nameof(i));
             }
@@ -70,8 +72,8 @@ public record struct Vec2<T>(T Item1, T Item2)
         readonly get =>
             i.GetOffset(2) switch
             {
-                0 => Item1,
-                1 => Item2,
+                0 => Item0,
+                1 => Item1,
                 _ => throw new ArgumentOutOfRangeException(nameof(i))
             };
         set
@@ -79,10 +81,10 @@ public record struct Vec2<T>(T Item1, T Item2)
             switch (i.GetOffset(2))
             {
                 case 0:
-                    Item1 = value;
+                    Item0 = value;
                     break;
                 case 1:
-                    Item2 = value;
+                    Item1 = value;
                     break;
                 default: throw new ArgumentOutOfRangeException(nameof(i));
             }
@@ -96,8 +98,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <returns></returns>
     public readonly Vec2<T> Add(Vec2<T> other)
     {
-        var item0 = Item1 + other.Item1;
-        var item1 = Item2 + other.Item2;
+        var item0 = Item0 + other.Item0;
+        var item1 = Item1 + other.Item1;
 
         return new Vec2<T>(
             T.CreateSaturating(item0),
@@ -111,8 +113,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <returns></returns>
     public readonly Vec2<T> AddChecked(Vec2<T> other)
     {
-        var item0 = checked(Item1 + other.Item1);
-        var item1 = checked(Item2 + other.Item2);
+        var item0 = checked(Item0 + other.Item0);
+        var item1 = checked(Item1 + other.Item1);
 
         return new Vec2<T>(
             T.CreateSaturating(item0),
@@ -126,8 +128,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <returns></returns>
     public readonly Vec2<T> Subtract(Vec2<T> other)
     {
-        var item0 = Item1 - other.Item1;
-        var item1 = Item2 - other.Item2;
+        var item0 = Item0 - other.Item0;
+        var item1 = Item1 - other.Item1;
 
         return new Vec2<T>(
             T.CreateSaturating(item0),
@@ -141,8 +143,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <returns></returns>
     public readonly Vec2<T> SubtractChecked(Vec2<T> other)
     {
-        var item0 = checked(Item1 - other.Item1);
-        var item1 = checked(Item2 - other.Item2);
+        var item0 = checked(Item0 - other.Item0);
+        var item1 = checked(Item1 - other.Item1);
 
         return new Vec2<T>(
             T.CreateSaturating(item0),
@@ -155,8 +157,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <param name="alpha"></param>
     /// <returns></returns>
     public readonly Vec2<T> Multiply(double alpha) => new(
-        T.CreateSaturating(double.CreateSaturating(Item1) * alpha),
-        T.CreateSaturating(double.CreateSaturating(Item2) * alpha));
+        T.CreateSaturating(double.CreateSaturating(Item0) * alpha),
+        T.CreateSaturating(double.CreateSaturating(Item1) * alpha));
 
     /// <summary>
     /// this * alpha
@@ -164,8 +166,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <param name="alpha"></param>
     /// <returns></returns>
     public readonly Vec2<T> MultiplyChecked(double alpha) => new(
-        T.CreateChecked(double.CreateSaturating(Item1) * alpha),
-        T.CreateChecked(double.CreateSaturating(Item2) * alpha));
+        T.CreateChecked(double.CreateSaturating(Item0) * alpha),
+        T.CreateChecked(double.CreateSaturating(Item1) * alpha));
 
     /// <summary>
     /// this / alpha
@@ -173,8 +175,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <param name="alpha"></param>
     /// <returns></returns>
     public readonly Vec2<T> Divide(double alpha) => new(
-        T.CreateSaturating(double.CreateSaturating(Item1) / alpha),
-        T.CreateSaturating(double.CreateSaturating(Item2) / alpha));
+        T.CreateSaturating(double.CreateSaturating(Item0) / alpha),
+        T.CreateSaturating(double.CreateSaturating(Item1) / alpha));
 
     /// <summary>
     /// this / alpha
@@ -182,8 +184,8 @@ public record struct Vec2<T>(T Item1, T Item2)
     /// <param name="alpha"></param>
     /// <returns></returns>
     public readonly Vec2<T> DivideChecked(double alpha) => new(
-        T.CreateChecked(double.CreateSaturating(Item1) / alpha),
-        T.CreateChecked(double.CreateSaturating(Item2) / alpha));
+        T.CreateChecked(double.CreateSaturating(Item0) / alpha),
+        T.CreateChecked(double.CreateSaturating(Item1) / alpha));
 
 #pragma warning disable 1591
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b) => a.Add(b);

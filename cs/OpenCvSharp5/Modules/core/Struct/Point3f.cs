@@ -51,7 +51,7 @@ public record struct Point3f(float X, float Y, float Z)
     public static implicit operator Point3f(Vec3f vec) => FromVec3f(vec);
 
     // ReSharper disable once InconsistentNaming
-    public static Point3f FromVec3f(Vec3f vec) => new (vec.Item1, vec.Item2, vec.Item3);
+    public static Point3f FromVec3f(Vec3f vec) => new (vec.Item0, vec.Item1, vec.Item2);
 
 #pragma warning restore 1591
 

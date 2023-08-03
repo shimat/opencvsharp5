@@ -81,7 +81,7 @@ public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, flo
     public static explicit operator DMatch(Vec4f v) => FromVec4f(v);
 
     // ReSharper disable once InconsistentNaming
-    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item1, (int)v.Item2, (int)v.Item3, v.Item4);
+    public static DMatch FromVec4f(Vec4f v) => new ((int)v.Item0, (int)v.Item1, (int)v.Item2, v.Item3);
 
 #pragma warning restore 1591
 }
