@@ -249,6 +249,30 @@ public class ScalarTests
         s = (Scalar)new Rect(1, 2, 3, 4);
         Assert.Equal(new Scalar(1, 2, 3, 4), s);
     }
+    
+    [Fact]
+    public void Mul()
+    {
+        var s1 = new Scalar(1, 2, 3, 4);
+        var s2 = new Scalar(5, 6, 7, 8);
+
+        Assert.Equal(new Scalar(5, 12, 21, 32), s1.Mul(s2));
+        Assert.Equal(new Scalar(10, 24, 42, 64), s1.Mul(s2, 2));
+    }
+    
+    [Fact]
+    public void Conj()
+    {
+        var s = new Scalar(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, -2, -3, -4), s.Conj());
+    }
+    
+    [Fact]
+    public void ToVec3b()
+    {
+        var s = new Scalar(1, 2, 3, 4);
+        Assert.Equal(new Vec3<byte>(1, 2, 3), s.ToVec3b());
+    }
 
     private sealed class MockRandomNumberGenerator : RandomNumberGenerator
     {
