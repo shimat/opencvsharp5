@@ -182,13 +182,16 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
     // ReSharper disable InconsistentNaming
     public static Scalar FromDouble(double val) => new(val);
     public static Scalar FromDMatch(DMatch d) => new(d.QueryIdx, d.TrainIdx, d.ImgIdx, d.Distance);
-    public static Scalar FromVec3b(Vec3b v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec3f(Vec3f v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4f(Vec4f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6f(Vec6f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec3d(Vec3d v) => new(v.Item0, v.Item1, v.Item2);
-    public static Scalar FromVec4d(Vec4d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
-    public static Scalar FromVec6d(Vec6d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec3(Vec3b v) => new(v.Item0, v.Item1, v.Item2);
+    public static Scalar FromVec3(Vec3s v) => new(v.Item0, v.Item1, v.Item2);
+    public static Scalar FromVec3(Vec3i v) => new(v.Item0, v.Item1, v.Item2);
+    public static Scalar FromVec3(Vec3f v) => new(v.Item0, v.Item1, v.Item2);
+    public static Scalar FromVec3(Vec3d v) => new(v.Item0, v.Item1, v.Item2);
+    public static Scalar FromVec4(Vec4b v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4(Vec4s v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4(Vec4i v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4(Vec4f v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
+    public static Scalar FromVec4(Vec4d v) => new(v.Item0, v.Item1, v.Item2, v.Item3);
     public static Scalar FromPoint(Point p) => new(p.X, p.Y);
     public static Scalar FromPoint2f(Point2f p) => new(p.X, p.Y);
     public static Scalar FromPoint2d(Point2d p) => new(p.X, p.Y);
@@ -200,13 +203,16 @@ public record struct Scalar(double Val0, double Val1, double Val2, double Val3)
 
     public static implicit operator Scalar(double val) => FromDouble(val);
     public static explicit operator Scalar(DMatch d) => FromDMatch(d);
-    public static explicit operator Scalar(Vec3b v) => FromVec3b(v);
-    public static explicit operator Scalar(Vec3f v) => FromVec3f(v);
-    public static explicit operator Scalar(Vec4f v) => FromVec4f(v);
-    public static explicit operator Scalar(Vec6f v) => FromVec6f(v);
-    public static explicit operator Scalar(Vec3d v) => FromVec3d(v);
-    public static explicit operator Scalar(Vec4d v) => FromVec4d(v);
-    public static explicit operator Scalar(Vec6d v) => FromVec6d(v);
+    public static explicit operator Scalar(Vec3b v) => FromVec3(v);
+    public static explicit operator Scalar(Vec3s v) => FromVec3(v);
+    public static explicit operator Scalar(Vec3i v) => FromVec3(v);
+    public static explicit operator Scalar(Vec3f v) => FromVec3(v);
+    public static explicit operator Scalar(Vec3d v) => FromVec3(v);
+    public static explicit operator Scalar(Vec4b v) => FromVec4(v);
+    public static explicit operator Scalar(Vec4s v) => FromVec4(v);
+    public static explicit operator Scalar(Vec4i v) => FromVec4(v);
+    public static explicit operator Scalar(Vec4f v) => FromVec4(v);
+    public static explicit operator Scalar(Vec4d v) => FromVec4(v);
     public static explicit operator Scalar(Point p) => FromPoint(p);
     public static explicit operator Scalar(Point2f p) => FromPoint2f(p);
     public static explicit operator Scalar(Point2d p) => FromPoint2d(p);

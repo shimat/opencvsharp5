@@ -131,8 +131,126 @@ public class ScalarTests
         Assert.Equal(3, s.Val2);
         Assert.Equal(0, s.Val3);
     }
+
+    [Fact]
+    public void FromDouble() 
+    {
+        var s = Scalar.FromDouble(1.23);
+
+        Assert.Equal(1.23, s.Val0);
+        Assert.Equal(0, s.Val1);
+        Assert.Equal(0, s.Val2);
+        Assert.Equal(0, s.Val3);
+    }
     
-    private class MockRandomNumberGenerator : RandomNumberGenerator
+    // ReSharper disable InconsistentNaming
+
+    [Fact]
+    public void FromVec3()
+    {
+        var s = Scalar.FromVec3(new Vec3<byte>(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Vec3<byte>(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+
+        s = Scalar.FromVec3(new Vec3<short>(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Vec3<short>(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+
+        s = Scalar.FromVec3(new Vec3<int>(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Vec3<int>(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+
+        s = Scalar.FromVec3(new Vec3<float>(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Vec3<float>(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        
+        s = Scalar.FromVec3(new Vec3<double>(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Vec3<double>(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+    }
+    
+    [Fact]
+    public void FromVec4()
+    {
+        var s = Scalar.FromVec4(new Vec4<byte>(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Vec4<byte>(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+
+        s = Scalar.FromVec4(new Vec4<short>(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Vec4<short>(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+
+        s = Scalar.FromVec4(new Vec4<int>(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Vec4<int>(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+
+        s = Scalar.FromVec4(new Vec4<float>(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Vec4<float>(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        
+        s = Scalar.FromVec4(new Vec4<double>(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Vec4<double>(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+    }
+    
+    [Fact]
+    public void FromPoint2()
+    {
+        var s = Scalar.FromPoint(new Point(1, 2));
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+        s = (Scalar)new Point(1, 2);
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+
+        s = Scalar.FromPoint2f(new Point2f(1, 2));
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+        s = (Scalar)new Point2f(1, 2);
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+
+        s = Scalar.FromPoint2d(new Point2d(1, 2));
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+        s = (Scalar)new Point2d(1, 2);
+        Assert.Equal(new Scalar(1, 2, 0, 0), s);
+    }
+    
+    [Fact]
+    public void FromPoint3()
+    {
+        var s = Scalar.FromPoint3i(new Point3i(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Point3i(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+
+        s = Scalar.FromPoint3f(new Point3f(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Point3f(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+
+        s = Scalar.FromPoint3d(new Point3d(1, 2, 3));
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+        s = (Scalar)new Point3d(1, 2, 3);
+        Assert.Equal(new Scalar(1, 2, 3, 0), s);
+    }
+    
+    [Fact]
+    public void FromRect()
+    {
+        var s = Scalar.FromRect(new Rect(1, 2, 3, 4));
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+        s = (Scalar)new Rect(1, 2, 3, 4);
+        Assert.Equal(new Scalar(1, 2, 3, 4), s);
+    }
+
+    private sealed class MockRandomNumberGenerator : RandomNumberGenerator
     {
         public override void GetBytes(byte[] data)
         {
