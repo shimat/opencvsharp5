@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿#if false
+
+using System.Runtime.InteropServices;
 
 namespace OpenCvSharp5;
 
@@ -38,3 +40,4 @@ public readonly record struct Rangef(float Start, float End)
     /// </summary>
     public static Range All => new (int.MinValue, int.MaxValue);
 }
+#endif

@@ -104,6 +104,28 @@ public class MatTests
     }
 
     [Fact]
+    public void AsRowSpan()
+    {
+        var matData = new int[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+        using var mat = new Mat(3, 3, MatType.CV_32SC1, matData);
+
+        var row0 = mat.AsRowSpan<int>(0);
+        var row1 = mat.AsRowSpan<int>(1);
+        var row2 = mat.AsRowSpan<int>(2);
+        Assert.Equal(3, row0.Length);
+        Assert.Equal(3, row1.Length);
+        Assert.Equal(3, row2.Length);
+        Assert.True(row0.SequenceEqual(new[] { 1, 2, 3 }));
+        Assert.True(row1.SequenceEqual(new[] { 4, 5, 6 }));
+        Assert.True(row2.SequenceEqual(new[] { 7, 8, 9 }));
+    }
+
+    [Fact]
     public void RowsCols()
     {
         using var mat = new Mat(3, 4, MatType.CV_8UC1);
