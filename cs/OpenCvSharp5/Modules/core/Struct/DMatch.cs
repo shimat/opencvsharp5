@@ -9,7 +9,7 @@
 /// <param name="TrainIdx">train descriptor index</param>
 /// <param name="ImgIdx">train image index</param>
 /// <param name="Distance"></param>
-public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, float Distance)
+public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, float Distance) : IComparable<DMatch>
 {
     /// <summary>
     /// query descriptor index
@@ -55,6 +55,14 @@ public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, flo
     /// <param name="d2"></param>
     /// <returns></returns>
     public static bool operator <(DMatch d1, DMatch d2) => d1.Distance < d2.Distance;
+    
+    /// <summary>
+    /// Compares by distance (less is better)
+    /// </summary>
+    /// <param name="d1"></param>
+    /// <param name="d2"></param>
+    /// <returns></returns>
+    public static bool operator <=(DMatch d1, DMatch d2) => d1.Distance <= d2.Distance;
 
     /// <summary>
     /// Compares by distance (less is better)
@@ -63,6 +71,14 @@ public readonly record struct DMatch(int QueryIdx, int TrainIdx, int ImgIdx, flo
     /// <param name="d2"></param>
     /// <returns></returns>
     public static bool operator >(DMatch d1, DMatch d2) => d1.Distance > d2.Distance;
+    
+    /// <summary>
+    /// Compares by distance (less is better)
+    /// </summary>
+    /// <param name="d1"></param>
+    /// <param name="d2"></param>
+    /// <returns></returns>
+    public static bool operator >=(DMatch d1, DMatch d2) => d1.Distance >= d2.Distance;
 
     /// <summary>
     /// Compares by distance (less is better)
