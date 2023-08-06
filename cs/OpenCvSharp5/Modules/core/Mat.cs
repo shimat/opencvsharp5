@@ -1777,9 +1777,9 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public unsafe Span2D<T> AsSpan2D<T>() where T : unmanaged 
-        => IsContinuous() 
+        => IsContinuous() && Dims == 2
             ? new Span2D<T>(DataPointer, Rows, Cols, 0) 
-            : throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because the Mat memory is not continuous.");
+            : throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because the Mat memory is not continuous or Mat.Dims != 2.");
 
     /// <summary>
     /// Creates a new row span over the 2D Mat.
