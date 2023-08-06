@@ -27,6 +27,7 @@ public class ImgCodecsTests
         {
             Assert.False(image.Empty());
         }
+        // ReSharper disable once RedundantArgumentDefaultValue
         using (var image = Cv2.ImRead(BuildImagePath(fileName), ImreadModes.Color))
         {
             Assert.False(image.Empty());
@@ -43,6 +44,9 @@ public class ImgCodecsTests
         using var image = Cv2.ImRead("not_exist.png", ImreadModes.Grayscale);
         Assert.NotNull(image);
         Assert.True(image.Empty());
+
+        Assert.Throws<ArgumentNullException>(() => Cv2.ImRead(""));
+        Assert.Throws<ArgumentNullException>(() => Cv2.ImRead(null!));
     }
         
     [Fact]
@@ -78,7 +82,7 @@ public class ImgCodecsTests
 
         Assert.True(File.Exists(fileName), $"File '{fileName}' not found");
 
-        using var image = Cv2.ImRead(fileName, ImreadModes.Color);
+        using var image = Cv2.ImRead(fileName);
         Assert.NotNull(image);
         Assert.False(image.Empty());
     }
@@ -90,7 +94,7 @@ public class ImgCodecsTests
 
         CreateDummyImageFile(fileName);
         
-        using var image = Cv2.ImRead(fileName, ImreadModes.Color);
+        using var image = Cv2.ImRead(fileName);
         Assert.NotNull(image);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -114,7 +118,8 @@ public class ImgCodecsTests
 
         using (var mat = new Mat(10, 20, MatType.CV_8UC3, Scalar.Blue))
         {
-            Cv2.ImWrite(fileName, mat);
+            Assert.True(Cv2.ImWrite(fileName, mat));
+            Assert.True(Cv2.ImWrite(fileName, mat, Array.Empty<int>()));
         }
         
         var image = Image.Identify(fileName);
@@ -122,6 +127,35 @@ public class ImgCodecsTests
         Assert.Equal(20, image.Width);
     }
     
+    [Fact]
+    public void ImWriteFailure()
+    {
+        using var mat = new Mat(10, 10, MatType.CV_8UC3, Scalar.Blue);
+        Assert.Throws<ArgumentNullException>(() => Cv2.ImWrite("", mat));
+        Assert.Throws<ArgumentNullException>(() => Cv2.ImWrite(null!, mat));
+        Assert.Throws<ArgumentNullException>(() => Cv2.ImWrite("", mat, Array.Empty<int>()));
+    }
+    
+    [Fact]
+    public void ImWriteWithEncodingParam()
+    {
+        const string fileName1 = "test_imwrite_quality_100.jpeg";
+        const string fileName2 = "test_imwrite_quality_default.jpeg";
+
+        using (var mat = new Mat(10, 10, MatType.CV_8UC3, Scalar.Blue))
+        {
+            Assert.True(Cv2.ImWrite(fileName1, mat, new ImageEncodingParam(ImwriteFlags.JpegQuality, 100)));
+            Assert.True(Cv2.ImWrite(fileName2, mat));
+        }
+        
+        var image1 = Image.Identify(fileName1);
+        var image2 = Image.Identify(fileName2);
+        var jpegInfo1 = image1.Metadata.GetJpegMetadata();
+        var jpegInfo2 = image2.Metadata.GetJpegMetadata();
+        Assert.Equal(100, jpegInfo1.Quality);
+        Assert.Equal(95, jpegInfo2.Quality);
+    }
+
     [Fact]
     public void ImWriteJapaneseFileName()
     {
@@ -292,11 +326,9 @@ public class ImgCodecsTests
     [InlineData("foo.png")]
     [InlineData("bar.jpg")]
     [InlineData("baz.bmp")]
-    public void HaveImageWriter(string fileName)
-    {
-        Assert.True(Cv2.HaveImageWriter(fileName));
-    }
-    
+    public void HaveImageWriter(string fileName) 
+        => Assert.True(Cv2.HaveImageWriter(fileName));
+
     [Fact]
     public void HaveImageWriterJapanese()
     {
@@ -341,20 +373,8 @@ public class ImgCodecsTests
     [InlineData(".jpg")]
     [InlineData(".tif")]
     [InlineData(".bmp")]
-    public void ImDecode(string ext)
+    public void ImDecodeFromSpanBuffer(string ext)
     {
-        static IImageEncoder GetEncoder(string ext)
-        {
-            return ext switch
-            {
-                ".png" => new PngEncoder(),
-                ".jpg" => new JpegEncoder(),
-                ".tif" => new TiffEncoder(),
-                ".bmp" => new BmpEncoder(),
-                _ => throw new ArgumentOutOfRangeException(nameof(ext))
-            };
-        }
-        
         using var bitmap = Image.Load("Data/Images/mandrill.png");
         using var stream = new MemoryStream();
         bitmap.Save(stream, GetEncoder(ext));
@@ -362,6 +382,29 @@ public class ImgCodecsTests
         Assert.NotNull(imageData);
 
         using var mat = Cv2.ImDecode(imageData, ImreadModes.Color);
+        Assert.NotNull(mat);
+        Assert.False(mat.Empty());
+        Assert.Equal(bitmap.Width, mat.Cols);
+        Assert.Equal(bitmap.Height, mat.Rows);
+
+        //ShowImagesWhenDebugMode(mat);
+    }
+    
+    [Theory]
+    [InlineData(".png")]
+    [InlineData(".jpg")]
+    [InlineData(".tif")]
+    [InlineData(".bmp")]
+    public void ImDecodeFromMatBuffer(string ext)
+    {
+        using var bitmap = Image.Load("Data/Images/mandrill.png");
+        using var stream = new MemoryStream();
+        bitmap.Save(stream, GetEncoder(ext));
+        var imageData = stream.ToArray();
+        Assert.NotNull(imageData);
+
+        using var buffer = new Mat(imageData.Length, 1, MatType.CV_8UC1, imageData);
+        using var mat = Cv2.ImDecode(buffer, ImreadModes.Color);
         Assert.NotNull(mat);
         Assert.False(mat.Empty());
         Assert.Equal(bitmap.Width, mat.Cols);
@@ -411,7 +454,8 @@ public class ImgCodecsTests
         Assert.Equal(1, Cv2.ImCount(files[1]));
 
         DisposableArray<Mat>? pages = null;
-        DisposableArray<Mat>? readPages = null;
+        DisposableArray<Mat>? readPages1 = null;
+        DisposableArray<Mat>? readPages2 = null;
         DisposableArray<Mat>? decodedPages = null;
         try
         {
@@ -422,9 +466,11 @@ public class ImgCodecsTests
             Assert.True(Cv2.ImWrite(outFileName, pages), "imwrite failed");
 
             // imreadmulti
-            Assert.True(Cv2.ImReadMulti(outFileName, out readPages), "imreadmulti failed");
-            Assert.NotEmpty(readPages);
-            Assert.Equal(pages.Count, readPages.Count);
+            Assert.True(Cv2.ImReadMulti(outFileName, out readPages1), "imreadmulti failed");
+            Assert.NotEmpty(readPages1);
+            Assert.Equal(pages.Count, readPages1.Count);
+            Assert.True(Cv2.ImReadMulti(outFileName, out readPages2, 1, 1), "imreadmulti failed");
+            Assert.Single(readPages2);
 
             // imcount
             Assert.Equal(2, Cv2.ImCount(outFileName));
@@ -435,16 +481,28 @@ public class ImgCodecsTests
 
             for (var i = 0; i < pages.Count; i++)
             {
-                TestHelper.ImageEquals(pages[i], readPages[i]);
+                TestHelper.ImageEquals(pages[i], readPages1[i]);
             }
 
         }
         finally
         {
             pages?.Dispose();
-            readPages?.Dispose();
+            readPages1?.Dispose();
+            readPages2?.Dispose();
+            decodedPages?.Dispose();
         }
     }
+    
+    private static IImageEncoder GetEncoder(string ext) =>
+        ext switch
+        {
+            ".png" => new PngEncoder(),
+            ".jpg" => new JpegEncoder(),
+            ".tif" => new TiffEncoder(),
+            ".bmp" => new BmpEncoder(),
+            _ => throw new ArgumentOutOfRangeException(nameof(ext))
+        };
 
     private static void CreateDummyImageFile(string path)
     {

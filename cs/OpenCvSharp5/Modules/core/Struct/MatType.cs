@@ -88,12 +88,12 @@ public readonly record struct MatType(int Value) : IEquatable<int>
             default:
                 return $"Unsupported type value ({Value})";
         }
-
+        
         var ch = Channels;
         if (ch <= 4)
-            return s + "C" + ch;
+            return $"{s}C{ch}";
         else
-            return s + "C(" + ch + ")";
+            return $"{s}C({ch})";
     }
 
     private const int CV_CN_MAX = 512,
@@ -201,10 +201,10 @@ public readonly record struct MatType(int Value) : IEquatable<int>
 
     public static MatType MakeType(int depth, int channels)
     {
-        if (channels <= 0 || channels >= CV_CN_MAX)
-            throw new OpenCvSharpException("Channels count should be 1.." + (CV_CN_MAX - 1));
-        if (depth < 0 || depth >= CV_DEPTH_MAX)
-            throw new OpenCvSharpException("Data type depth should be 0.." + (CV_DEPTH_MAX - 1));
+        if (depth is < 0 or >= CV_DEPTH_MAX)
+            throw new ArgumentException($"Data type depth should be 0..{(CV_DEPTH_MAX - 1)}", nameof(depth));
+        if (channels is <= 0 or >= CV_CN_MAX)
+            throw new ArgumentException($"Channels count should be 1..{(CV_CN_MAX - 1)}", nameof(channels));
         return (depth & (CV_DEPTH_MAX - 1)) + ((channels - 1) << CV_CN_SHIFT);
     }
 }

@@ -360,6 +360,31 @@ CVAPI(ExceptionStatus) core_Mat_create2(
     END_WRAP;   
 }    
 
+CVAPI(ExceptionStatus) core_Mat_subMat1(
+    cv::Mat* self, int rowStart, int rowEnd, int colStart, int colEnd, cv::Mat** returnValue)
+{
+    BEGIN_WRAP;
+    const cv::Range rowRange(rowStart, rowEnd);
+    const cv::Range colRange(colStart, colEnd);
+    const auto ret = (*self)(rowRange, colRange);
+    *returnValue = new cv::Mat(ret);
+    END_WRAP
+}
+
+CVAPI(ExceptionStatus) core_Mat_subMat2(
+    cv::Mat* self, int nRanges, CvSlice* ranges, cv::Mat** returnValue)
+{
+    BEGIN_WRAP;
+    std::vector<cv::Range> rangesVec(nRanges);
+    for (auto i = 0; i < nRanges; i++)
+    {
+        rangesVec[i] = (cpp(ranges[i]));
+    }
+    const auto ret = (*self)(&rangesVec[0]);
+    *returnValue = new cv::Mat(ret);
+    END_WRAP
+}
+
 CVAPI(ExceptionStatus) core_Mat_isContinuous(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;
@@ -406,6 +431,13 @@ CVAPI(ExceptionStatus) core_Mat_channels(const cv::Mat* obj, int* result)
 {
     BEGIN_WRAP;
     *result = obj->channels();
+    END_WRAP;
+}
+
+CVAPI(ExceptionStatus) core_Mat_step1(const cv::Mat* obj, int i, size_t* result)
+{
+    BEGIN_WRAP;
+    *result = obj->step1(i);
     END_WRAP;
 }
 

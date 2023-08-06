@@ -32,6 +32,11 @@ public record struct Point2f(float X, float Y)
     public static implicit operator Point2f(Point point) => FromPoint(point);
 
     // ReSharper disable once InconsistentNaming
+    public static Point2f FromValueTuple((float, float) vec) => new(vec.Item1, vec.Item2);
+
+    public static implicit operator Point2f((float, float) vec) => new(vec.Item1, vec.Item2);
+
+    // ReSharper disable once InconsistentNaming
     public readonly Vec2<float> ToVec2f() => new(X, Y);
 
     public static implicit operator Vec2<float>(Point2f point) => point.ToVec2f();

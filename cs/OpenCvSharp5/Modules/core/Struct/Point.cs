@@ -2,8 +2,7 @@
 
 namespace OpenCvSharp5;
 
-/// <summary>
-/// 
+/// <summary>/// 
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
@@ -18,10 +17,15 @@ public record struct Point(int X, int Y)
     /// 
     /// </summary>
     public int Y = Y;
-        
+
     #region Cast
-        
+
 #pragma warning disable 1591
+
+    // ReSharper disable once InconsistentNaming
+    public static Point FromValueTuple((int, int) vec) => new(vec.Item1, vec.Item2);
+
+    public static implicit operator Point((int, int) vec) => new(vec.Item1, vec.Item2);
 
     // ReSharper disable once InconsistentNaming
     public readonly Vec2<int> ToVec2i() => new(X, Y);
@@ -38,7 +42,7 @@ public record struct Point(int X, int Y)
     #endregion
 
     #region Operators
-   
+
     /// <summary>
     /// Unary plus operator
     /// </summary>
@@ -135,7 +139,7 @@ public record struct Point(int X, int Y)
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double DotProduct(Point p1, Point p2) => p1.X*p2.X + p1.Y*p2.Y;
+    public static double DotProduct(Point p1, Point p2) => p1.X * p2.X + p1.Y * p2.Y;
 
     /// <summary>
     /// Calculates the dot product of two 2D vectors.
@@ -150,7 +154,7 @@ public record struct Point(int X, int Y)
     /// <param name="p1"></param>
     /// <param name="p2"></param>
     /// <returns></returns>
-    public static double CrossProduct(Point p1, Point p2) => p1.X*p2.Y - p2.X*p1.Y;
+    public static double CrossProduct(Point p1, Point p2) => p1.X * p2.Y - p2.X * p1.Y;
 
     /// <summary>
     /// Calculates the cross product of two 2D vectors.

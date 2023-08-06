@@ -1,5 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace OpenCvSharp5;
 
@@ -82,7 +83,7 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect Add(Point pt) => new (X + pt.X, Y + pt.Y, Width, Height);
+    public readonly Rect Add(Point pt) => this with { X = X + pt.X, Y = Y + pt.Y };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
@@ -90,14 +91,14 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="rect"></param>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public static Rect operator -(Rect rect, Point pt) => new (rect.X - pt.X, rect.Y - pt.Y, rect.Width, rect.Height);
+    public static Rect operator -(Rect rect, Point pt) => rect with { X = rect.X - pt.X, Y = rect.Y - pt.Y };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect Subtract(Point pt) => new(X - pt.X, Y - pt.Y, Width, Height);
+    public readonly Rect Subtract(Point pt) => this with { X = X - pt.X, Y = Y - pt.Y };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -105,14 +106,14 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect operator +(Rect rect, Size size) => new (rect.X, rect.Y, rect.Width + size.Width, rect.Height + size.Height);
+    public static Rect operator +(Rect rect, Size size) => rect with { Width = rect.Width + size.Width, Height = rect.Height + size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect Add(Size size) => new (X, Y, Width + size.Width, Height + size.Height);
+    public readonly Rect Add(Size size) => this with { Width = Width + size.Width, Height = Height + size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -120,14 +121,14 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="rect"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static Rect operator -(Rect rect, Size size) => new Rect(rect.X, rect.Y, rect.Width - size.Width, rect.Height - size.Height);
+    public static Rect operator -(Rect rect, Size size) => rect with { Width = rect.Width - size.Width, Height = rect.Height - size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect Subtract(Size size) => new(X, Y, Width - size.Width, Height - size.Height);
+    public readonly Rect Subtract(Size size) => this with { Width = Width - size.Width, Height = Height - size.Height };
 
     #endregion
 
@@ -139,7 +140,6 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="a">A rectangle to intersect. </param>
     /// <param name="b">A rectangle to intersect. </param>
     /// <returns></returns>
-    [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
     public static Rect operator &(Rect a, Rect b) => Intersect(a, b);
 
     /// <summary>
@@ -148,7 +148,6 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="a">A rectangle to union. </param>
     /// <param name="b">A rectangle to union. </param>
     /// <returns></returns>
-    [SuppressMessage("Microsoft.Design", "CA2225: Operator overloads have named alternates")]
     public static Rect operator |(Rect a, Rect b) => Union(a, b);
 
     #endregion
@@ -160,30 +159,22 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <summary>
     /// Gets the y-coordinate of the top edge of this Rect structure. 
     /// </summary>
-    public int Top
-    {
-        get => Y;
-        set => Y = value;
-    }
+    public readonly int Top => Y;
 
     /// <summary>
     /// Gets the y-coordinate that is the sum of the Y and Height property values of this Rect structure.
     /// </summary>
-    public int Bottom => Y + Height;
+    public readonly int Bottom => Y + Height;
 
     /// <summary>
     /// Gets the x-coordinate of the left edge of this Rect structure. 
     /// </summary>
-    public int Left
-    {
-        get => X;
-        set => X = value;
-    }
+    public readonly int Left => X;
 
     /// <summary>
     /// Gets the x-coordinate that is the sum of X and Width property values of this Rect structure. 
     /// </summary>
-    public int Right => X + Width;
+    public readonly int Right => X + Width;
 
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point(X, Y)]
@@ -214,12 +205,12 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point(X, Y)]
     /// </summary>
-    public Point TopLeft => new (X, Y);
+    public readonly Point TopLeft => new (X, Y);
 
     /// <summary>
     /// Coordinate of the right-most rectangle corner [Point(X+Width, Y+Height)]
     /// </summary>
-    public Point BottomRight => new (X + Width, Y + Height);
+    public readonly Point BottomRight => new (X + Width, Y + Height);
 
     #endregion
 
@@ -231,7 +222,11 @@ public record struct Rect(int X, int Y, int Width, int Height)
     /// <param name="x">x-coordinate of the point</param>
     /// <param name="y">y-coordinate of the point</param>
     /// <returns></returns>
-    public readonly bool Contains(int x, int y) => (X <= x && Y <= y && X + Width > x && Y + Height > y);
+    public readonly bool Contains(int x, int y) => 
+        X <= x && 
+        Y <= y && 
+        X + Width > x && 
+        Y + Height > y;
 
     /// <summary>
     /// Determines if the specified point is contained within the rectangular region defined by this Rectangle. 
@@ -260,8 +255,8 @@ public record struct Rect(int X, int Y, int Width, int Height)
     {
         X -= width;
         Y -= height;
-        Width += (2*width);
-        Height += (2*height);
+        Width += (2 * width);
+        Height += (2 * height);
     }
 
     /// <summary>
@@ -340,6 +335,17 @@ public record struct Rect(int X, int Y, int Width, int Height)
         var y2 = Math.Max(a.Y + a.Height, b.Y + b.Height);
 
         return new Rect(x1, y1, x2 - x1, y2 - y1);
+    }
+
+    private bool PrintMembers(StringBuilder builder)
+    {
+#pragma warning disable CA1305
+        builder.Append(CultureInfo.InvariantCulture, $"{nameof(X)} = {X}, ")
+            .Append(CultureInfo.InvariantCulture, $"{nameof(Y)} = {Y}, ")
+            .Append(CultureInfo.InvariantCulture, $"{nameof(Width)} = {Width}, ")
+            .Append(CultureInfo.InvariantCulture, $"{nameof(Height)} = {Height}");
+#pragma warning restore CA1305
+        return true;
     }
 
     #endregion

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
@@ -38,7 +37,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="flags">Specifies color type of the loaded image</param>
     public Mat(string fileName, ImreadModes flags = ImreadModes.Color)
     {
-        ArgumentException.ThrowIfNullOrEmpty(fileName);
+        ThrowIfNullOrEmpty(fileName);
 
         NativeMethods.HandleException(
             NativeMethods.imgcodecs_imread(fileName, (int) flags, out handle));
@@ -546,6 +545,20 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return result;
     }
 
+    /// <summary>
+    /// Returns a normalized step.
+    /// 
+    /// The method returns a matrix step divided by Mat::elemSize1() . It can be useful to quickly access an 
+    /// arbitrary matrix element.
+    /// </summary>
+    [Pure]
+    public nint Step1(int i = 0)
+    {
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_step1(handle, i, out var result));
+        return result;
+    }
+
     #endregion
 
     #region OpenCV Methods
@@ -630,6 +643,17 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
+    ///  Creates a matrix header for the specified row span.
+    /// </summary>
+    /// <param name="r"></param>
+    /// <returns></returns>
+    public Mat RowRange(System.Range r)
+    {
+        var (rowStart, rowLength) = r.GetOffsetAndLength(Rows);
+        return RowRange(rowStart, rowStart + rowLength);
+    }
+
+    /// <summary>
     /// Creates a matrix header for the specified column span.
     ///
     /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
@@ -669,6 +693,21 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
 
         GC.KeepAlive(this);
         return new Mat(matPtr);
+    }
+
+    /// <summary> 
+    /// Creates a matrix header for the specified column span.
+    ///
+    /// The method makes a new header for the specified column span of the matrix. Similarly to Mat::row and Mat::col , this is an O(1) operation.
+    /// </summary>
+    /// <param name="r">Range structure containing both the start and the end indices.</param>
+    /// <returns></returns>
+    /// <exception cref="ObjectDisposedException"></exception>
+    [Pure]
+    public Mat ColRange(System.Range r)
+    {
+        var (colStart, colLength) = r.GetOffsetAndLength(Cols);
+        return ColRange(colStart, colStart + colLength);
     }
 
     /// <summary>
@@ -1127,7 +1166,114 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             NativeMethods.core_Mat_create2(handle, sizesArray.Length, sizesArray, type));
         GC.KeepAlive(this);
     }
-    
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="rowStart"></param>
+    /// <param name="rowEnd"></param>
+    /// <param name="colStart"></param>
+    /// <param name="colEnd"></param>
+    /// <returns></returns>
+    public Mat SubMat(int rowStart, int rowEnd, int colStart, int colEnd)
+    {
+        if (rowStart >= rowEnd)
+            throw new ArgumentException("rowStart >= rowEnd");
+        if (colStart >= colEnd)
+            throw new ArgumentException("colStart >= colEnd");
+
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_subMat1(handle, rowStart, rowEnd, colStart, colEnd, out var ret));
+
+        GC.KeepAlive(this);
+        var retVal = new Mat(ret);
+        return retVal;
+    }
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="rowRange">Start and end row of the extracted submatrix. The upper boundary is not included.
+    /// To select all the rows, use Range::all().</param>
+    /// <param name="colRange">Start and end column of the extracted submatrix. The upper boundary is not included.
+    /// To select all the columns, use Range::all().</param>
+    /// <returns></returns>
+    public Mat SubMat(Range rowRange, Range colRange) => SubMat(rowRange.Start, rowRange.End, colRange.Start, colRange.End);
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="rowRange">Start and end row of the extracted submatrix. The upper boundary is not included.
+    /// To select all the rows, use Range::all().</param>
+    /// <param name="colRange">Start and end column of the extracted submatrix. The upper boundary is not included.
+    /// To select all the columns, use Range::all().</param>
+    /// <returns></returns>
+    public Mat SubMat(System.Range rowRange, System.Range colRange)
+    {
+        var (rowStart, rowLength) = rowRange.GetOffsetAndLength(Rows);
+        var (colStart, colLength) = colRange.GetOffsetAndLength(Cols);
+        return SubMat(rowStart, rowStart + rowLength, colStart, colStart + colLength);
+    }
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="rowRange">Start and end row of the extracted submatrix. The upper boundary is not included. 
+    /// To select all the rows, use Range.All().</param>
+    /// <param name="colRange">Start and end column of the extracted submatrix. 
+    /// The upper boundary is not included. To select all the columns, use Range.All().</param>
+    /// <returns></returns>
+    public Mat this[Range rowRange, Range colRange] => SubMat(rowRange, colRange);
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="rowRange">Start and end row of the extracted submatrix. The upper boundary is not included. 
+    /// To select all the rows, use Range.All().</param>
+    /// <param name="colRange">Start and end column of the extracted submatrix. 
+    /// The upper boundary is not included. To select all the columns, use Range.All().</param>
+    /// <returns></returns>
+    public Mat this[System.Range rowRange, System.Range colRange] => SubMat(rowRange, colRange);
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="ranges">Array of selected ranges along each array dimension.</param>
+    /// <returns></returns>
+    public Mat this[params Range[] ranges] => SubMat(ranges);
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="roi">Extracted submatrix specified as a rectangle.</param>
+    /// <returns></returns>
+    public Mat SubMat(Rect roi) => SubMat(roi.Y, roi.Y + roi.Height, roi.X, roi.X + roi.Width);
+
+    /// <summary>
+    /// Extracts a rectangular submatrix.
+    /// </summary>
+    /// <param name="ranges">Array of selected ranges along each array dimension.</param>
+    /// <returns></returns>
+    public Mat SubMat(params Range[] ranges)
+    {
+        if (disposeSignaled != 0)
+            throw new ObjectDisposedException(GetType().Name);
+        if (ranges is null)
+            throw new ArgumentNullException(nameof(ranges));
+        if (ranges.Length == 0)
+            throw new ArgumentException("Empty ranges.", nameof(ranges));
+
+        NativeMethods.HandleException(
+            NativeMethods.core_Mat_subMat2(handle, ranges.Length, ranges, out var ret));
+
+        var retVal = new Mat(ret);
+        GC.KeepAlive(this);
+        return retVal;
+    }
+
     /// <summary>
     /// Reports whether the matrix is continuous or not.
     /// </summary>
@@ -1402,7 +1548,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="i0">Index along the dimension 0</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0) where T : struct
+    public unsafe T Get<T>(int i0) where T : unmanaged
     {
         var p = Ptr(i0);
         return Unsafe.Read<T>(p);
@@ -1415,7 +1561,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="i1">Index along the dimension 1</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0, int i1) where T : struct
+    public unsafe T Get<T>(int i0, int i1) where T : unmanaged
     {
         var p = Ptr(i0, i1);
         return Unsafe.Read<T>(p);
@@ -1429,7 +1575,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="i2">Index along the dimension 2</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0, int i1, int i2) where T : struct
+    public unsafe T Get<T>(int i0, int i1, int i2) where T : unmanaged
     {
         var p = Ptr(i0, i1, i2);
         return Unsafe.Read<T>(p);
@@ -1441,7 +1587,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="idx">Array of Mat::dims indices.</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(params int[] idx) where T : struct
+    public unsafe T Get<T>(params int[] idx) where T : unmanaged
     {
         var p = Ptr(idx);
         return Unsafe.Read<T>(p);
@@ -1504,7 +1650,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, T value) where T : struct
+    public unsafe void Set<T>(int i0, T value) where T : unmanaged
     {
         var p = Ptr(i0);
         Unsafe.Write(p, value);
@@ -1517,7 +1663,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, int i1, T value) where T : struct
+    public unsafe void Set<T>(int i0, int i1, T value) where T : unmanaged
     {
         var p = Ptr(i0, i1);
         Unsafe.Write(p, value);
@@ -1531,7 +1677,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="i2">Index along the dimension 2</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : struct
+    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : unmanaged
     {
         var p = Ptr(i0, i1, i2);
         Unsafe.Write(p, value);
@@ -1543,7 +1689,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="idx">Array of Mat::dims indices.</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int[] idx, T value) where T : struct
+    public unsafe void Set<T>(int[] idx, T value) where T : unmanaged
     {
         var p = Ptr(idx);
         Unsafe.Write(p, value);
@@ -1565,7 +1711,52 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     public unsafe Span<T> AsSpan<T>() where T : unmanaged 
         => IsContinuous() 
             ? new Span<T>(DataPointer, (int)Total()) 
-            : throw new NotSupportedException("AsSpan cannot be performed because the Mat memory is not continuous.");
+            : throw new NotSupportedException($"{nameof(AsSpan)} cannot be performed because the Mat memory is not continuous.");
+
+    /// <summary>
+    /// Creates a new row span over the 2D Mat.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public unsafe Span<T> AsRowSpan<T>(int i) where T : unmanaged
+    {
+#if DEBUG
+        if (Dims != 2)
+            throw new NotSupportedException($"{nameof(AsRowSpan)} cannot be performed because the Mat is not a 2D Mat.");
+#endif
+        return new Span<T>(Ptr(i), (int)Step1());
+    }
+
+    /// <summary>
+    /// Writes the Mat contents to an array of T.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public unsafe T[] ToArray<T>() where T : unmanaged
+    {
+        if (IsContinuous())
+            return new Span<T>(DataPointer, (int)Total()).ToArray();
+
+        if (Dims != 2)
+            throw new NotSupportedException("ToArray() is not applicable to a Mat with Dim!=2.");
+        
+        // row by row
+        var dstArray = new T[Total()];
+        var bytesInRow = (uint)(Cols * ElemSize());
+        fixed (T* dstPointer = dstArray)
+        {
+            var dstBytePointer = (byte*)dstPointer;
+            for (int row = 0, rowCount = Rows; row < rowCount; row++)
+            {
+                var srcPointer = Ptr(row, 0);
+                Unsafe.CopyBlock(dstBytePointer, srcPointer, bytesInRow);
+                dstBytePointer += bytesInRow;
+            }
+        }
+
+        return dstArray;
+    }
 
     #region InputOutputArray
 

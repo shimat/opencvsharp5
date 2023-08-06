@@ -8,6 +8,8 @@ namespace OpenCvSharp5;
 /// <summary>
 /// 2-Tuple
 /// </summary>
+/// <param name="Item0">The value of the first component of this object.</param>
+/// <param name="Item1">The value of the second component of this object.</param>
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
 // ReSharper disable once InconsistentNaming
@@ -38,7 +40,7 @@ public record struct Vec2<T>(T Item0, T Item1)
     /// <returns></returns>
     public T this[int i]
     {
-        readonly get =>
+        readonly get => 
             i switch
             {
                 0 => Item0,
@@ -159,6 +161,15 @@ public record struct Vec2<T>(T Item0, T Item1)
         T.CreateSaturating(double.CreateSaturating(Item1) * alpha));
 
     /// <summary>
+    /// this * alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> MultiplyChecked(double alpha) => new(
+        T.CreateChecked(double.CreateSaturating(Item0) * alpha),
+        T.CreateChecked(double.CreateSaturating(Item1) * alpha));
+
+    /// <summary>
     /// this / alpha
     /// </summary>
     /// <param name="alpha"></param>
@@ -167,12 +178,23 @@ public record struct Vec2<T>(T Item0, T Item1)
         T.CreateSaturating(double.CreateSaturating(Item0) / alpha),
         T.CreateSaturating(double.CreateSaturating(Item1) / alpha));
 
+    /// <summary>
+    /// this / alpha
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    public readonly Vec2<T> DivideChecked(double alpha) => new(
+        T.CreateChecked(double.CreateSaturating(Item0) / alpha),
+        T.CreateChecked(double.CreateSaturating(Item1) / alpha));
+
 #pragma warning disable 1591
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b) => a.Add(b);
     public static Vec2<T> operator checked +(Vec2<T> a, Vec2<T> b) => a.AddChecked(b);
     public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b) => a.Subtract(b);
     public static Vec2<T> operator checked -(Vec2<T> a, Vec2<T> b) => a.SubtractChecked(b);
     public static Vec2<T> operator *(Vec2<T> a, double alpha) => a.Multiply(alpha);
+    public static Vec2<T> operator checked *(Vec2<T> a, double alpha) => a.MultiplyChecked(alpha);
     public static Vec2<T> operator /(Vec2<T> a, double alpha) => a.Divide(alpha);
+    public static Vec2<T> operator checked /(Vec2<T> a, double alpha) => a.DivideChecked(alpha);
 #pragma warning restore 1591
 }

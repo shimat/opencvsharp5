@@ -75,7 +75,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect2f Add(Point2f pt) => new (X + pt.X, Y + pt.Y, Width, Height);
+    public readonly Rect2f Add(Point2f pt) => this with { X = X + pt.X, Y = Y + pt.Y };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
@@ -90,7 +90,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// </summary>
     /// <param name="pt"></param>
     /// <returns></returns>
-    public readonly Rect2f Subtract(Point2f pt) => new (X - pt.X, Y - pt.Y, Width, Height);
+    public readonly Rect2f Subtract(Point2f pt) => this with { X = X - pt.X, Y = Y - pt.Y };
 
     /// <summary>
     /// Shifts rectangle by a certain offset
@@ -105,7 +105,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect2f Add(Size2f size) => new (X, Y, Width + size.Width, Height + size.Height);
+    public readonly Rect2f Add(Size2f size) => this with { Width = Width + size.Width, Height = Height + size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -120,7 +120,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
-    public readonly Rect2f Subtract(Size2f size) => new (X, Y, Width - size.Width, Height - size.Height);
+    public readonly Rect2f Subtract(Size2f size) => this with { Width = Width - size.Width, Height = Height - size.Height };
 
     /// <summary>
     /// Expands or shrinks rectangle by a certain amount
@@ -161,37 +161,29 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// <summary>
     /// Gets the y-coordinate of the top edge of this Rect2f structure. 
     /// </summary>
-    public float Top
-    {
-        get => Y;
-        set => Y = value;
-    }
+    public readonly float Top => Y;
 
     /// <summary>
     /// Gets the y-coordinate that is the sum of the Y and Height property values of this Rect2f structure.
     /// </summary>
-    public float Bottom => Y + Height;
+    public readonly float Bottom => Y + Height;
 
     /// <summary>
     /// Gets the x-coordinate of the left edge of this Rect2f structure. 
     /// </summary>
-    public float Left
-    {
-        get => X;
-        set => X = value;
-    }
+    public readonly float Left => X;
 
     /// <summary>
     /// Gets the x-coordinate that is the sum of X and Width property values of this Rect2f structure. 
     /// </summary>
-    public float Right => X + Width;
+    public readonly float Right => X + Width;
 
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point2f(X, Y)]
     /// </summary>
     public Point2f Location
     {
-        get => new (X, Y);
+        readonly get => new (X, Y);
         set
         {
             X = value.X;
@@ -204,7 +196,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// </summary>
     public Size2f Size
     {
-        get => new (Width, Height);
+        readonly get => new (Width, Height);
         set
         {
             Width = value.Width;
@@ -215,12 +207,12 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// <summary>
     /// Coordinate of the left-most rectangle corner [Point2f(X, Y)]
     /// </summary>
-    public Point2f TopLeft => new (X, Y);
+    public readonly Point2f TopLeft => new (X, Y);
 
     /// <summary>
     /// Coordinate of the right-most rectangle corner [Point2f(X+Width, Y+Height)]
     /// </summary>
-    public Point2f BottomRight => new (X + Width, Y + Height);
+    public readonly Point2f BottomRight => new (X + Width, Y + Height);
 
     #endregion
 
@@ -278,7 +270,7 @@ public record struct Rect2f(float X, float Y, float Width, float Height)
     /// <param name="x">The amount to inflate this Rectangle horizontally. </param>
     /// <param name="y">The amount to inflate this Rectangle vertically. </param>
     /// <returns></returns>
-    public static Rect Inflate(Rect rect, int x, int y)
+    public static Rect2f Inflate(Rect2f rect, int x, int y)
     {
         rect.Inflate(x, y);
         return rect;

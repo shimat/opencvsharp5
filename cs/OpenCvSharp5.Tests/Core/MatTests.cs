@@ -104,6 +104,28 @@ public class MatTests
     }
 
     [Fact]
+    public void AsRowSpan()
+    {
+        var matData = new int[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+        using var mat = new Mat(3, 3, MatType.CV_32SC1, matData);
+
+        var row0 = mat.AsRowSpan<int>(0);
+        var row1 = mat.AsRowSpan<int>(1);
+        var row2 = mat.AsRowSpan<int>(2);
+        Assert.Equal(3, row0.Length);
+        Assert.Equal(3, row1.Length);
+        Assert.Equal(3, row2.Length);
+        Assert.True(row0.SequenceEqual(new[] { 1, 2, 3 }));
+        Assert.True(row1.SequenceEqual(new[] { 4, 5, 6 }));
+        Assert.True(row2.SequenceEqual(new[] { 7, 8, 9 }));
+    }
+
+    [Fact]
     public void RowsCols()
     {
         using var mat = new Mat(3, 4, MatType.CV_8UC1);
@@ -140,7 +162,45 @@ public class MatTests
         Assert.Equal(3, matRange3.Rows);
         Assert.Equal(4, matRange3.Cols);
     }
+
+    [Fact]
+    public void Row()
+    {
+        var matData = new byte[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+        using var mat = new Mat(3, 3, MatType.CV_8UC1, matData);
+
+        using var row0 = mat.Row(0);
+        using var row1 = mat.Row(1);
+        using var row2 = mat.Row(2);
+        Assert.Equal(new byte[]{1, 2, 3}, row0.AsSpan<byte>().ToArray());
+        Assert.Equal(new byte[]{4, 5, 6}, row1.AsSpan<byte>().ToArray());
+        Assert.Equal(new byte[]{7, 8, 9}, row2.AsSpan<byte>().ToArray());
+    }
     
+    [Fact]
+    public void Col()
+    {
+        var matData = new byte[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+        using var mat = new Mat(3, 3, MatType.CV_8UC1, matData);
+
+        using var col0 = mat.Col(0);
+        using var col1 = mat.Col(1);
+        using var col2 = mat.Col(2);
+        Assert.Equal(new byte[]{1, 4, 7}, col0.ToArray<byte>());
+        Assert.Equal(new byte[]{2, 5, 8}, col1.ToArray<byte>());
+        Assert.Equal(new byte[]{3, 6, 9}, col2.ToArray<byte>());
+    }
+
     [Fact]
     public void Diag()
     {
@@ -602,5 +662,24 @@ public class MatTests
             [100, 200;
              300, 400]
             """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void ToArray()
+    {
+        var matData = new byte[,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        };
+        using var mat = new Mat(3, 3, MatType.CV_8UC1, matData);
+        Assert.True(mat.IsContinuous());
+        Assert.Equal(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9}, mat.ToArray<byte>());
+
+        using var subMat = mat[1..3, 1..3];
+        Assert.False(subMat.IsContinuous());
+        Assert.Equal(new Size(2, 2), subMat.Size());
+        Assert.Equal(new byte[]{5, 6, 8, 9}, subMat.ToArray<byte>());
     }
 }
