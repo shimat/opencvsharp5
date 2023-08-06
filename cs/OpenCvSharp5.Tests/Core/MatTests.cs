@@ -1,3 +1,8 @@
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using CommunityToolkit.HighPerformance;
+
 namespace OpenCvSharp5.Tests.Core;
 
 public class MatTests
@@ -681,5 +686,99 @@ public class MatTests
         Assert.False(subMat.IsContinuous());
         Assert.Equal(new Size(2, 2), subMat.Size());
         Assert.Equal(new byte[]{5, 6, 8, 9}, subMat.ToArray<byte>());
+    }
+
+    [Fact]
+    public void FromSpan()
+    {
+        var data = new[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9,
+        };
+        var span = data.AsSpan();
+
+        using var mat = Mat.FromSpan(3, 3, MatType.CV_32SC1, span);
+
+        Assert.Equal("""
+            [1, 2, 3;
+             4, 5, 6;
+             7, 8, 9]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void FromSpan2D()
+    {
+        {
+            var data = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            };
+            var span = new Span2D<int>(data, 0, 0, 3, 3);
+
+            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, span);
+
+            Assert.Equal("""
+                [1, 2, 3;
+                 4, 5, 6;
+                 7, 8, 9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+        {
+            var data = new byte[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            };
+            var span = new Span2D<byte>(data, 0, 0, 3, 3);
+
+            using var mat = Mat.FromSpan2D(MatType.CV_8UC1, span);
+
+            Assert.Equal("""
+                [  1,   2,   3;
+                   4,   5,   6;
+                   7,   8,   9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+        {
+            var data = new[,]
+            {
+                { -1, 255, 255, 255 },
+                { -1, 1, 2, 3 },
+                { -1, 4, 5, 6 },
+                { -1, 7, 8, 9 },
+            };
+            var span = new Span2D<int>(data, 1, 1, 3, 3);
+            Assert.False(span.TryGetSpan(out _));
+
+            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, span);
+
+            Assert.Equal("""
+                [1, 2, 3;
+                 4, 5, 6;
+                 7, 8, 9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+    }
+
+    [Fact]
+    public void AsSpan2D()
+    {
+        var matData = new short[,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        };
+        using var mat = new Mat(3, 3, MatType.CV_16SC1, matData);
+
+        var span = mat.AsSpan2D<short>();
+        var array = span.ToArray();
+        Assert.Equal(matData, array);
     }
 }

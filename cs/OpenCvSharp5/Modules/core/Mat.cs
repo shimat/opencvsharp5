@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using CommunityToolkit.HighPerformance;
 using OpenCvSharp5.Internal;
 
 namespace OpenCvSharp5;
@@ -116,7 +118,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// or MatType. CV_8UC(n), ..., CV_64FC(n) to create multi-channel matrices.</param>
     public Mat(IEnumerable<int> sizes, MatType type)
     {
-        ArgumentNullException.ThrowIfNull(sizes);
+        ThrowIfNull(sizes);
 
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         NativeMethods.HandleException(
@@ -133,7 +135,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// To set all the matrix elements to the particular value after the construction, use SetTo(Scalar s) method .</param>
     public Mat(IEnumerable<int> sizes, MatType type, Scalar s)
     {
-        ArgumentNullException.ThrowIfNull(sizes);
+        ThrowIfNull(sizes);
 
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         NativeMethods.HandleException(
@@ -148,14 +150,14 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// you also modify the corresponding elements of m . If you want to have an independent copy of the sub-array, use Mat::clone() .</param>
     protected Mat(Mat m)
     {
-        ArgumentNullException.ThrowIfNull(m);
+        ThrowIfNull(m);
 
         m.ThrowIfDisposed();
 
         NativeMethods.HandleException(
             NativeMethods.core_Mat_new6(m.handle, out handle));
     }
-
+    
     /// <summary>
     /// constructor for matrix headers pointing to user-allocated data
     /// </summary>
@@ -230,8 +232,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// If not specified, the matrix is assumed to be continuous.</param>
     public Mat(IEnumerable<int> sizes, MatType type, IntPtr data, IEnumerable<nint>? steps = null)
     {
-        ArgumentNullException.ThrowIfNull(sizes);
-        ArgumentNullException.ThrowIfNull(data);
+        ThrowIfNull(sizes);
+        ThrowIfNull(data);
 
         var sizesArray = sizes as int[] ?? sizes.ToArray();
         var stepsArray = steps?.ToArray();
@@ -253,8 +255,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// If not specified, the matrix is assumed to be continuous.</param>
     public Mat(IEnumerable<int> sizes, MatType type, Array data, IEnumerable<nint>? steps = null)
     {
-        ArgumentNullException.ThrowIfNull(sizes);
-        ArgumentNullException.ThrowIfNull(data);
+        ThrowIfNull(sizes);
+        ThrowIfNull(data);
 
         dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
@@ -279,7 +281,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="colRange">Range of the m columns to take. Use Range.All to take all the columns.</param>
     public Mat(Mat m, Range rowRange, Range? colRange = null)
     {
-        ArgumentNullException.ThrowIfNull(m);
+        ThrowIfNull(m);
         m.ThrowIfDisposed();
 
         colRange ??= Range.All;
@@ -297,7 +299,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="roi">Region of interest.</param>
     public Mat(Mat m, Rect roi)
     {
-        ArgumentNullException.ThrowIfNull(m);
+        ThrowIfNull(m);
         m.ThrowIfDisposed();
 
         NativeMethods.HandleException(
@@ -316,8 +318,8 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="ranges">Array of selected ranges of m along each dimensionality.</param>
     public Mat(Mat m, params Range[] ranges)
     {
-        ArgumentNullException.ThrowIfNull(m);
-        ArgumentNullException.ThrowIfNull(ranges);
+        ThrowIfNull(m);
+        ThrowIfNull(ranges);
         if (ranges.Length == 0)
             throw new ArgumentException("empty ranges", nameof(ranges));
         m.ThrowIfDisposed();
@@ -325,6 +327,62 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         NativeMethods.HandleException(
             NativeMethods.core_Mat_new11(m.handle, ranges, out handle));
         GC.KeepAlive(m);
+    }
+    
+    /// <summary>
+    /// constructor for matrix headers pointing to user-allocated data
+    /// </summary>
+    public static unsafe Mat FromSpan<T>(int rows, int cols, MatType type, Span<T> span)
+        where T : unmanaged
+    {
+        if (span.IsEmpty)
+            throw new ArgumentException("Empty span.", nameof(span));
+
+        var mat = new Mat(rows, cols, type);
+        var matByteLength = rows * cols * mat.ElemSize();
+        if ((nuint)matByteLength > int.MaxValue)
+            throw new ArgumentException("Too large Mat size.");
+        if (matByteLength != span.Length * sizeof(T))
+            throw new ArgumentException($"Length mismatch: Span's byte length={span.Length * sizeof(T)}, Mat.Length={matByteLength}", nameof(span));
+
+        var matSpan = new Span<byte>(mat.Data.ToPointer(), (int)matByteLength);
+        MemoryMarshal.Cast<T, byte>(span).CopyTo(matSpan);
+
+        return mat;
+    }
+
+    /// <summary>
+    /// constructor for matrix headers pointing to user-allocated data
+    /// </summary>
+    public static unsafe Mat FromSpan2D<T>(MatType type, Span2D<T> span2D)
+        where T : unmanaged
+    {
+        var rows = span2D.Height;
+        var cols = span2D.Width;
+        if (rows == 0)
+            throw new ArgumentOutOfRangeException(nameof(span2D), "span2D.Height == 0");
+        if (cols == 0)
+            throw new ArgumentOutOfRangeException(nameof(span2D), "span2D.Width == 0");
+
+        if (span2D.TryGetSpan(out var span))
+        {
+            return FromSpan(rows, cols, type, span);
+        }
+
+        var mat = new Mat(rows, cols, type);
+        var step1 = (int)mat.Step1();
+        {
+            var spanRow0 = span2D.GetRowSpan(0);
+            Debug.Assert(spanRow0.Length == step1);
+            spanRow0.CopyTo(new Span<T>(mat.Ptr(0, 0), step1));
+        }
+        for (var r = 1; r < rows; r++)
+        {
+            var spanRow = span2D.GetRowSpan(r);
+            spanRow.CopyTo(new Span<T>(mat.Ptr(r, 0), step1));
+        }
+
+        return mat;
     }
 
     private void ReleaseUnmanagedResources()
@@ -1349,7 +1407,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
-    /// returns element type, similar to CV_MAT_TYPE(cvmat->type)
+    /// returns element type, similar to CV_MAT_TYPE(mat->type)
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
@@ -1367,7 +1425,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
-    /// returns element type, similar to CV_MAT_DEPTH(cvmat->type)
+    /// returns element type, similar to CV_MAT_DEPTH(mat->type)
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
@@ -1385,7 +1443,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
-    /// returns element type, similar to CV_MAT_CN(cvmat->type)
+    /// returns element type, similar to CV_MAT_CN(mat->type)
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ObjectDisposedException"></exception>
@@ -1712,6 +1770,16 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         => IsContinuous() 
             ? new Span<T>(DataPointer, (int)Total()) 
             : throw new NotSupportedException($"{nameof(AsSpan)} cannot be performed because the Mat memory is not continuous.");
+    
+    /// <summary>
+    /// Creates a new span over the Mat.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public unsafe Span2D<T> AsSpan2D<T>() where T : unmanaged 
+        => IsContinuous() 
+            ? new Span2D<T>(DataPointer, Rows, Cols, 0) 
+            : throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because the Mat memory is not continuous.");
 
     /// <summary>
     /// Creates a new row span over the 2D Mat.
@@ -1724,7 +1792,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         if (Dims != 2)
             throw new NotSupportedException($"{nameof(AsRowSpan)} cannot be performed because the Mat is not a 2D Mat.");
 #endif
-        return new Span<T>(Ptr(i), (int)Step1());
+        return new Span<T>(Ptr(i, 0), (int)Step1());
     }
 
     /// <summary>

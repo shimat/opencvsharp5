@@ -19,4 +19,8 @@
     <None Include="OpenCvSharp5.props" Pack="true" PackagePath="build\net7.0\OpenCvSharp5.props" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
+  </ItemGroup>
+
 </Project>
