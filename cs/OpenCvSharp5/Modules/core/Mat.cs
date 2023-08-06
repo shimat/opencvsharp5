@@ -1727,6 +1727,12 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
         return new Span<T>(Ptr(i), (int)Step1());
     }
 
+    /// <summary>
+    /// Writes the Mat contents to an array of T.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
     public unsafe T[] ToArray<T>() where T : unmanaged
     {
         if (IsContinuous())
