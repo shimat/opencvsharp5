@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.Reflection.Metadata;
+﻿using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using OpenCvSharp5.Internal;
@@ -1204,10 +1201,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="colRange">Start and end column of the extracted submatrix. The upper boundary is not included.
     /// To select all the columns, use Range::all().</param>
     /// <returns></returns>
-    public Mat SubMat(Range rowRange, Range colRange)
-    {
-        return SubMat(rowRange.Start, rowRange.End, colRange.Start, colRange.End);
-    }
+    public Mat SubMat(Range rowRange, Range colRange) => SubMat(rowRange.Start, rowRange.End, colRange.Start, colRange.End);
 
     /// <summary>
     /// Extracts a rectangular submatrix.
@@ -1232,10 +1226,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="colRange">Start and end column of the extracted submatrix. 
     /// The upper boundary is not included. To select all the columns, use Range.All().</param>
     /// <returns></returns>
-    public Mat this[Range rowRange, Range colRange]
-    {
-        get => SubMat(rowRange, colRange);
-    }
+    public Mat this[Range rowRange, Range colRange] => SubMat(rowRange, colRange);
 
     /// <summary>
     /// Extracts a rectangular submatrix.
@@ -1245,30 +1236,21 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="colRange">Start and end column of the extracted submatrix. 
     /// The upper boundary is not included. To select all the columns, use Range.All().</param>
     /// <returns></returns>
-    public Mat this[System.Range rowRange, System.Range colRange]
-    {
-        get => SubMat(rowRange, colRange);
-    }
+    public Mat this[System.Range rowRange, System.Range colRange] => SubMat(rowRange, colRange);
 
     /// <summary>
     /// Extracts a rectangular submatrix.
     /// </summary>
     /// <param name="ranges">Array of selected ranges along each array dimension.</param>
     /// <returns></returns>
-    public Mat this[params Range[] ranges]
-    {
-        get => SubMat(ranges);
-    }
+    public Mat this[params Range[] ranges] => SubMat(ranges);
 
     /// <summary>
     /// Extracts a rectangular submatrix.
     /// </summary>
     /// <param name="roi">Extracted submatrix specified as a rectangle.</param>
     /// <returns></returns>
-    public Mat SubMat(Rect roi)
-    {
-        return SubMat(roi.Y, roi.Y + roi.Height, roi.X, roi.X + roi.Width);
-    }
+    public Mat SubMat(Rect roi) => SubMat(roi.Y, roi.Y + roi.Height, roi.X, roi.X + roi.Width);
 
     /// <summary>
     /// Extracts a rectangular submatrix.
@@ -1566,7 +1548,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="i0">Index along the dimension 0</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0) where T : struct
+    public unsafe T Get<T>(int i0) where T : unmanaged
     {
         var p = Ptr(i0);
         return Unsafe.Read<T>(p);
@@ -1579,7 +1561,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="i1">Index along the dimension 1</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0, int i1) where T : struct
+    public unsafe T Get<T>(int i0, int i1) where T : unmanaged
     {
         var p = Ptr(i0, i1);
         return Unsafe.Read<T>(p);
@@ -1593,7 +1575,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="i2">Index along the dimension 2</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(int i0, int i1, int i2) where T : struct
+    public unsafe T Get<T>(int i0, int i1, int i2) where T : unmanaged
     {
         var p = Ptr(i0, i1, i2);
         return Unsafe.Read<T>(p);
@@ -1605,7 +1587,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="idx">Array of Mat::dims indices.</param>
     /// <returns>A value to the specified array element.</returns>
-    public unsafe T Get<T>(params int[] idx) where T : struct
+    public unsafe T Get<T>(params int[] idx) where T : unmanaged
     {
         var p = Ptr(idx);
         return Unsafe.Read<T>(p);
@@ -1668,7 +1650,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, T value) where T : struct
+    public unsafe void Set<T>(int i0, T value) where T : unmanaged
     {
         var p = Ptr(i0);
         Unsafe.Write(p, value);
@@ -1681,7 +1663,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i0">Index along the dimension 0</param>
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, int i1, T value) where T : struct
+    public unsafe void Set<T>(int i0, int i1, T value) where T : unmanaged
     {
         var p = Ptr(i0, i1);
         Unsafe.Write(p, value);
@@ -1695,7 +1677,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <param name="i1">Index along the dimension 1</param>
     /// <param name="i2">Index along the dimension 2</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : struct
+    public unsafe void Set<T>(int i0, int i1, int i2, T value) where T : unmanaged
     {
         var p = Ptr(i0, i1, i2);
         Unsafe.Write(p, value);
@@ -1707,7 +1689,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// <typeparam name="T"></typeparam>
     /// <param name="idx">Array of Mat::dims indices.</param>
     /// <param name="value"></param>
-    public unsafe void Set<T>(int[] idx, T value) where T : struct
+    public unsafe void Set<T>(int[] idx, T value) where T : unmanaged
     {
         var p = Ptr(idx);
         Unsafe.Write(p, value);
@@ -1732,7 +1714,7 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             : throw new NotSupportedException($"{nameof(AsSpan)} cannot be performed because the Mat memory is not continuous.");
 
     /// <summary>
-    /// Creates a new row span over the 2-dimentional Mat.
+    /// Creates a new row span over the 2D Mat.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
@@ -1743,6 +1725,31 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             throw new NotSupportedException($"{nameof(AsRowSpan)} cannot be performed because the Mat is not a 2D Mat.");
 #endif
         return new Span<T>(Ptr(i), (int)Step1());
+    }
+
+    public unsafe T[] ToArray<T>() where T : unmanaged
+    {
+        if (IsContinuous())
+            return new Span<T>(DataPointer, (int)Total()).ToArray();
+
+        if (Dims != 2)
+            throw new NotSupportedException("ToArray() is not applicable to a Mat with Dim!=2.");
+        
+        // row by row
+        var dstArray = new T[Total()];
+        var bytesInRow = (uint)(Cols * ElemSize());
+        fixed (T* dstPointer = dstArray)
+        {
+            var dstBytePointer = (byte*)dstPointer;
+            for (int row = 0, rowCount = Rows; row < rowCount; row++)
+            {
+                var srcPointer = Ptr(row, 0);
+                Unsafe.CopyBlock(dstBytePointer, srcPointer, bytesInRow);
+                dstBytePointer += bytesInRow;
+            }
+        }
+
+        return dstArray;
     }
 
     #region InputOutputArray
