@@ -767,7 +767,7 @@ public class MatTests
     }
 
     [Fact]
-    public void AsSpan2D()
+    public void AsSpan2DSuccessWhenContinuous()
     {
         var matData = new short[,]
         {
@@ -780,5 +780,59 @@ public class MatTests
         var span = mat.AsSpan2D<short>();
         var array = span.ToArray();
         Assert.Equal(matData, array);
+    }
+    
+    [Fact]
+    public void AsSpan2DSuccessWhenNotContinuous()
+    {
+        var matData = new byte[,]
+        {
+            { 0, 1, 2, 3, 4, 5, /*padding->*/ 6, 7, 8 },
+            { 10, 11, 12, 13, 14, 15, /*padding->*/ 16, 17, 18 },
+        };
+        
+        using var mat = new Mat(2, 2, MatType.CV_8UC3, matData, 9);
+        Assert.False(mat.IsContinuous());
+        Assert.Equal("""
+                [  0,   1,   2,   3,   4,   5;
+                  10,  11,  12,  13,  14,  15]
+                """.Replace("\r\n", "\n"), mat.Dump());
+
+        var span =  mat.AsSpan2D<Vec3<byte>>();
+        Assert.Equal(2, span.Height);
+        Assert.Equal(2, span.Width);
+        Assert.Equal(new Vec3<byte>[,]
+        {
+            { new (0, 1, 2), new(3, 4, 5) },
+            { new (10, 11, 12), new(13, 14, 15) },
+        }, span.ToArray());
+    }
+
+    [Fact]
+    public void AsSpan2DBadDims()
+    {
+        using var mat = new Mat(new []{2, 3, 4}, MatType.CV_16SC1, new Scalar(1));
+        Assert.Equal(3, mat.Dims);
+
+        Assert.Throws<NotSupportedException>(() => mat.AsSpan2D<short>());
+    }
+
+    [Fact]
+    public void AsSpan2DBadStep()
+    {
+        var matData = new byte[,]
+        {
+            { 0, 1, 2, 3, 4, 5, /*padding->*/ 6, 7 },
+            { 10, 11, 12, 13, 14, 15, /*padding->*/ 16, 17 },
+        };
+        
+        using var mat = new Mat(2, 2, MatType.CV_8UC3, matData, 8);
+        Assert.False(mat.IsContinuous());
+        Assert.Equal("""
+                [  0,   1,   2,   3,   4,   5;
+                  10,  11,  12,  13,  14,  15]
+                """.Replace("\r\n", "\n"), mat.Dump());
+
+        Assert.Throws<NotSupportedException>(() => mat.AsSpan2D<Vec3<byte>>());
     }
 }

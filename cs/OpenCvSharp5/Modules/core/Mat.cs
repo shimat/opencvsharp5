@@ -1776,10 +1776,26 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public unsafe Span2D<T> AsSpan2D<T>() where T : unmanaged 
-        => IsContinuous() && Dims == 2
-            ? new Span2D<T>(DataPointer, Rows, Cols, 0) 
-            : throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because the Mat memory is not continuous or Mat.Dims != 2.");
+    public unsafe Span2D<T> AsSpan2D<T>() where T : unmanaged
+    {
+        if (Dims != 2)
+            throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because Mat.Dims != 2.");
+
+        if (IsContinuous())
+            return new Span2D<T>(DataPointer, Rows, Cols, 0);
+
+        var cols = Cols;
+        var step = Step();
+
+        if (step % sizeof(T) != 0)
+            throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because of invalid Mat step for Span2D.");
+        var stepByT = step / sizeof(T);
+        if (stepByT < cols)
+            throw new NotSupportedException($"{nameof(AsSpan2D)} cannot be performed because of invalid Mat step or T.");
+
+        var pitch = (int)(stepByT - cols);
+        return new Span2D<T>(DataPointer, Rows, Cols, pitch);
+    }
 
     /// <summary>
     /// Creates a new row span over the 2D Mat.
