@@ -687,6 +687,18 @@ public class MatTests
         Assert.Equal(new Size(2, 2), subMat.Size());
         Assert.Equal(new byte[]{5, 6, 8, 9}, subMat.ToArray<byte>());
     }
+    
+    [Fact]
+    public void CreateAsVector()
+    {
+        var data = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+        using var mat = Mat.CreateAsVector(MatType.CV_32SC1, data);
+
+        Assert.Equal(9, mat.Rows);
+        Assert.Equal(1, mat.Cols);
+        Assert.Equal("[1;\n 2;\n 3;\n 4;\n 5;\n 6;\n 7;\n 8;\n 9]", mat.Dump());
+    }
 
     [Fact]
     public void FromSpan()
@@ -697,9 +709,8 @@ public class MatTests
             4, 5, 6,
             7, 8, 9,
         };
-        var span = data.AsSpan();
 
-        using var mat = Mat.FromSpan(3, 3, MatType.CV_32SC1, span);
+        using var mat = Mat.FromSpan(3, 3, MatType.CV_32SC1, data);
 
         Assert.Equal("""
             [1, 2, 3;
@@ -718,9 +729,8 @@ public class MatTests
                 { 4, 5, 6 },
                 { 7, 8, 9 },
             };
-            var span = new Span2D<int>(data, 0, 0, 3, 3);
 
-            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, span);
+            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, data);
 
             Assert.Equal("""
                 [1, 2, 3;

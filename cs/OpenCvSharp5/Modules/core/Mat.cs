@@ -328,9 +328,51 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             NativeMethods.core_Mat_new11(m.handle, ranges, out handle));
         GC.KeepAlive(m);
     }
-    
+
     /// <summary>
-    /// constructor for matrix headers pointing to user-allocated data
+    /// Constructs new Mat and copies pixel data from Span.
+    /// 
+    /// The matrix has a single column and the number of rows equal to the number of Span elements.
+    /// Type of the matrix should match the type of vector elements. 
+    /// </summary>
+    public static Mat CreateAsVector<T>(MatType type, IReadOnlyCollection<T> collection)
+        where T : unmanaged
+        => CreateAsVector(type, collection is T[] array ? array.AsSpan() : collection.ToArray().AsSpan());
+
+    /// <summary>
+    /// Constructs new Mat and copies pixel data from Span.
+    /// 
+    /// The matrix has a single column and the number of rows equal to the number of Span elements.
+    /// Type of the matrix should match the type of vector elements. 
+    /// </summary>
+    public static unsafe Mat CreateAsVector<T>(MatType type, Span<T> span)
+        where T : unmanaged
+    {
+        if (span.IsEmpty)
+            throw new ArgumentException("Empty span.", nameof(span));
+
+        var mat = new Mat(span.Length, 1, type);
+        var matByteLength = span.Length * mat.ElemSize();
+        if ((nuint)matByteLength > int.MaxValue)
+            throw new ArgumentException("Too large Mat size.");
+        if (matByteLength != span.Length * sizeof(T))
+            throw new ArgumentException($"Length mismatch: Span's byte length={span.Length * sizeof(T)}, Mat.Length={matByteLength}", nameof(span));
+
+        var matSpan = new Span<byte>(mat.Data.ToPointer(), (int)matByteLength);
+        MemoryMarshal.Cast<T, byte>(span).CopyTo(matSpan);
+
+        return mat;
+    }
+
+    /// <summary>
+    /// Constructs new Mat and copies pixel data from Span.
+    /// </summary>
+    public static Mat FromSpan<T>(int rows, int cols, MatType type, IReadOnlyCollection<T> collection)
+        where T : unmanaged
+        => FromSpan(rows, cols, type, collection is T[] array ? array.AsSpan() : collection.ToArray().AsSpan());
+
+    /// <summary>
+    /// Constructs new Mat and copies pixel data from Span.
     /// </summary>
     public static unsafe Mat FromSpan<T>(int rows, int cols, MatType type, Span<T> span)
         where T : unmanaged
@@ -352,7 +394,14 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
     }
 
     /// <summary>
-    /// constructor for matrix headers pointing to user-allocated data
+    /// Constructs new Mat and copies pixel data from Span2D.
+    /// </summary>
+    public static Mat FromSpan2D<T>(MatType type, T[,] array)
+        where T : unmanaged
+        => FromSpan2D<T>(type, array.AsSpan2D());
+    
+    /// <summary>
+    /// Constructs new Mat and copies pixel data from Span2D.
     /// </summary>
     public static unsafe Mat FromSpan2D<T>(MatType type, Span2D<T> span2D)
         where T : unmanaged
@@ -1823,10 +1872,41 @@ public class Mat : IDisposable, IInputArray, IOutputArray, IInputOutputArray, IS
             return new Span<T>(DataPointer, (int)Total()).ToArray();
 
         if (Dims != 2)
-            throw new NotSupportedException("ToArray() is not applicable to a Mat with Dim!=2.");
+            throw new NotSupportedException($"{nameof(ToArray)} is not applicable to a Mat with Dim!=2.");
         
         // row by row
         var dstArray = new T[Total()];
+        var bytesInRow = (uint)(Cols * ElemSize());
+        fixed (T* dstPointer = dstArray)
+        {
+            var dstBytePointer = (byte*)dstPointer;
+            for (int row = 0, rowCount = Rows; row < rowCount; row++)
+            {
+                var srcPointer = Ptr(row, 0);
+                Unsafe.CopyBlock(dstBytePointer, srcPointer, bytesInRow);
+                dstBytePointer += bytesInRow;
+            }
+        }
+
+        return dstArray;
+    }
+    
+    /// <summary>
+    /// Writes the Mat contents to an array of T.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public unsafe T[,] ToRectangularArray<T>() where T : unmanaged
+    {
+        if (IsContinuous())
+            return AsSpan2D<T>().ToArray();
+
+        if (Dims != 2)
+            throw new NotSupportedException($"{nameof(ToRectangularArray)} is not applicable to a Mat with Dim!=2.");
+        
+        // row by row
+        var dstArray = new T[Rows, Cols];
         var bytesInRow = (uint)(Cols * ElemSize());
         fixed (T* dstPointer = dstArray)
         {
