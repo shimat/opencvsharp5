@@ -689,6 +689,30 @@ public class MatTests
     }
     
     [Fact]
+    public void ToRectangularArray()
+    {
+        var matData = new [,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        };
+        using var mat = Mat.FromSpan2D(MatType.CV_32SC1, matData.AsSpan2D());
+        Assert.True(mat.IsContinuous());
+        Assert.Equal(new [,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        }, mat.ToRectangularArray<int>());
+
+        using var subMat = mat[1..3, 1..3];
+        Assert.False(subMat.IsContinuous());
+        Assert.Equal(new Size(2, 2), subMat.Size());
+        Assert.Equal(new [,]{{5, 6}, {8, 9}}, subMat.ToRectangularArray<int>());
+    }
+
+    [Fact]
     public void CreateAsVector()
     {
         var data = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
