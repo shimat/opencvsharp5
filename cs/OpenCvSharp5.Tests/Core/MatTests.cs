@@ -1,3 +1,8 @@
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using CommunityToolkit.HighPerformance;
+
 namespace OpenCvSharp5.Tests.Core;
 
 public class MatTests
@@ -681,5 +686,187 @@ public class MatTests
         Assert.False(subMat.IsContinuous());
         Assert.Equal(new Size(2, 2), subMat.Size());
         Assert.Equal(new byte[]{5, 6, 8, 9}, subMat.ToArray<byte>());
+    }
+    
+    [Fact]
+    public void ToRectangularArray()
+    {
+        var matData = new [,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        };
+        using var mat = Mat.FromSpan2D(MatType.CV_32SC1, matData.AsSpan2D());
+        Assert.True(mat.IsContinuous());
+        Assert.Equal(new [,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        }, mat.ToRectangularArray<int>());
+
+        using var subMat = mat[1..3, 1..3];
+        Assert.False(subMat.IsContinuous());
+        Assert.Equal(new Size(2, 2), subMat.Size());
+        Assert.Equal(new [,]{{5, 6}, {8, 9}}, subMat.ToRectangularArray<int>());
+    }
+
+    [Fact]
+    public void CreateAsVector()
+    {
+        var data = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+        using var mat = Mat.CreateAsVector(MatType.CV_32SC1, data);
+
+        Assert.Equal(9, mat.Rows);
+        Assert.Equal(1, mat.Cols);
+        Assert.Equal("[1;\n 2;\n 3;\n 4;\n 5;\n 6;\n 7;\n 8;\n 9]", mat.Dump());
+    }
+
+    [Fact]
+    public void FromSpan()
+    {
+        var data = new[]
+        {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9,
+        };
+
+        using var mat = Mat.FromSpan(3, 3, MatType.CV_32SC1, data);
+
+        Assert.Equal("""
+            [1, 2, 3;
+             4, 5, 6;
+             7, 8, 9]
+            """.Replace("\r\n", "\n"), mat.Dump());
+    }
+
+    [Fact]
+    public void FromSpan2D()
+    {
+        {
+            var data = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            };
+
+            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, data);
+
+            Assert.Equal("""
+                [1, 2, 3;
+                 4, 5, 6;
+                 7, 8, 9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+        {
+            var data = new byte[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            };
+            var span = new Span2D<byte>(data, 0, 0, 3, 3);
+
+            using var mat = Mat.FromSpan2D(MatType.CV_8UC1, span);
+
+            Assert.Equal("""
+                [  1,   2,   3;
+                   4,   5,   6;
+                   7,   8,   9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+        {
+            var data = new[,]
+            {
+                { -1, 255, 255, 255 },
+                { -1, 1, 2, 3 },
+                { -1, 4, 5, 6 },
+                { -1, 7, 8, 9 },
+            };
+            var span = new Span2D<int>(data, 1, 1, 3, 3);
+            Assert.False(span.TryGetSpan(out _));
+
+            using var mat = Mat.FromSpan2D(MatType.CV_32SC1, span);
+
+            Assert.Equal("""
+                [1, 2, 3;
+                 4, 5, 6;
+                 7, 8, 9]
+                """.Replace("\r\n", "\n"), mat.Dump());
+        }
+    }
+
+    [Fact]
+    public void AsSpan2DSuccessWhenContinuous()
+    {
+        var matData = new short[,]
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+        };
+        using var mat = new Mat(3, 3, MatType.CV_16SC1, matData);
+
+        var span = mat.AsSpan2D<short>();
+        var array = span.ToArray();
+        Assert.Equal(matData, array);
+    }
+    
+    [Fact]
+    public void AsSpan2DSuccessWhenNotContinuous()
+    {
+        var matData = new byte[,]
+        {
+            { 0, 1, 2, 3, 4, 5, /*padding->*/ 6, 7, 8 },
+            { 10, 11, 12, 13, 14, 15, /*padding->*/ 16, 17, 18 },
+        };
+        
+        using var mat = new Mat(2, 2, MatType.CV_8UC3, matData, 9);
+        Assert.False(mat.IsContinuous());
+        Assert.Equal("""
+                [  0,   1,   2,   3,   4,   5;
+                  10,  11,  12,  13,  14,  15]
+                """.Replace("\r\n", "\n"), mat.Dump());
+
+        var span =  mat.AsSpan2D<Vec3<byte>>();
+        Assert.Equal(2, span.Height);
+        Assert.Equal(2, span.Width);
+        Assert.Equal(new Vec3<byte>[,]
+        {
+            { new (0, 1, 2), new(3, 4, 5) },
+            { new (10, 11, 12), new(13, 14, 15) },
+        }, span.ToArray());
+    }
+
+    [Fact]
+    public void AsSpan2DBadDims()
+    {
+        using var mat = new Mat(new []{2, 3, 4}, MatType.CV_16SC1, new Scalar(1));
+        Assert.Equal(3, mat.Dims);
+
+        Assert.Throws<NotSupportedException>(() => mat.AsSpan2D<short>());
+    }
+
+    [Fact]
+    public void AsSpan2DBadStep()
+    {
+        var matData = new byte[,]
+        {
+            { 0, 1, 2, 3, 4, 5, /*padding->*/ 6, 7 },
+            { 10, 11, 12, 13, 14, 15, /*padding->*/ 16, 17 },
+        };
+        
+        using var mat = new Mat(2, 2, MatType.CV_8UC3, matData, 8);
+        Assert.False(mat.IsContinuous());
+        Assert.Equal("""
+                [  0,   1,   2,   3,   4,   5;
+                  10,  11,  12,  13,  14,  15]
+                """.Replace("\r\n", "\n"), mat.Dump());
+
+        Assert.Throws<NotSupportedException>(() => mat.AsSpan2D<Vec3<byte>>());
     }
 }
