@@ -1,25 +1,25 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-	<Using Include="OpenCvSharp5.Vec2&lt;byte&gt;" Alias="Vec2b" />
-	<Using Include="OpenCvSharp5.Vec2&lt;short&gt;" Alias="Vec2s" />
-	<Using Include="OpenCvSharp5.Vec2&lt;ushort&gt;" Alias="Vec2w" />
-	<Using Include="OpenCvSharp5.Vec2&lt;int&gt;" Alias="Vec2i" />
-	<Using Include="OpenCvSharp5.Vec2&lt;float&gt;" Alias="Vec2f" />
-	<Using Include="OpenCvSharp5.Vec2&lt;double&gt;" Alias="Vec2d" />
+    <Using Include="OpenCvSharp5.Vec2&lt;byte&gt;" Alias="Vec2b" />
+    <Using Include="OpenCvSharp5.Vec2&lt;short&gt;" Alias="Vec2s" />
+    <Using Include="OpenCvSharp5.Vec2&lt;ushort&gt;" Alias="Vec2w" />
+    <Using Include="OpenCvSharp5.Vec2&lt;int&gt;" Alias="Vec2i" />
+    <Using Include="OpenCvSharp5.Vec2&lt;float&gt;" Alias="Vec2f" />
+    <Using Include="OpenCvSharp5.Vec2&lt;double&gt;" Alias="Vec2d" />
 
-	<Using Include="OpenCvSharp5.Vec3&lt;byte&gt;" Alias="Vec3b" />
-	<Using Include="OpenCvSharp5.Vec3&lt;short&gt;" Alias="Vec3s" />
-	<Using Include="OpenCvSharp5.Vec3&lt;ushort&gt;" Alias="Vec3w" />
-	<Using Include="OpenCvSharp5.Vec3&lt;int&gt;" Alias="Vec3i" />
-	<Using Include="OpenCvSharp5.Vec3&lt;float&gt;" Alias="Vec3f" />
-	<Using Include="OpenCvSharp5.Vec3&lt;double&gt;" Alias="Vec3d" />
+    <Using Include="OpenCvSharp5.Vec3&lt;byte&gt;" Alias="Vec3b" />
+    <Using Include="OpenCvSharp5.Vec3&lt;short&gt;" Alias="Vec3s" />
+    <Using Include="OpenCvSharp5.Vec3&lt;ushort&gt;" Alias="Vec3w" />
+    <Using Include="OpenCvSharp5.Vec3&lt;int&gt;" Alias="Vec3i" />
+    <Using Include="OpenCvSharp5.Vec3&lt;float&gt;" Alias="Vec3f" />
+    <Using Include="OpenCvSharp5.Vec3&lt;double&gt;" Alias="Vec3d" />
 
-	<Using Include="OpenCvSharp5.Vec4&lt;byte&gt;" Alias="Vec4b" />
-	<Using Include="OpenCvSharp5.Vec4&lt;short&gt;" Alias="Vec4s" />
-	<Using Include="OpenCvSharp5.Vec4&lt;ushort&gt;" Alias="Vec4w" />
-	<Using Include="OpenCvSharp5.Vec4&lt;int&gt;" Alias="Vec4i" />
-	<Using Include="OpenCvSharp5.Vec4&lt;float&gt;" Alias="Vec4f" />
-	<Using Include="OpenCvSharp5.Vec4&lt;double&gt;" Alias="Vec4d" />
+    <Using Include="OpenCvSharp5.Vec4&lt;byte&gt;" Alias="Vec4b" />
+    <Using Include="OpenCvSharp5.Vec4&lt;short&gt;" Alias="Vec4s" />
+    <Using Include="OpenCvSharp5.Vec4&lt;ushort&gt;" Alias="Vec4w" />
+    <Using Include="OpenCvSharp5.Vec4&lt;int&gt;" Alias="Vec4i" />
+    <Using Include="OpenCvSharp5.Vec4&lt;float&gt;" Alias="Vec4f" />
+    <Using Include="OpenCvSharp5.Vec4&lt;double&gt;" Alias="Vec4d" />
 
     <Using Include="OpenCvSharp5.Vec6&lt;byte&gt;" Alias="Vec6b" />
     <Using Include="OpenCvSharp5.Vec6&lt;short&gt;" Alias="Vec6s" />
