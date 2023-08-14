@@ -28,3 +28,6 @@ global using Vec6w = OpenCvSharp5.Vec6<ushort>;
 global using Vec6i = OpenCvSharp5.Vec6<int>;
 global using Vec6f = OpenCvSharp5.Vec6<float>;
 global using Vec6d = OpenCvSharp5.Vec6<double>;
+
+global using Lazy_ = System.Lazy<float>;
+global using MyDictionaryOfList = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<int>>;
