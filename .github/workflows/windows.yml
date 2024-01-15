@@ -67,3 +67,13 @@ jobs:
         working-directory: ${{github.workspace}}/cs/
         run: |
           dotnet test OpenCvSharp5.Tests/OpenCvSharp5.Tests.csproj --no-restore --no-build --configuration Release --logger:"console;verbosity=detailed"
+
+      - name: Create NuGet Packages
+        working-directory: ${{github.workspace}}/cs/
+        run: |
+          dotnet pack OpenCvSharp5/ --no-restore --no-build --configuration Release --output artifacts/ --include-source
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: nuget_packages
+          path: ${{github.workspace}}/cs/artifacts

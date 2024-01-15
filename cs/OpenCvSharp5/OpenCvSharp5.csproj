@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -10,6 +10,22 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>OpenCvSharp5</PackageId>
+    <PackageVersion>5.0.0.20230813-beta</PackageVersion>
+    <Authors>shimat</Authors>
+    <Description>Experimental OpenCV5 wrapper for .NET</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/shimat/opencvsharp5</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/shimat/opencvsharp5.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
+  </ItemGroup>
+
   <ItemGroup>
     <InternalsVIsibleTo Include="$(AssemblyName).Tests" />
     <InternalsVIsibleTo Include="$(AssemblyName).Benchmark" />
@@ -19,8 +35,18 @@
     <None Include="OpenCvSharp5.props" Pack="true" PackagePath="build\net7.0\OpenCvSharp5.props" />
   </ItemGroup>
 
+  <!--
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
+    <Content Include="OpenCvSharpExtern.dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" Pack="true">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libOpenCvSharpExtern.so" Condition="$([MSBuild]::IsOSPlatform('Linux'))" Pack="true">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>

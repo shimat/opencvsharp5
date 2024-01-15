@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\Blaz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCvSharp5", "..\cs\OpenCvSharp5\OpenCvSharp5.csproj", "{B9903DBB-527A-4C3E-B9D7-C5EF11773AAD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCvSharp5Samples", "OpenCvSharp5Samples\OpenCvSharp5Samples.csproj", "{189CC1B6-1777-4365-8669-BBA89310D059}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B9903DBB-527A-4C3E-B9D7-C5EF11773AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9903DBB-527A-4C3E-B9D7-C5EF11773AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9903DBB-527A-4C3E-B9D7-C5EF11773AAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{189CC1B6-1777-4365-8669-BBA89310D059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{189CC1B6-1777-4365-8669-BBA89310D059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{189CC1B6-1777-4365-8669-BBA89310D059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{189CC1B6-1777-4365-8669-BBA89310D059}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
